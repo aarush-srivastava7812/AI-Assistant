@@ -6,3 +6,5 @@
 *.jpg binary
 *.jpeg binary
 desktop-app/resources/licenses/javascript/* -text whitespace=-blank-at-eof
+desktop-app/resources/themes/vscode/** -text whitespace=-space-before-tab
+desktop-app/resources/licenses/VSCode-Themes-LICENSE.txt -text

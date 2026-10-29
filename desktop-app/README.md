@@ -1,4 +1,6 @@
-﻿# Wayfinder desktop 0.5.0-preview.3
+# Wayfinder desktop 0.5.0-preview.4
+
+The GitHub pet and overlay now use the existing desktop runtime. [Usage and verification](../docs/platform/COMPANION-DESKTOP.md).
 
 Current verification and remaining work: [Checkpoint 3](../docs/platform/REBUILD-CHECKPOINT-03.md).
 

@@ -20,7 +20,16 @@ const env={...process.env,WAYFINDER_VERIFY_HIDDEN:'1',WAYFINDER_VERIFY_PROFILE:p
 for(const key of ['WAYFINDER_PYTHON','WAYFINDER_PROJECT_ROOT','WAYFINDER_DESKTOP_RUNTIME','WAYFINDER_CHAT_PROVIDER_PIN','FALKORDB_HOST','FALKORDB_PORT','FALKORDB_PASSWORD','ELECTRON_RUN_AS_NODE'])delete env[key];
 const checks=[];const check=(name,value)=>{assert(value,name);checks.push({name,passed:true});console.log('PASS',name);};
 let application,context;
-async function launch(){application=await electron.launch({executablePath:path.join(root,'release/win-unpacked/Wayfinder.exe'),env,timeout:150000});const page=await application.firstWindow();page.setDefaultTimeout(150000);return page;}
+async function launch(){
+  application=await electron.launch({executablePath:path.join(root,'release/win-unpacked/Wayfinder.exe'),env,timeout:150000});
+  await application.firstWindow();let page;const deadline=performance.now()+30000;
+  while(performance.now()<deadline){page=application.windows().find(p=>p.url().startsWith('file:')&&!p.url().includes('companion='));if(page)break;await new Promise(resolve=>setTimeout(resolve,100));}
+  assert(page,'Main application window must load');page.setDefaultTimeout(150000);return page;
+}
+async function captureOwnWindow(page,name){
+  const png=await application.evaluate(async({BrowserWindow},url)=>{const window=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL()===url);if(!window)throw new Error('Own window unavailable');return (await window.capturePage(undefined,{stayHidden:true,stayAwake:true})).toPNG().toString('base64');},page.url());
+  await fs.writeFile(path.join(root,'test-results/rendered',name),Buffer.from(png,'base64'));
+}
 async function completed(page,space,cid,count){
   const deadline=Date.now()+150000;let data;
   do{data=await page.evaluate(({space,cid})=>window.wayfinder.chat(space,cid),{space,cid});if(data.turns.length>=count&&!['reserved','running'].includes(data.turns.at(-1).status))break;await new Promise(resolve=>setTimeout(resolve,700));}while(Date.now()<deadline);
@@ -52,9 +61,45 @@ try{
   const first=await completed(page,sid,cid,1);check('actual_model_reply_contains_new_nonce',first.turns.at(-1).assistant_text.includes(nonce));
   await page.getByLabel('Message',{exact:true}).fill('What is the synthetic test code I gave you in the previous message? Reply with just that code.');await page.getByRole('button',{name:'Send message',exact:true}).click();
   const second=await completed(page,sid,cid,2);check('actual_model_uses_canonical_history',second.turns.at(-1).assistant_text.includes(nonce)&&second.turns.at(-1).history_count===2);
-  await page.screenshot({path:path.join(root,'test-results/rendered/actual-packaged-chat.png'),fullPage:true});
+  await captureOwnWindow(page,'actual-packaged-chat.png');
   const inventory=await page.evaluate(s=>window.wayfinder.inventory(s),sid);check('chat_does_not_publish_automatic_memory',inventory.records.length===0);
 
+  // Real companion windows and the same backend; no OS input or visible UI.
+  await page.evaluate(()=>window.companionAPI.showOverlay());
+  let overlay;
+  const overlayDeadline=Date.now()+30000;
+  while(Date.now()<overlayDeadline){overlay=application.windows().find(p=>p.url().includes('companion=overlay'));if(overlay)break;await new Promise(resolve=>setTimeout(resolve,100));}
+  assert(overlay,'Overlay window must load');overlay.setDefaultTimeout(30000);await overlay.emulateMedia({reducedMotion:'reduce'});
+  await overlay.getByRole('button',{name:'New conversation',exact:true}).waitFor();
+  check('overlay_exposes_chat_only',await overlay.evaluate(()=>typeof window.wayfinder.sendChat==='function'&&!('inventory' in window.wayfinder)&&!('reviewMemory' in window.wayfinder)));
+  const pet=application.windows().find(p=>p.url().includes('companion=pet'));assert(pet);
+  check('pet_has_no_backend_bridge',await pet.evaluate(()=>typeof window.wayfinder==='undefined'));
+  const previousOverlayCid=await overlay.locator('.conversation-workspace').getAttribute('data-conversation-id');
+  await overlay.getByRole('button',{name:'New conversation',exact:true}).evaluate(button=>button.click());
+  await overlay.waitForFunction(previous=>{const id=document.querySelector('.conversation-workspace')?.dataset.conversationId;return id&&id!==previous&&!document.querySelector('#chat-message')?.disabled;},previousOverlayCid);
+  const overlayCid=await overlay.locator('.conversation-workspace').getAttribute('data-conversation-id');
+  await overlay.getByLabel('Message',{exact:true}).evaluate((element,text)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(element,text);element.dispatchEvent(new Event('input',{bubbles:true}));},'Reply with this synthetic companion test code: '+nonce);
+  await overlay.waitForFunction(()=>!document.querySelector('[aria-label="Send message"]').disabled);
+  await overlay.getByRole('button',{name:'Send message',exact:true}).evaluate(button=>button.click());
+  const overlayTurn=await completed(page,sid,overlayCid,1);
+  check('overlay_real_chat_visible_to_main_service',overlayTurn.turns[0].assistant_text.includes(nonce));
+  await overlay.waitForFunction(()=>!document.body.innerText.includes('Loading your conversation'));
+  await captureOwnWindow(overlay,'actual-companion-chat.png');
+  await pet.getByRole('button',{name:'Open Wayfinder companion menu',exact:true}).evaluate(button=>button.click());
+  await pet.getByRole('button',{name:'Widget settings',exact:true}).waitFor();
+  check('pet_menu_expands_to_fit_controls',await application.evaluate(({BrowserWindow})=>{const pet=BrowserWindow.getAllWindows().find(w=>w.webContents.getURL().includes('companion=pet'));return pet.getBounds().width===360&&pet.getBounds().height>180;}));
+  await captureOwnWindow(pet,'actual-companion-pet.png');
+  await overlay.getByRole('button',{name:'Close chat overlay',exact:true}).evaluate(button=>button.click());
+  check('companion_testing_never_shows_any_window',await application.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().every(w=>!w.isVisible())));
+  await page.evaluate(()=>window.companionAPI.showOverlay());
+  check('overlay_reuses_single_window',application.windows().filter(p=>p.url().includes('companion=overlay')).length===1);
+  await pet.evaluate(()=>window.companionAPI.showSettings());
+  await page.getByRole('heading',{name:'Desktop companion widget',exact:true}).waitFor();
+  check('pet_settings_navigates_main',true);
+  await pet.evaluate(()=>window.companionAPI.hidePet());
+  await page.evaluate(()=>window.companionAPI.showPet());
+  check('pet_can_be_restored_from_main',application.windows().filter(p=>p.url().includes('companion=pet')).length===1);
+  check('closing_main_preserves_companion_session',await application.evaluate(({BrowserWindow})=>{const main=BrowserWindow.getAllWindows().find(w=>!w.webContents.getURL().includes('companion='));main.close();return !main.isDestroyed();}));
   // Test-only native dialog stubs select this one synthetic file and accept
   // disclosure. Real IPC, grants, model execution and result checks still run.
   const selected=path.join(await fs.mkdtemp(path.join(os.tmpdir(),'wayfinder-synthetic-source-')),'selected.md');

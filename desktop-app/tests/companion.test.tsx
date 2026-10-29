@@ -256,6 +256,7 @@ describe('Companion shortcut registration failure', () => {
     (window.wayfinder as unknown as Record<string, unknown>).repositorySelection = vi.fn(async () => null);
     (window.wayfinder as unknown as Record<string, unknown>).snapshot = vi.fn(async () => ({ actions: [], workflows: [], jobs: [], metrics: {} }));
 
+    (window.wayfinder as unknown as Record<string, unknown>).chats = vi.fn(async()=>[]);
     render(<App />);
     // Navigate to settings
     const settingsBtns = await screen.findAllByRole('button', { name: /settings/i });

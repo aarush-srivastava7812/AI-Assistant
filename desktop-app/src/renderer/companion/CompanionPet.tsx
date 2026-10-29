@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { MessageCircle, AppWindow, Settings2, EyeOff, ChevronRight, Sparkles, Circle, Clock3, ShieldCheck, AlertTriangle, Plus } from 'lucide-react';
 import type { CompanionPetProps, CompanionShortcut } from './contracts';
 import './companion.css';
@@ -29,6 +29,7 @@ function PetGlyph() {
 
 export function CompanionPet({ shortcuts, onOpenChat, onRunShortcut, onOpenApp, onOpenSettings, onHidePet }: CompanionPetProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(()=>{void window.companionAPI?.resizePet?.(menuOpen);},[menuOpen]);
   const run = (shortcut: CompanionShortcut | null) => {
     if (!shortcut || shortcut.status !== 'ready') return;
     setMenuOpen(false);

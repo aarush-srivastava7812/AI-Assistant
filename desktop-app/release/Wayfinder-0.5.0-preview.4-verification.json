@@ -1,0 +1,373 @@
+{
+  "version": "0.5.0-preview.4",
+  "file": "Wayfinder-0.5.0-preview.4-Windows-x64.exe",
+  "bytes": 328751178,
+  "sha256": "8449c2eb5962a73e2bf3c444f527912c093c67090121fbceb3716a1bd956e339",
+  "signed": false,
+  "companion_integration_verified": true,
+  "full_product_rebuild_complete": false,
+  "frontend": {
+    "passed": 110,
+    "failed": 0
+  },
+  "rendered_scenarios_passed": 10,
+  "packaged": {
+    "passed": 31,
+    "checks": [
+      {
+        "name": "fresh_profile_shows_onboarding",
+        "passed": true
+      },
+      {
+        "name": "window_stays_hidden",
+        "passed": true
+      },
+      {
+        "name": "workspace_access_denied_before_setup",
+        "passed": true
+      },
+      {
+        "name": "finish_requires_checks_and_consent",
+        "passed": true
+      },
+      {
+        "name": "frozen_cpu_memory_inference",
+        "passed": true
+      },
+      {
+        "name": "isolated_private_database_prepared",
+        "passed": true
+      },
+      {
+        "name": "installed_hermes_isolation_verified",
+        "passed": true
+      },
+      {
+        "name": "real_owned_backend_chat_ready",
+        "passed": true
+      },
+      {
+        "name": "first_space_created",
+        "passed": true
+      },
+      {
+        "name": "setup_stores_no_provider_secrets",
+        "passed": true
+      },
+      {
+        "name": "model_turn_completed_10",
+        "passed": true
+      },
+      {
+        "name": "actual_model_reply_contains_new_nonce",
+        "passed": true
+      },
+      {
+        "name": "model_turn_completed_12",
+        "passed": true
+      },
+      {
+        "name": "actual_model_uses_canonical_history",
+        "passed": true
+      },
+      {
+        "name": "chat_does_not_publish_automatic_memory",
+        "passed": true
+      },
+      {
+        "name": "overlay_exposes_chat_only",
+        "passed": true
+      },
+      {
+        "name": "pet_has_no_backend_bridge",
+        "passed": true
+      },
+      {
+        "name": "model_turn_completed_17",
+        "passed": true
+      },
+      {
+        "name": "overlay_real_chat_visible_to_main_service",
+        "passed": true
+      },
+      {
+        "name": "pet_menu_expands_to_fit_controls",
+        "passed": true
+      },
+      {
+        "name": "companion_testing_never_shows_any_window",
+        "passed": true
+      },
+      {
+        "name": "overlay_reuses_single_window",
+        "passed": true
+      },
+      {
+        "name": "pet_settings_navigates_main",
+        "passed": true
+      },
+      {
+        "name": "pet_can_be_restored_from_main",
+        "passed": true
+      },
+      {
+        "name": "closing_main_preserves_companion_session",
+        "passed": true
+      },
+      {
+        "name": "actual_selected_file_profile_and_attributed_model_result",
+        "passed": true
+      },
+      {
+        "name": "actual_dependent_workflow_completes_without_effects",
+        "passed": true
+      },
+      {
+        "name": "task_execution_does_not_publish_memory",
+        "passed": true
+      },
+      {
+        "name": "restart_creates_fresh_backend",
+        "passed": true
+      },
+      {
+        "name": "restart_preserves_real_conversation_without_replay",
+        "passed": true
+      },
+      {
+        "name": "app_needs_no_development_checkout_or_python_env",
+        "passed": true
+      }
+    ],
+    "asar_sha256": "04d9360196f1faa0f7fe8f79568c7d904eecace2d126a3c407062297be956827",
+    "synthetic_file_dialogs_stubbed": true,
+    "companion_text_input": "DOM input events in hidden windows; no OS keyboard automation"
+  },
+  "portable": {
+    "tier": "actual delivered portable Windows executable extracted in an unrelated fresh directory",
+    "passed": 11,
+    "checks": [
+      {
+        "name": "delivered_exe_extracts_and_shows_first_run",
+        "passed": true
+      },
+      {
+        "name": "portable_archive_matches_qualified_app",
+        "passed": true
+      },
+      {
+        "name": "all_extracted_backend_sources_and_model_files_match",
+        "passed": true
+      },
+      {
+        "name": "extracted_backend_is_present",
+        "passed": true
+      },
+      {
+        "name": "no_development_python_or_project_selected",
+        "passed": true
+      },
+      {
+        "name": "extracted_model_runs_real_cpu_inference",
+        "passed": true
+      },
+      {
+        "name": "portable_prepares_owned_database",
+        "passed": true
+      },
+      {
+        "name": "portable_verifies_installed_hermes",
+        "passed": true
+      },
+      {
+        "name": "portable_backend_is_live",
+        "passed": true
+      },
+      {
+        "name": "portable_fresh_memory_is_empty",
+        "passed": true
+      },
+      {
+        "name": "portable_quits_normally_and_preserves_profile",
+        "passed": true
+      }
+    ],
+    "portable_sha256": "8449c2eb5962a73e2bf3c444f527912c093c67090121fbceb3716a1bd956e339",
+    "extracted_resource_files_verified": 2973,
+    "native_desktop_automation": false,
+    "live_google": false,
+    "live_tavily": false,
+    "chat_inference": "covered separately by the matching packaged app acceptance test"
+  },
+  "static": {
+    "build": "wayfinder-desktop/0.5.0-preview.4",
+    "checks": [
+      {
+        "name": "included_main/index.js",
+        "passed": true
+      },
+      {
+        "name": "included_preload/index.cjs",
+        "passed": true
+      },
+      {
+        "name": "included_renderer/index.html",
+        "passed": true
+      },
+      {
+        "name": "companion_preload_included",
+        "passed": true
+      },
+      {
+        "name": "companion_preload_has_no_effect_or_private_operations",
+        "passed": true
+      },
+      {
+        "name": "version_and_variant",
+        "passed": true
+      },
+      {
+        "name": "isolated_renderer",
+        "passed": true
+      },
+      {
+        "name": "no_renderer_network_or_inline_script",
+        "passed": true
+      },
+      {
+        "name": "private_bootstrap_not_in_renderer",
+        "passed": true
+      },
+      {
+        "name": "onboarding_and_chat_inclusion",
+        "passed": true
+      },
+      {
+        "name": "no_generic_ipc_or_native_actions",
+        "passed": true
+      },
+      {
+        "name": "manifest_pairing",
+        "passed": true
+      },
+      {
+        "name": "embedded_frozen_manifest_matches_app",
+        "passed": true
+      },
+      {
+        "name": "bundled_python_executable_matches_stage",
+        "passed": true
+      },
+      {
+        "name": "python_interpreter_bundled",
+        "passed": true
+      },
+      {
+        "name": "build_python_trust_policy_preserved",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/chat.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/contracts.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/task_profiles.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/workflows.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/worker_bindings.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/worker_activation_ledger.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/runtime_probe.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/platform/catalog.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/service.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/api.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_wayfinder/workers/hermes_runner.py",
+        "passed": true
+      },
+      {
+        "name": "source_identity_memory/engine.py",
+        "passed": true
+      },
+      {
+        "name": "bundled_public_model_checksums",
+        "passed": true
+      },
+      {
+        "name": "no_private_state_credentials_or_debug_copies",
+        "passed": true
+      },
+      {
+        "name": "notice_FlagEmbedding-LICENSE.txt",
+        "passed": true
+      },
+      {
+        "name": "notice_Python-LICENSE.txt",
+        "passed": true
+      },
+      {
+        "name": "notice_Qdrant-BGE-model-card.md",
+        "passed": true
+      },
+      {
+        "name": "notice_python-dependencies.json",
+        "passed": true
+      },
+      {
+        "name": "notice_javascript/react-LICENSE.txt",
+        "passed": true
+      },
+      {
+        "name": "notice_javascript/lucide-react-LICENSE.txt",
+        "passed": true
+      },
+      {
+        "name": "actual_fresh_profile_acceptance",
+        "passed": true
+      },
+      {
+        "name": "acceptance_matches_current_archive",
+        "passed": true
+      },
+      {
+        "name": "portable_is_windows_executable",
+        "passed": true
+      }
+    ],
+    "passed": 39,
+    "asar_sha256": "04d9360196f1faa0f7fe8f79568c7d904eecace2d126a3c407062297be956827",
+    "backend_sha256": "8f077fae70fb397042242eeb4fbadb9484e8c4cc301a9fa53c39d8c4d41ec2b4",
+    "portable_sha256": "8449c2eb5962a73e2bf3c444f527912c093c67090121fbceb3716a1bd956e339",
+    "native_desktop_automation": false,
+    "google_live": false,
+    "actual_packaged_checks": 31
+  },
+  "os_hotkey_pressed": false,
+  "live_account_providers_tested": false,
+  "prior_backend_qualification": "Prior complete suite: 630 passed, one graph-lease failure. Backend implementation unchanged; full suite not rerun for this companion-only change. See REBUILD-CHECKPOINT-03.md."
+}

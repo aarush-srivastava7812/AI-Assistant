@@ -56,7 +56,7 @@
   color-scheme: light;
 }
 
-.app[data-theme=dark] {
+.app[data-theme=dark],.wfa-root[data-theme=dark] {
   --surface: #202020;
   --panel: #252525;
   --panel-low: #292929;

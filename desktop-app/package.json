@@ -1,6 +1,6 @@
 {
   "name": "wayfinder-desktop",
-  "version": "0.5.0-preview.3",
+  "version": "0.5.0-preview.4",
   "private": true,
   "license": "UNLICENSED",
   "description": "Wayfinder GitHub interface connected to the existing scoped application backend",

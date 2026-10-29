@@ -48,6 +48,7 @@ export function AnimatedChatOverlay({ onClose, chatContent, greeting = 'Ready wh
   return (
     <div
       className="wfa-root"
+      data-theme="dark"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();

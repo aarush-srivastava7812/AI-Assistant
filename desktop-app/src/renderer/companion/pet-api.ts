@@ -8,6 +8,11 @@
  * exposed by the standard preload (also loaded in companion windows).
  */
 export interface CompanionAPI {
+  resizePet?(expanded:boolean):Promise<void>;
+  showPet?():Promise<void>;
+  setSpace?(space:string):Promise<void>;
+  getContext():Promise<{space:string}>;
+  onNavigate?(callback:(page:string)=>void):()=>void;
   /** Show (or focus) the overlay window. */
   showOverlay(): Promise<void>;
   /** Hide the overlay window. */

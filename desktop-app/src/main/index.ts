@@ -9,7 +9,7 @@ import { requireMainSender } from './sender';
 import { existsSync } from 'node:fs';
 import { runtimeChoice } from './runtime-path';
 import release from '../../FEATURES.json';
-import { initCompanion, shutdownCompanion } from './companion-windows';
+import { initCompanion, shutdownCompanion, requireOverlayRequest } from './companion-windows';
 
 declare const WAYFINDER_SOURCE_ROOT: string;
 const appDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -52,6 +52,7 @@ else {
       webPreferences: { preload: path.join(appDirectory, '../preload/index.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, spellcheck: false },
     });
     main.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    main.on('close',event=>{if(!quitting){event.preventDefault();main?.hide();}});
     main.webContents.on('will-navigate', event => event.preventDefault());
     main.webContents.on('will-attach-webview', event => event.preventDefault());
     session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
@@ -75,7 +76,8 @@ else {
     for (const [method, handler] of Object.entries(handlers)) ipcMain.handle(`wayfinder:${method}`, async (event, ...args) => {
       if (!release.preload_methods.includes(method)) throw new Error('Intent is not included in this build.');
       if (!main) throw new Error('Window unavailable.');
-      requireMainSender(event, main.webContents, rendererURL);
+      if(event.sender===main.webContents)requireMainSender(event, main.webContents, rendererURL);
+      else requireOverlayRequest(event,method,args);
       if (Buffer.byteLength(JSON.stringify(args)) > 65536) throw new Error('Desktop request too large.');
       try { if(!setup.ready()&&!['status','connect','setupStatus','setupDatabase','setupMemory','setupModel','setupFinish'].includes(method))throw new Error('Complete first-run setup before opening workspace resources.'); return { ok: true, data: await (handler as (...values:any[])=>Promise<any>)(...args) }; }
       catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'Request failed. No completion is asserted.' }; }

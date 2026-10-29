@@ -1,0 +1,20 @@
+﻿import {expect,it,vi} from 'vitest';
+import {pathToFileURL} from 'node:url';
+import path from 'node:path';
+const fake=vi.hoisted(()=>({handlers:new Map<string,any>(),windows:[] as any[]}));
+vi.mock('electron',()=>({app:{},globalShortcut:{register:vi.fn(()=>false),unregister:vi.fn()},ipcMain:{handle:(c:string,h:any)=>fake.handlers.set(c,h),removeHandler:(c:string)=>fake.handlers.delete(c)},screen:{getPrimaryDisplay:()=>({workArea:{x:0,y:0,width:1200,height:800}}),on:vi.fn(),removeListener:vi.fn()},BrowserWindow:class{webContents={mainFrame:{url:''},setWindowOpenHandler:vi.fn(),on:vi.fn()};constructor(){fake.windows.push(this);}isDestroyed(){return false;}once(){}on(){}show(){}hide(){}focus(){}showInactive(){}destroy(){}setBounds(){}loadFile(file:string,options:any){this.webContents.mainFrame.url=pathToFileURL(file).href+'?companion='+options.query.companion;return Promise.resolve();}}}));
+import {initCompanion,shutdownCompanion,showOverlay,requireOverlayRequest} from '../src/main/companion-windows';
+it('allows only exact overlay frames and selected-space chat while rejecting pet, subframes and effect methods',()=>{
+ const file=path.resolve('renderer.html'),main:any={webContents:{mainFrame:{url:pathToFileURL(file).href}},isDestroyed:()=>false};
+ initCompanion(path.dirname(file),file,main);showOverlay();
+ const mainEvent={sender:main.webContents,senderFrame:main.webContents.mainFrame};
+ fake.handlers.get('companion:setSpace')(mainEvent,'owned');
+ const overlay=fake.windows[1],pet=fake.windows[0],event:any={sender:overlay.webContents,senderFrame:overlay.webContents.mainFrame};
+ expect(()=>requireOverlayRequest(event,'sendChat',['owned','c','r','text'])).not.toThrow();
+ expect(()=>requireOverlayRequest(event,'sendChat',['foreign'])).toThrow();
+ expect(()=>requireOverlayRequest(event,'reviewMemory',['owned'])).toThrow();
+ expect(()=>requireOverlayRequest({...event,senderFrame:{url:event.senderFrame.url}},'status',[])).toThrow();
+ expect(()=>requireOverlayRequest({sender:pet.webContents,senderFrame:pet.webContents.mainFrame} as any,'status',[])).toThrow();
+ expect(()=>fake.handlers.get('companion:setSpace')(event,'forged')).toThrow();
+ shutdownCompanion();
+});

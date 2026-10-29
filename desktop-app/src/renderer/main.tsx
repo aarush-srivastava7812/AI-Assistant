@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import './styles.css';
-import './design.css';
+import './app.css';
+
 
 // Companion mode routing: the pet and overlay BrowserWindows load the same
 // HTML file with a ?companion=pet or ?companion=overlay query string.
@@ -11,6 +11,7 @@ const companionParam = params.get('companion') || params.get('view') || params.g
 const isPet = companionParam === 'pet' || params.has('pet');
 const isOverlay = companionParam === 'overlay' || params.has('overlay');
 
+if(isPet||isOverlay)document.documentElement.dataset.companion=isPet?'pet':'overlay';
 if (isPet) {
   // Pet window — import only pet code; no workspace panels or backend polling
   import('./companion/PetApp');

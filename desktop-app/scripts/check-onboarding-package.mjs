@@ -12,6 +12,11 @@ const files=listPackage(archive).map(p=>p.replaceAll('\\','/')),get=p=>extractFi
 const checks=[],check=(name,ok)=>{assert(ok,name);checks.push({name,passed:true});};
 const metadata=JSON.parse(get('package.json').toString()),release=JSON.parse(await fs.readFile(path.join(root,'FEATURES.json'),'utf8'));
 for(const name of ['main/index.js','preload/index.cjs','renderer/index.html'])check('included_'+name,files.includes('/dist/'+name));
+if(release.version==='0.5.0-preview.4'){
+  check('companion_preload_included',files.includes('/dist/preload/companion.cjs'));
+  const companion=get('dist/preload/companion.cjs').toString();
+  check('companion_preload_has_no_effect_or_private_operations',!companion.includes('reviewMemory')&&!companion.includes('importConnections')&&!companion.includes('selectFiles'));
+}
 check('version_and_variant',metadata.version===JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8')).version&&metadata.version===release.version&&release.variant==='workspace-parity');
 const main=get('dist/main/index.js').toString(),html=get('dist/renderer/index.html').toString();
 check('isolated_renderer',main.includes('contextIsolation: true')&&main.includes('nodeIntegration: false')&&main.includes('sandbox: true'));

@@ -1,11 +1,12 @@
 # Windows desktop downloads
 
-All six versioned Windows x64 executables are available through [GitHub Releases](https://github.com/aarush-srivastava7812/AI-Assistant/releases).
+Versioned Windows x64 executables are available through [GitHub Releases](https://github.com/aarush-srivastava7812/AI-Assistant/releases).
 
-The newest preview, **0.5.0-preview.4**, includes the connected desktop pet and chat widget. Versions 0.5.0 are marked prerelease; 0.4.1 and 0.4.0 retain their existing release status.
+The newest preview, **0.5.0-preview.5**, adds OpenCode chat with your own NVIDIA key, a setup installer, dependency bootstrap and explicit first-run permissions. Use Setup for a new Windows PC. Versions 0.5.0 are marked prerelease; 0.4.1 and 0.4.0 retain their existing release status.
 
 | Version | Executable | Integrity and evidence |
 | --- | --- | --- |
+| 0.5.0-preview.5 | [Setup EXE](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe), [portable EXE](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-0.5.0-preview.5-Windows-x64.exe) | [Setup SHA-256](Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe.sha256), [portable SHA-256](Wayfinder-0.5.0-preview.5-Windows-x64.exe.sha256), [verification](Wayfinder-0.5.0-preview.5-verification.json), [usage](START-HERE-0.5.0-preview.5.md) |
 | 0.5.0-preview.4 | [Windows x64 EXE](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.4/Wayfinder-0.5.0-preview.4-Windows-x64.exe) | [SHA-256](Wayfinder-0.5.0-preview.4-Windows-x64.exe.sha256), [verification](Wayfinder-0.5.0-preview.4-verification.json), [usage](START-HERE-0.5.0-preview.4.md) |
 | 0.5.0-preview.3 | [Windows x64 EXE](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.3/Wayfinder-0.5.0-preview.3-Windows-x64.exe) | [SHA-256](Wayfinder-0.5.0-preview.3-Windows-x64.exe.sha256), [verification](Wayfinder-0.5.0-preview.3-verification.json), [usage](START-HERE-0.5.0-preview.3.md) |
 | 0.5.0-preview.2 | [Windows x64 EXE](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.2/Wayfinder-0.5.0-preview.2-Windows-x64.exe) | [SHA-256](Wayfinder-0.5.0-preview.2-Windows-x64.exe.sha256), [verification](Wayfinder-0.5.0-preview.2-verification.json), [usage](START-HERE-0.5.0-preview.2.md) |
@@ -15,4 +16,4 @@ The newest preview, **0.5.0-preview.4**, includes the connected desktop pet and 
 
 The binaries are release assets rather than Git source files. All uploaded assets were verified against their local SHA-256 hashes; [publication evidence](../../docs/platform/DESKTOP-RELEASES.json) records each URL, size and digest. Original verification reports describe their respective builds; publication does not add test coverage.
 
-These unsigned executables bundle Python, the backend and CPU memory model. Docker Desktop with a local Linux engine and the existing managed Hermes/OpenShell installation remain prerequisites. Provider credentials are not bundled. The full rebuild and the graph-lease qualification issue recorded for previews 3/4 remain open.
+These unsigned executables bundle the application Python backend and CPU memory model. Preview 5 Setup additionally installs a private official Hermes SDK/Python runtime and offers Docker Desktop installation; Windows virtualization, permissions and possible restarts still apply. Bring your own NVIDIA key. Google sign-in currently requires your own Desktop client JSON. Older versions retain their documented prerequisites. The full product rebuild remains unfinished; attached verification reports state the coverage and limits for each build.

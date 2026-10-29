@@ -5,7 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {constants,setPriority} from 'node:os';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const child=spawn(process.execPath,[path.join(root,'node_modules/electron-builder/cli.js'),'--win','portable','--x64','--publish','never'],{
+const child=spawn(process.execPath,[path.join(root,'node_modules/electron-builder/cli.js'),'--win','nsis','portable','--x64','--publish','never'],{
   cwd:root,windowsHide:true,stdio:'inherit',
   env:{...process.env,ELECTRON_BUILDER_COMPRESSION_LEVEL:process.env.ELECTRON_BUILDER_COMPRESSION_LEVEL??'1'},
 });

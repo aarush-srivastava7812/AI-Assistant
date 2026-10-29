@@ -1,6 +1,6 @@
 # AI assistant
 
-Current preview: [Download Wayfinder 0.5.0-preview.4 for Windows](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.4/Wayfinder-0.5.0-preview.4-Windows-x64.exe), with the GitHub pet and widget connected to desktop chat. See [companion usage and verification](docs/platform/COMPANION-DESKTOP.md) and [remaining rebuild work](docs/platform/REBUILD-CHECKPOINT-03.md). The full rebuild is not complete.
+Current preview: [Download Wayfinder Setup 0.5.0-preview.5 for Windows](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe). OpenCode powers chat with your own NVIDIA key. Setup installs the required task runtime and offers Docker installation. Onboarding asks for your own NVIDIA key and optional pet, widget, folders, agents and account connections. See [getting started](desktop-app/release/START-HERE-0.5.0-preview.5.md), [REA onboarding research](docs/platform/ONBOARDING-RESEARCH.md) and [remaining rebuild work](docs/platform/REBUILD-CHECKPOINT-03.md). The full rebuild is not complete.
 
 **Windows desktop:** [Download Wayfinder 0.4.1](https://github.com/aarush-srivastava7812/AI-Assistant/releases/tag/v0.4.1). The [release folder](desktop-app/release/README.md) contains download links, SHA-256 checksums and build verification reports.
 

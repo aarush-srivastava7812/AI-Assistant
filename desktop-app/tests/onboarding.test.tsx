@@ -36,7 +36,7 @@ it('rejects foreign Docker volume without starting or replacing it',async()=>{
   expect(run.mock.calls.some(([,args])=>args.includes('start')||args.includes('create')||args.includes('rm'))).toBe(false);
 });
 it('explains disclosure and leaves finish disabled for a new user',async()=>{
-  const api={setupStatus:vi.fn(async()=>({storage:'isolated workspace'}))} as any;
+  const api={setupChoices:vi.fn(async()=>({version:1,pet:false,widget:false,agents:false,folders:[]})),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({storage:'isolated workspace'}))} as any;
   render(<Onboarding api={api} done={vi.fn()}/>);
   await waitFor(()=>expect(api.setupStatus).toHaveBeenCalled());
   expect((screen.getByRole('button',{name:'Continue'}) as HTMLButtonElement).disabled).toBe(true);
@@ -48,12 +48,12 @@ it('explains disclosure and leaves finish disabled for a new user',async()=>{
 
 it('expires model consent while setup stays open and does not finish implicitly',async()=>{
   vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-27T00:00:00Z'));
-  const api={setupStatus:vi.fn(async()=>({databaseReady:true,memoryReady:true,modelReady:true,modelExpiresAt:Date.now()+5000,model:{model:'approved',provider:'custom',endpoint:'inference.local'}})),setupFinish:vi.fn()} as any;
+  const api={setupChoices:vi.fn(async()=>({version:1,pet:false,widget:false,agents:false,folders:[]})),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({databaseReady:true,memoryReady:true,modelReady:true,modelExpiresAt:Date.now()+5000,model:{model:'approved',provider:'custom',endpoint:'inference.local'}})),setupFinish:vi.fn()} as any;
   await act(async()=>{render(<Onboarding api={api} done={vi.fn()}/>);});
   const finish=screen.getByRole('button',{name:/Create workspace and open Wayfinder/}) as HTMLButtonElement;
   fireEvent.click(screen.getByRole('checkbox',{name:/I agree to send/}));expect(finish.disabled).toBe(false);
   await act(async()=>{vi.advanceTimersByTime(5001);});expect(finish.disabled).toBe(true);
-  expect((screen.getByRole('checkbox') as HTMLInputElement).checked).toBe(false);
+  expect((screen.getByRole('checkbox',{name:/I agree to send/}) as HTMLInputElement).checked).toBe(false);
   expect(api.setupFinish).not.toHaveBeenCalled();
 });
 
@@ -70,4 +70,12 @@ it('refuses readiness and secret fields injected into saved setup progress',asyn
   await fs.writeFile(path.join(root,'setup-progress.json'),JSON.stringify({version:1,modelReady:true,token:'SYNTHETIC_SECRET'}));
   const setup=new SetupManager(root,path.join(root,'runtime'),'project','absent-backend','models',{} as any,vi.fn());await setup.load();
   expect(setup.status().modelReady).toBe(false);expect(setup.status().resuming).toBe(false);expect(setup.status().error).toContain('Recheck');
+});
+
+it('does not fall back to a managed credential when a user key is missing after restart',async()=>{
+ const root=await fs.mkdtemp(path.join(os.tmpdir(),'wayfinder-missing-key-'));
+ await fs.writeFile(path.join(root,'onboarding.json'),JSON.stringify({version:1,complete:true,context:'desktop-linux',model:{model:'nvidia/nemotron-3.5-lightning-30b-a3b',provider:'custom',endpoint:'integrate.api.nvidia.com'},workspace:'owned',workspaceName:'Personal',modelSource:'user-key'}));
+ const run=vi.fn(),bridge={state:{state:'offline'}} as any;
+ const setup=new SetupManager(root,path.join(root,'runtime'),'project','exe','models',bridge,run);await setup.load();
+ expect(setup.ready()).toBe(true);expect(await setup.connect()).toMatchObject({state:'setup',error:expect.stringContaining('NVIDIA key is unavailable')});expect(run).not.toHaveBeenCalled();expect(setup.ready()).toBe(false);
 });

@@ -15,7 +15,11 @@ class HermesUnavailable(RuntimeError):
 
 class HermesBridge:
     def __init__(self, *, command=None, timeout=110):
-        self.command = command or [
+        self.native_root = os.environ.get("WAYFINDER_HERMES_ROOT")
+        native_python = os.environ.get("WAYFINDER_HERMES_PYTHON")
+        if bool(self.native_root) != bool(native_python):
+            raise HermesUnavailable("The private Hermes runtime installation is incomplete.")
+        self.command = command or ([native_python, "-I", "-"] if native_python else [
             "wsl.exe",
             "-d",
             "Ubuntu-24.04",
@@ -33,19 +37,35 @@ class HermesBridge:
             "--",
             "/opt/hermes/.venv/bin/python",
             "-",
-        ]
+        ])
         self.timeout = timeout
+        raw = os.environ.get("WAYFINDER_PRIVATE_MODEL_ROUTE")
+        self._route = json.loads(raw) if raw else None
+
+    def prepare_source(self, source):
+        if not self.native_root:
+            return source
+        # This root comes only from the owned desktop bootstrap, never an API task.
+        return ("HERMES_ROOT = " + repr(self.native_root) + "\n"
+                "import os,sys,tempfile,atexit\n"
+                "_profile=tempfile.TemporaryDirectory(prefix='wayfinder-runtime-')\n"
+                "atexit.register(_profile.cleanup)\n"
+                "os.environ.update(HERMES_HOME=_profile.name,HERMES_IGNORE_RULES='1',HERMES_SAFE_MODE='1')\n"
+                "sys.path.insert(0,HERMES_ROOT)\n" + source)
 
     def run(self, payload, cancelled=None):
+        if payload.get('role')=='CHAT':
+            from .opencode import OpenCodeBridge
+            return OpenCodeBridge(route=self._route,timeout=self.timeout).run(payload,cancelled)
         cancelled = cancelled or threading.Event()
         script = (
             Path(__file__).with_name("hermes_runner.py").read_text(encoding="utf-8")
         )
         # The request is data, never shell code or command-line interpolation.
         encoded = base64.b64encode(
-            json.dumps(payload, allow_nan=False).encode()
+            json.dumps(dict(payload, **({"_trusted_route":self._route} if self._route else {})), allow_nan=False).encode()
         ).decode("ascii")
-        source = "REQUEST_B64 = " + repr(encoded) + "\n" + script
+        source = self.prepare_source("REQUEST_B64 = " + repr(encoded) + "\n" + script)
         if cancelled.is_set():
             raise HermesUnavailable("Worker stopped.")
         try:

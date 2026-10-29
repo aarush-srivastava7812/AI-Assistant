@@ -50,7 +50,7 @@ class Connections:
         self.values={'schema':1,'google':None,'tavily':None,'notion':None};self.revision=secrets.token_hex(16);self.digest=None
         self.grants={};self.checks={};self.closed=False
         self.bridge=bridge or HermesBridge(timeout=35)
-        if bridge is None:self.bridge.command[self.bridge.command.index('--timeout')+1]='30'
+        if bridge is None and '--timeout' in self.bridge.command:self.bridge.command[self.bridge.command.index('--timeout')+1]='30'
         with app.db() as db:db.execute('CREATE TABLE IF NOT EXISTS integration_reads(id TEXT PRIMARY KEY,scope TEXT,provider TEXT,intent_digest TEXT,status TEXT,records INTEGER,created REAL,finished REAL)')
     def google_blob(self):
         with self.lock:return self.values['google']

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "source_commit": "bf0203a794a07aac3ff764972ab9087baa4e4f4e",
+  "source_version": "v0.22.5",
+  "source_url": "https://github.com/NousResearch/hermes-agent",
+  "source_sha256": "b3150c567cc75cd92cf0cb944cb5fcce768691c0af0ce2a6eed5166d91727cbc",
+  "lock_sha256": "f1609519f30dac8886b03e60693e36fa75e033fa3e7259c8c8befe8fb6e34460",
+  "agent_sha256": "33c7195fc6efa9122f1a6700d416fd283f9634712189af3fd72feb01bcea054f",
+  "uv_version": "0.13.6",
+  "uv_sha256": "81ea623608f8c17720c62efd0a380a8ead380c4d365ba6968e9d279a2319c674",
+  "python_version": "3.14.10"
+}

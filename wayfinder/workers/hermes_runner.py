@@ -12,6 +12,7 @@ import subprocess
 from urllib.parse import urlsplit
 
 STAGE = "request"
+HERMES_ROOT = globals().get('HERMES_ROOT', '/opt/hermes')
 ALLOWED_MODELS=('nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3-ultra-550b-a55b')
 
 def tavily_search(request):
@@ -19,7 +20,7 @@ def tavily_search(request):
     if not isinstance(key,str) or not key or len(key)>2048 or not isinstance(query,str) or not 1<=len(query)<=400 or type(limit) is not int or not 1<=limit<=3:raise ValueError('Invalid bounded Tavily request.')
     with tempfile.TemporaryDirectory(prefix='wayfinder-tavily-') as temporary:
         os.environ.update(HERMES_HOME=temporary,HERMES_IGNORE_RULES='1',HERMES_SAFE_MODE='1',TAVILY_API_KEY=key,TAVILY_BASE_URL='https://api.tavily.com')
-        sys.path.insert(0,'/opt/hermes')
+        sys.path.insert(0,HERMES_ROOT)
         # Fresh profiles intentionally do not run global plugin discovery. Reuse
         # the installed bundled provider directly, without enabling other plugins.
         from plugins.web.tavily.provider import TavilyWebSearchProvider
@@ -53,21 +54,26 @@ if not isinstance(model,str): raise ValueError("Select a string model ID in the 
 route=resolve_runtime_provider(requested=model_cfg.get("provider", "auto"), target_model=model)
 print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_key","provider","api_mode")} | {"model":model}))
 """
-    resolved = subprocess.run(
-        [sys.executable, "-c", bootstrap],
-        capture_output=True,
-        text=True,
-        cwd="/opt/hermes",
-        timeout=20,
-    )
-    route_lines = [
-        line.split("=", 1)[1]
-        for line in resolved.stdout.splitlines()
-        if line.startswith("WAYFINDER_ROUTE=")
-    ]
-    if resolved.returncode or len(route_lines) != 1:
-        raise ValueError("Managed provider unavailable.")
-    route = json.loads(route_lines[0])
+    if request.get("_trusted_route") is not None:
+        route = request["_trusted_route"]
+        if not isinstance(route,dict) or set(route)!={"model","api_key","provider","api_mode","base_url"} or route.get("provider")!="custom" or route.get("api_mode")!="chat_completions" or route.get("base_url")!="https://integrate.api.nvidia.com/v1" or not isinstance(route.get("api_key"),str) or not route["api_key"].startswith("nvapi-"):
+            raise ValueError("Invalid private NVIDIA model configuration.")
+    else:
+        resolved = subprocess.run(
+            [sys.executable, "-c", bootstrap],
+            capture_output=True,
+            text=True,
+            cwd=HERMES_ROOT,
+            timeout=20,
+        )
+        route_lines = [
+            line.split("=", 1)[1]
+            for line in resolved.stdout.splitlines()
+            if line.startswith("WAYFINDER_ROUTE=")
+        ]
+        if resolved.returncode or len(route_lines) != 1:
+            raise ValueError("Managed provider unavailable.")
+        route = json.loads(route_lines[0])
     if urlsplit(route.get("base_url") or "").hostname not in {
         "inference.local",
         "integrate.api.nvidia.com",
@@ -107,7 +113,7 @@ print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_ke
             ),
             encoding="utf-8",
         )
-        sys.path.insert(0, "/opt/hermes")
+        sys.path.insert(0, HERMES_ROOT)
         from run_agent import AIAgent
 
         STAGE = "initialization"
@@ -243,6 +249,11 @@ print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_ke
             )
         finally:
             agent.close()
+            # Windows keeps rotating-log lock handles open beyond agent.close().
+            # Shut them down before removing this process's private profile.
+            import logging
+            logging.shutdown()
+            os.chdir(tempfile.gettempdir())
 
 
 if __name__ == "__main__":

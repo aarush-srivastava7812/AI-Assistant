@@ -25,6 +25,12 @@ export interface BackendState {
   instance_generation?: string;
 }
 export interface DesktopAPI {
+  setupChoices(input?:Row):Promise<Row>;
+  setupFolder():Promise<Row>;
+  setupNvidia(key:string,model:string):Promise<Row>;
+  setupGoogle(services:string[]):Promise<Row>;
+  setupHelp(kind:string):Promise<void>;
+  setupDependencies(install:boolean):Promise<Row>;
   importConnections():Promise<Row|null>;
   disconnectConnection(provider:'google'|'tavily'|'notion'):Promise<Row>;
   connectionsStatus(space:string):Promise<Row>;

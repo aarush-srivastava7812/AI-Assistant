@@ -42,3 +42,9 @@ desktop-app/test-results/
 
 # Local external repository
 /rea/
+
+# Generated pinned runtime dependency payloads (staged by script)
+desktop-app/resources/setup/uv.exe
+desktop-app/resources/setup/hermes-source.zip
+/.cache/
+desktop-app/resources/setup/opencode.exe

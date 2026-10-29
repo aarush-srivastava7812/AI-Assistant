@@ -26,7 +26,7 @@ class RuntimeInspector:
             process = subprocess.run(
                 self.bridge.command,
                 env={k:v for k,v in os.environ.items() if not k.startswith(("FALKORDB_","WAYFINDER_"))},
-                input=source,
+                input=self.bridge.prepare_source(source) if hasattr(self.bridge,'prepare_source') else source,
                 text=True,
                 capture_output=True,
                 timeout=105,

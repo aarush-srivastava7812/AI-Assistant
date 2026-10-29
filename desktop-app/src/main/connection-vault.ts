@@ -43,6 +43,7 @@ export class ConnectionVault{
     try{await fs.rename(temporary,this.file);}catch{await fs.unlink(temporary).catch(()=>{});throw new Error('Connections could not be saved. Existing credentials were preserved.');}
     this.bundle=bundle;this.loadError='';return this.status();
   }
+  async saveGoogle(token:string){if(this.busy)throw new Error('A connection update is already in progress.');this.busy=true;try{return await this.save(validateConnections({...this.bundle,google:token}));}finally{this.busy=false;}}
   async importFile(file:string){
     if(this.busy)throw new Error('A connection update is already in progress.');this.busy=true;
     try{

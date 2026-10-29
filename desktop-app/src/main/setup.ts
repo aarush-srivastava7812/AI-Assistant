@@ -10,13 +10,15 @@ const execute=promisify(execFile);
 export const DATABASE_IMAGE='falkordb/falkordb:v4.20.7';
 export const DATABASE_IMAGE_ID='sha256:13996aa523f0dd283f6bd6df6620b094dcea525452417c4d6ef9bef15dc9998d';
 type Runner=(file:string,args:string[],options?:{env?:NodeJS.ProcessEnv;timeout?:number})=>Promise<string>;
-const command:Runner=async(file,args,options={})=>{try{return (await execute(file,args,{windowsHide:true,timeout:options.timeout||30000,maxBuffer:2*1024*1024,env:options.env||process.env})).stdout.toString();}catch{throw new Error('The requested local service check failed. Check Docker or the managed environment and retry.');}};
+const command:Runner=async(file,args,options={})=>{try{if(file==='docker'&&process.platform==='win32'){const candidates=[path.join(process.env.ProgramFiles||'C:\\Program Files','Docker','Docker','resources','bin','docker.exe'),path.join(process.env.LOCALAPPDATA||'','Programs','DockerDesktop','resources','bin','docker.exe')];file=candidates.find(candidate=>existsSync(candidate))||file;}return (await execute(file,args,{windowsHide:true,timeout:options.timeout||30000,maxBuffer:2*1024*1024,env:options.env||process.env})).stdout.toString();}catch{throw new Error('The requested local service check failed. Check Docker or the installed runtime and retry.');}};
 export interface ModelPin{model:string;provider:string;endpoint:string}
-interface Saved{version:1;complete:true;context:string;model:ModelPin;workspace:string;workspaceName:string}
+interface Saved{version:1;complete:true;context:string;model:ModelPin;workspace:string;workspaceName:string;modelSource?:'user-key'|'managed'}
 export function validModel(value:any):value is ModelPin{return !!value&&['nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3-ultra-550b-a55b'].includes(value.model)&&typeof value.provider==='string'&&value.provider.length<100&&value.endpoint==='integrate.api.nvidia.com'&&Object.keys(value).sort().join(',')==='endpoint,model,provider';}
 export function localDocker(endpoint:string){return /^npipe:\/\/\/\/\.\/pipe\/[A-Za-z0-9_.-]+$/.test(endpoint)||endpoint.startsWith('unix:///');}
 export class SetupManager{
   readonly id:string;readonly container:string;readonly volume:string;readonly configPath:string;
+  private modelEnvironment:()=>NodeJS.ProcessEnv=()=>({});
+  setModelEnvironment(source:()=>NodeJS.ProcessEnv){this.modelEnvironment=source;}
   private connectionSource?:()=>Promise<any>;
   setConnectionSource(source:()=>Promise<any>){this.connectionSource=source;}
   private saved?:Saved;private context?:string;private password?:string;private port?:string;
@@ -36,7 +38,7 @@ export class SetupManager{
     if(!existsSync(this.configPath))return;
     try{
       const raw=await fs.readFile(this.configPath,'utf8');if(Buffer.byteLength(raw)>8192)throw new Error();const v=JSON.parse(raw);
-      if(v.version!==1||v.complete!==true||!validModel(v.model)||typeof v.context!=='string'||!/^[-A-Za-z0-9_.]{1,100}$/.test(v.context)||typeof v.workspace!=='string'||typeof v.workspaceName!=='string'||Object.keys(v).sort().join(',')!=='complete,context,model,version,workspace,workspaceName')throw new Error();
+      if(v.version!==1||v.complete!==true||!validModel(v.model)||typeof v.context!=='string'||!/^[-A-Za-z0-9_.]{1,100}$/.test(v.context)||typeof v.workspace!=='string'||typeof v.workspaceName!=='string'||v.modelSource!==undefined&&!['user-key','managed'].includes(v.modelSource)||Object.keys(v).filter(k=>k!=='modelSource').sort().join(',')!=='complete,context,model,version,workspace,workspaceName')throw new Error();
       this.saved=v;this.context=v.context;
     }catch{this.error='Saved setup is invalid. Existing workspace data was preserved. Run the checks again to repair the connection.';}
   }
@@ -47,8 +49,9 @@ export class SetupManager{
     await fs.writeFile(temporary,JSON.stringify(value),{flag:'wx',mode:0o600});await fs.rename(temporary,target);this.resume=value;
   }
   private sameModel(a:any,b:any){return validModel(a)&&validModel(b)&&a.model===b.model&&a.provider===b.provider&&a.endpoint===b.endpoint;}
+  invalidateModel(){this.modelChecked=0;this.model=undefined;}
   ready(){return !!this.saved;}
-  status(){return {complete:!!this.saved,busy:this.busy,phase:this.phase,error:this.error,backendBundled:existsSync(this.executable),memoryReady:this.memory,databaseReady:!!this.port,modelReady:!!this.model&&Date.now()-this.modelChecked<300000,modelExpiresAt:this.model?this.modelChecked+300000:null,model:this.model||this.saved?.model,workspaceName:this.saved?.workspaceName||this.resume?.workspaceName,resuming:!!this.resume,checksMustBeRevalidated:!!this.resume,storage:this.runtime,requires:['Docker Desktop with Linux containers','Existing managed Hermes/OpenShell installation and configured provider'],integrations:'Import Google, Tavily and Notion credentials in Connections after setup. Hosted GitHub and Fitness remain unavailable.'};}
+  status(){return {complete:!!this.saved,busy:this.busy,phase:this.phase,error:this.error,backendBundled:existsSync(this.executable),memoryReady:this.memory,databaseReady:!!this.port,modelReady:!!this.model&&Date.now()-this.modelChecked<300000,modelExpiresAt:this.model?this.modelChecked+300000:null,model:this.model||this.saved?.model,workspaceName:this.saved?.workspaceName||this.resume?.workspaceName,resuming:!!this.resume,checksMustBeRevalidated:!!this.resume,storage:this.runtime,requires:['Docker Desktop with Linux containers','Private Hermes runtime and your NVIDIA API key'],integrations:'Import Google, Tavily and Notion credentials in Connections after setup. Hosted GitHub and Fitness remain unavailable.'};}
   private async action<T>(phase:string,job:()=>Promise<T>):Promise<T>{
     if(this.busy)throw new Error('A setup check is already running.');this.busy=true;this.phase=phase;this.error='';
     try{return await job();}catch(e){this.error=e instanceof Error?e.message:'Setup could not confirm readiness.';throw new Error(this.error);}finally{this.busy=false;}
@@ -97,12 +100,12 @@ export class SetupManager{
   });}
   private async diagnostic(kind:'memory'|'hermes'){
     if(!existsSync(this.executable))throw new Error('The packaged backend is missing. Use the complete Windows build.');
-    let output:string;try{output=await this.run(this.executable,['--project',this.project,'--runtime',this.runtime,'--diagnose',kind],{timeout:125000,env:{...process.env,WAYFINDER_MODELS_ROOT:this.models,USE_GPU:'false',PYTHONDONTWRITEBYTECODE:'1',HF_HUB_OFFLINE:'1',TRANSFORMERS_OFFLINE:'1'}});}catch{throw new Error(kind==='memory'?'The bundled memory model could not run. Re-extract the complete app and retry.':'Hermes/OpenShell could not be verified. Start the existing managed environment and check its provider configuration, then retry.');}
+    let output:string;try{output=await this.run(this.executable,['--project',this.project,'--runtime',this.runtime,'--diagnose',kind],{timeout:125000,env:{...process.env,...this.modelEnvironment(),WAYFINDER_MODELS_ROOT:this.models,USE_GPU:'false',PYTHONDONTWRITEBYTECODE:'1',HF_HUB_OFFLINE:'1',TRANSFORMERS_OFFLINE:'1'}});}catch{throw new Error(kind==='memory'?'The bundled memory model could not run. Re-extract the complete app and retry.':'The AI connection could not be verified. Install/repair required software, save a valid NVIDIA key and retry.');}
     const lines=output.split(/\r?\n/).filter(line=>line.startsWith('WAYFINDER_DIAGNOSTIC='));if(lines.length!==1)throw new Error('The backend returned an invalid setup report.');return JSON.parse(lines[0].slice('WAYFINDER_DIAGNOSTIC='.length));
   }
   async memoryCheck(){return this.action('Checking the bundled memory model',async()=>{const report=await this.diagnostic('memory');if(!report.ready||report.dimensions!==384)throw new Error('The memory model did not pass its real inference check.');this.memory=true;await this.saveProgress();return this.status();});}
-  async modelCheck(){return this.action('Checking the existing Hermes model connection',async()=>{const report=await this.diagnostic('hermes');if(!report.ready||!validModel(report.model_info)||report.memory!==false||!Array.isArray(report.tools)||report.tools.length)throw new Error('Hermes history/tool isolation was not verified. Chat remains disabled.');this.model=report.model_info;this.modelChecked=Date.now();await this.saveProgress();return this.status();});}
-  private environment(model:ModelPin){if(!this.port||!this.password)throw new Error('Check the private database first.');return {FALKORDB_HOST:'127.0.0.1',FALKORDB_PORT:this.port,FALKORDB_PASSWORD:this.password,FALKORDB_USERNAME:'default',FALKORDB_GRAPH_NAME:'wayfinder_'+this.id,WAYFINDER_MODELS_ROOT:this.models,WAYFINDER_CHAT_PROVIDER_PIN:JSON.stringify(model),USE_GPU:'false'};}
+  async modelCheck(){return this.action('Verifying OpenCode and your NVIDIA connection',async()=>{if(!this.modelEnvironment().WAYFINDER_PRIVATE_MODEL_ROUTE)throw new Error('Save your own NVIDIA API key before checking OpenCode chat.');const report=await this.diagnostic('hermes');if(!report.ready||!validModel(report.model_info)||report.memory!==false||!Array.isArray(report.tools)||report.tools.length||report.key_verified!==true)throw new Error('The OpenCode/NVIDIA connection or task-runtime isolation check failed. Check your key and install/repair the required software, then retry.');this.model=report.model_info;this.modelChecked=Date.now();await this.saveProgress();return this.status();});}
+  private environment(model:ModelPin){if(!this.port||!this.password)throw new Error('Check the private database first.');return {...this.modelEnvironment(),FALKORDB_HOST:'127.0.0.1',FALKORDB_PORT:this.port,FALKORDB_PASSWORD:this.password,FALKORDB_USERNAME:'default',FALKORDB_GRAPH_NAME:'wayfinder_'+this.id,WAYFINDER_MODELS_ROOT:this.models,WAYFINDER_CHAT_PROVIDER_PIN:JSON.stringify(model),USE_GPU:'false'};}
   private async boot(model:ModelPin){
     this.bridge.configure({executable:this.executable,environment:this.environment(model)});
     const backend=await this.bridge.connect();if(backend.state!=='ready')throw new Error(backend.error||'The packaged backend could not start.');if(this.connectionSource)await this.bridge.call('connections_configure',{connections:await this.connectionSource()});return backend;
@@ -114,7 +117,7 @@ export class SetupManager{
     const spaces=await this.bridge.call('spaces');const workspace=spaces.find((s:Row)=>s.name===name.trim())||await this.bridge.call('create_space',{name:name.trim()});
     const inspected=await this.bridge.call('platform_inspect',{space:workspace.id,task:'general'},120000);
     if(!this.sameModel(inspected.isolation?.model_info,this.model))throw new Error('The model connection changed during setup. Review and verify it again.');
-    const saved:Saved={version:1,complete:true,context:this.context,model:this.model,workspace:workspace.id,workspaceName:name.trim()};
+    const saved:Saved={version:1,complete:true,context:this.context,model:this.model,workspace:workspace.id,workspaceName:name.trim(),modelSource:this.modelEnvironment().WAYFINDER_PRIVATE_MODEL_ROUTE?'user-key':'managed'};
     const temporary=this.configPath+'.'+randomBytes(8).toString('hex')+'.tmp';await fs.writeFile(temporary,JSON.stringify(saved),{flag:'wx',mode:0o600});await fs.rename(temporary,this.configPath);this.saved=saved;await fs.rm(path.join(this.userData,'setup-progress.json'),{force:true});this.resume=undefined;
     return this.bridge.describe();
   });}
@@ -123,6 +126,8 @@ export class SetupManager{
     if(this.connecting)return this.connecting;
     this.connecting=(async()=>{try{
       if(this.bridge.state.state==='ready')return this.bridge.describe();
+      if(this.saved!.modelSource!=='user-key'){this.resume={context:this.saved!.context,workspaceName:this.saved!.workspaceName};this.saved=undefined;throw new Error('This version uses OpenCode chat with your own NVIDIA key. Add your key in onboarding; existing spaces were preserved.');}
+      if(this.saved!.modelSource==='user-key'&&!this.modelEnvironment().WAYFINDER_PRIVATE_MODEL_ROUTE){this.saved=undefined;throw new Error('Your saved NVIDIA key is unavailable. Enter it again in onboarding. Another model credential was not used.');}
       await this.database(false);const backend=await this.boot(this.saved!.model);
       const inspected=await this.bridge.call('platform_inspect',{space:this.saved!.workspace,task:'general'},120000);
       if(!this.sameModel(inspected.isolation?.model_info,this.saved!.model)){await this.bridge.close();this.saved=undefined;this.error='Your configured model/provider changed. Review and verify it again.';return {state:'setup',runtime:this.runtime};}

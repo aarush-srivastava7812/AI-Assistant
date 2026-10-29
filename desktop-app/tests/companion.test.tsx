@@ -234,7 +234,7 @@ describe('Companion overlay no-space empty state', () => {
 // ── Shortcut registration failure ────────────────────────────────────────────
 
 describe('Companion shortcut registration failure', () => {
-  it('settings panel shows key-conflict notice when shortcutRegistered returns false', async () => {
+  it('settings panel shows off or unavailable notice when shortcutRegistered returns false', async () => {
     // Mock companionAPI in the main window context
     const mockCompanionAPI = {
       shortcutRegistered: vi.fn().mockResolvedValue(false),
@@ -246,10 +246,11 @@ describe('Companion shortcut registration failure', () => {
     const type_row = {} as import('../src/shared/types').Row;
     const ready = { state: 'ready' as const, capabilities: { memory: true, documents: false, general_chat: true }, runtime: 'test' };
     (window as unknown as { wayfinder: unknown }).wayfinder = Object.fromEntries(
-      ['status','connect','listSpaces','createSpace','inventory','source','recall','context','proposeMemory','reviewMemory','rejectMemory','reconcileMemory','revokeMemory','inspectRuntime','capabilities','selectFiles','fileSelection','searchFiles','revokeFiles','analyze','compare','snapshot','run','cancel','clearRun','audit','evaluate','retryRead','readActivity','selectRepository','repositorySelection','observeRepository','proposeBranch','reviewBranch','rejectBranch','reconcileBranch','revokeRepository','revokeBranch','googleStatus','getSettings','setFontSize'].map(name => [name, vi.fn(async () => ({}))])
+      ['setupChoices','status','connect','listSpaces','createSpace','inventory','source','recall','context','proposeMemory','reviewMemory','rejectMemory','reconcileMemory','revokeMemory','inspectRuntime','capabilities','selectFiles','fileSelection','searchFiles','revokeFiles','analyze','compare','snapshot','run','cancel','clearRun','audit','evaluate','retryRead','readActivity','selectRepository','repositorySelection','observeRepository','proposeBranch','reviewBranch','rejectBranch','reconcileBranch','revokeRepository','revokeBranch','googleStatus','getSettings','setFontSize'].map(name => [name, vi.fn(async () => ({}))])
     );
     (window.wayfinder as unknown as Record<string, unknown>).status = vi.fn(async () => ready);
     (window.wayfinder as unknown as Record<string, unknown>).connect = vi.fn(async () => ready);
+    (window.wayfinder as unknown as Record<string, unknown>).setupChoices = vi.fn(async () => ({version:1,pet:false,widget:false,agents:false,folders:[]}));
     (window.wayfinder as unknown as Record<string, unknown>).listSpaces = vi.fn(async () => [{ id: 'a', name: 'Alpha' }]);
     (window.wayfinder as unknown as Record<string, unknown>).getSettings = vi.fn(async () => ({ font_size: 14 }));
     (window.wayfinder as unknown as Record<string, unknown>).fileSelection = vi.fn(async () => null);
@@ -264,7 +265,7 @@ describe('Companion shortcut registration failure', () => {
 
     // Wait for companion section to appear
     expect(await screen.findByText('Desktop companion widget')).toBeTruthy();
-    expect(await screen.findByText('Key conflict')).toBeTruthy();
+    expect(await screen.findByText('Off / unavailable')).toBeTruthy();
 
     delete (window as unknown as Record<string, unknown>).companionAPI;
   });

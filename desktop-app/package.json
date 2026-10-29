@@ -1,6 +1,6 @@
 {
   "name": "wayfinder-desktop",
-  "version": "0.5.0-preview.4",
+  "version": "0.5.0-preview.5",
   "private": true,
   "license": "UNLICENSED",
   "description": "Wayfinder GitHub interface connected to the existing scoped application backend",
@@ -59,10 +59,15 @@
       {
         "from": "resources/licenses",
         "to": "licenses"
+      },
+      {
+        "from": "resources/setup",
+        "to": "setup"
       }
     ],
     "win": {
       "target": [
+        "nsis",
         "portable"
       ],
       "signExecutable": false,
@@ -73,6 +78,15 @@
     "portable": {
       "artifactName": "Wayfinder-${version}-Windows-x64.exe",
       "useZip": false
+    },
+    "nsis": {
+      "artifactName": "Wayfinder-Setup-${version}-Windows-x64.exe",
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "include": "resources/installer.nsh",
+      "deleteAppDataOnUninstall": false
     }
   },
   "dependencies": {

@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 FOLDER=ROOT/'desktop-app/release'
 REPO='aarush-srivastava7812/AI-Assistant'
 BASE='https://api.github.com/repos/'+REPO
-TARGETS={'0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
+TARGETS={'0.5.0-preview.5':'HEAD','0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
 
 def digest(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
@@ -26,7 +26,14 @@ def inputs(version):
     assert sha==checksum.read_text().split()[0]==record.get('sha256',record.get('portable_sha256')),f'EXE identity mismatch: {version}'
     assert exe.stat().st_size==record.get('bytes',record.get('portable_bytes')),f'EXE size mismatch: {version}'
     target=subprocess.check_output(['git','rev-parse',TARGETS[version]+'^{commit}'],cwd=ROOT,text=True).strip()
-    return [exe,checksum,evidence,usage],target
+    files=[exe,checksum,evidence,usage]
+    if version=='0.5.0-preview.5':
+        setup=FOLDER/f'Wayfinder-Setup-{version}-Windows-x64.exe'
+        setup_checksum=FOLDER/(setup.name+'.sha256')
+        assert digest(setup)==record['setup_sha256']==setup_checksum.read_text().split()[0]
+        assert setup.stat().st_size==record['setup_bytes']
+        files.extend([setup,setup_checksum])
+    return files,target
 
 class ProgressFile:
     def __init__(self,path):self.file=path.open('rb');self.len=path.stat().st_size;self.count=0;self.last=0;self.name=path.name
@@ -41,7 +48,7 @@ def main():
     # Validate every input before making any external mutation.
     versions={version:inputs(version) for version in TARGETS}
     discovered={p.name for p in FOLDER.glob('Wayfinder-*-Windows-x64.exe')}
-    assert discovered=={files[0].name for files,_ in versions.values()},'Unaccounted versioned executable'
+    assert discovered=={p.name for files,_ in versions.values() for p in files if p.suffix=='.exe'},'Unaccounted versioned executable'
     result=subprocess.run(['git','credential','fill'],input='protocol=https\nhost=github.com\n\n',text=True,capture_output=True,check=True,cwd=ROOT)
     credential=dict(line.split('=',1) for line in result.stdout.splitlines() if '=' in line)
     session=requests.Session();session.headers.update({'Authorization':'Bearer '+credential['password'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
@@ -62,7 +69,7 @@ def main():
         if not args.publish:
             print(json.dumps({'tag':tag,'target':target,'exists':bool(release),'files':[dict(name=p.name,bytes=p.stat().st_size,sha256=digest(p)) for p in files]}),flush=True);continue
         if release is None:
-            title='Wayfinder '+version+(' - desktop pet and chat widget' if version.endswith('preview.4') else ' - Windows desktop preview')
+            title='Wayfinder '+version+(' - setup installer and permission-based onboarding' if version.endswith('preview.5') else ' - desktop pet and chat widget' if version.endswith('preview.4') else ' - Windows desktop preview')
             body=files[3].read_text(encoding='utf-8-sig')+'\n\nDownload the Windows x64 EXE and verify its attached SHA-256 checksum. The original build verification JSON is attached. Publication does not add new qualification or test coverage.'
             release=call('POST',BASE+'/releases',json={'tag_name':tag,'target_commitish':target,'name':title,'draft':True,'prerelease':'preview' in version,'make_latest':'false','body':body})
             print('Created draft '+tag,flush=True)

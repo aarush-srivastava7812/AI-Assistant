@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, session, safeStorage } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, session, safeStorage, shell } from 'electron';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { BackendBridge } from './bridge';
@@ -9,7 +9,11 @@ import { requireMainSender } from './sender';
 import { existsSync } from 'node:fs';
 import { runtimeChoice } from './runtime-path';
 import release from '../../FEATURES.json';
-import { initCompanion, shutdownCompanion, requireOverlayRequest } from './companion-windows';
+import {PermissionStore} from './permissions';
+import {ModelKeyStore} from './model-key-store';
+import {connectGoogle} from './google-oauth';
+import {DependencyInstaller} from './dependency-installer';
+import { initCompanion, shutdownCompanion, requireOverlayRequest, applyCompanionPreferences } from './companion-windows';
 
 declare const WAYFINDER_SOURCE_ROOT: string;
 const appDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -24,6 +28,10 @@ const bridge = new BackendBridge(project, host, runtime, selected.error);
 const setup = new SetupManager(app.getPath('userData'),runtime,project,path.join(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','.cache','bundle'),'backend','WayfinderBackend.exe'),path.join(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','.cache','bundle'),'models'),bridge);
 const vault=new ConnectionVault(app.getPath('userData'),{available:()=>safeStorage.isAsyncEncryptionAvailable(),encrypt:value=>safeStorage.encryptStringAsync(value),decrypt:async value=>(await safeStorage.decryptStringAsync(value)).result});
 setup.setConnectionSource(async()=>vault.snapshot());
+const permissions=new PermissionStore(app.getPath('userData'));
+const modelKey=new ModelKeyStore(app.getPath('userData'),{available:()=>safeStorage.isAsyncEncryptionAvailable(),encrypt:value=>safeStorage.encryptStringAsync(value),decrypt:async value=>(await safeStorage.decryptStringAsync(value)).result});
+const dependencies=new DependencyInstaller(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),process.env.LOCALAPPDATA||app.getPath('userData'));
+setup.setModelEnvironment(()=>{if(!modelKey.status().configured)return {};const native=dependencies.environment();if(!native.WAYFINDER_HERMES_PYTHON)throw new Error('Install / repair required software before verifying your NVIDIA connection.');return {...native,...modelKey.environment(),WAYFINDER_OPENCODE_EXE:path.join(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),'setup','opencode.exe')};});
 let main: BrowserWindow | undefined, quitting = false;
 const importIndex=process.argv.indexOf('--import-connections-only');
 if(importIndex>=0){
@@ -44,6 +52,8 @@ else {
   app.whenReady().then(async () => {
     await vault.load();
     await setup.load();
+    await permissions.load();
+    await modelKey.load();
     app.setAppUserModelId('local.wayfinder.desktop');
     const rendererFile = path.resolve(appDirectory, '../renderer/index.html');
     const rendererURL = pathToFileURL(rendererFile).href;
@@ -52,13 +62,14 @@ else {
       webPreferences: { preload: path.join(appDirectory, '../preload/index.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, spellcheck: false },
     });
     main.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-    main.on('close',event=>{if(!quitting){event.preventDefault();main?.hide();}});
+    main.on('close',event=>{if(!quitting&&(permissions.get().pet||permissions.get().widget)){event.preventDefault();main?.hide();}else if(!quitting)app.quit();});
     main.webContents.on('will-navigate', event => event.preventDefault());
     main.webContents.on('will-attach-webview', event => event.preventDefault());
     session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
     session.defaultSession.setPermissionCheckHandler(() => false);
     const regular = createHandlers(bridge, {
       pick: async kind => {
+        if(kind==='folder'&&permissions.get().folders.length===1)return permissions.get().folders[0];
         const result = await dialog.showOpenDialog(main!, {
           title: kind === 'repository' ? 'Select a repository for the bounded local branch operation' : kind === 'folder' ? 'Select a read-only folder' : kind === 'activity' ? 'Select a canonical activity CSV' : 'Select one document',
           properties: kind === 'folder' || kind === 'repository' ? ['openDirectory'] : ['openFile'],
@@ -68,18 +79,31 @@ else {
       },
       confirm: async (title, detail) => (await dialog.showMessageBox(main!, { type: 'question', title, message: title, detail, buttons: ['Cancel', 'Approve exact change once'], defaultId: 0, cancelId: 0, noLink: true, normalizeAccessKeys: true })).response === 1,
     }, { status: () => setup.ready()?bridge.describe():Promise.resolve({state:'setup',runtime}), connect: () => setup.connect() });
-    const syncConnections=async()=>{try{return await bridge.call('connections_configure',{connections:vault.snapshot()});}catch{await bridge.close();throw new Error('Connections were saved, but the backend needs reconnecting before another read.');}};
+    const syncConnections=async()=>{if(!setup.ready())return vault.status();try{return await bridge.call('connections_configure',{connections:vault.snapshot()});}catch{await bridge.close();throw new Error('Connections were saved, but the backend needs reconnecting before another read.');}};
     const handlers = {...regular,
+      profiles:async(space:unknown)=>{const catalog=await regular.profiles(space);if(permissions.get().agents)return catalog;return {...catalog,profiles:catalog.profiles.map((p:any)=>({...p,execution:{...p.execution,available:false,status:'permission_required',note:'Enable advisory task agents in Settings to run this profile.'}})),presets:catalog.presets.map((p:any)=>({...p,available:false,status:'permission_required'}))};},
+      setupDependencies:async(install:unknown)=>{if(typeof install!=='boolean')throw new Error('Choose whether to install required dependencies.');return install?dependencies.install():dependencies.status();},
+      setupChoices:async(input?:unknown)=>{
+        if(input===undefined)return {...permissions.get(),connections:vault.status(),modelKey:modelKey.status()};
+        const value=input as any;if(!Array.isArray(value?.folders)||value.folders.some((folder:string)=>!permissions.get().folders.includes(folder)))throw new Error('Choose folders in the native folder picker.');
+        const removed=permissions.get().folders.some(folder=>!value.folders.includes(folder));
+        if(removed&&setup.ready()){for(const space of await regular.listSpaces()){const selection=await regular.fileSelection(space.id);if(selection)await regular.revokeFiles(space.id,selection.grant.id);}}
+        const saved=await permissions.save(value);if(setup.ready())applyCompanionPreferences(saved);return {...saved,connections:vault.status(),modelKey:modelKey.status()};
+      },
+      setupFolder:async()=>{const selected=await dialog.showOpenDialog(main!,{title:'Allow read-only access to a folder when you request file tasks',properties:['openDirectory']});if(!selected.canceled&&selected.filePaths[0])await permissions.save({...permissions.get(),folders:[...permissions.get().folders,selected.filePaths[0]]});return {...permissions.get(),connections:vault.status(),modelKey:modelKey.status()};},
+      setupNvidia:async(key:unknown,model:unknown)=>{await modelKey.save(key,model);setup.invalidateModel();return {...setup.status(),modelKey:modelKey.status()};},
+      setupGoogle:async(services:unknown)=>{const picked=await dialog.showOpenDialog(main!,{title:'Choose your Google Desktop OAuth client JSON for Google sign-in',properties:['openFile'],filters:[{name:'Google Desktop client',extensions:['json']}]});if(picked.canceled||!picked.filePaths[0])return vault.status();await vault.saveGoogle(await connectGoogle(picked.filePaths[0],services,url=>shell.openExternal(url)));return syncConnections();},
+      setupHelp:async(kind:unknown)=>{const urls:Record<string,string>={docker:'https://docs.docker.com/desktop/setup/install/windows-install/',hermes:'https://hermes-agent.nousresearch.com/docs/getting-started/installation/',nvidia:'https://build.nvidia.com/'};if(typeof kind!=='string'||!urls[kind])throw new Error('Unsupported setup guide.');await shell.openExternal(urls[kind]);},
       importConnections:async()=>{const selection=await dialog.showOpenDialog(main!,{title:'Import Google, Tavily and Notion connections from a local .env or Google token JSON',properties:['openFile']});if(selection.canceled||!selection.filePaths[0])return null;await vault.importFile(selection.filePaths[0]);return syncConnections();},
       disconnectConnection:async(provider:unknown)=>{await vault.disconnect(provider);return syncConnections();},
-      setupStatus:()=>setup.status(),setupDatabase:(download:unknown)=>{if(typeof download!=='boolean')throw new Error('Choose whether to download the fixed database image.');return setup.database(download);},setupMemory:()=>setup.memoryCheck(),setupModel:()=>setup.modelCheck(),setupFinish:(name:unknown,consent:unknown)=>setup.finish(name,consent)};
+      setupStatus:()=>({...setup.status(),modelKey:modelKey.status()}),setupDatabase:(download:unknown)=>{if(typeof download!=='boolean')throw new Error('Choose whether to download the fixed database image.');return setup.database(download);},setupMemory:()=>setup.memoryCheck(),setupModel:()=>setup.modelCheck(),setupFinish:async(name:unknown,consent:unknown)=>{const state=await setup.finish(name,consent);applyCompanionPreferences(permissions.get());return state;}};
     for (const [method, handler] of Object.entries(handlers)) ipcMain.handle(`wayfinder:${method}`, async (event, ...args) => {
       if (!release.preload_methods.includes(method)) throw new Error('Intent is not included in this build.');
       if (!main) throw new Error('Window unavailable.');
       if(event.sender===main.webContents)requireMainSender(event, main.webContents, rendererURL);
       else requireOverlayRequest(event,method,args);
       if (Buffer.byteLength(JSON.stringify(args)) > 65536) throw new Error('Desktop request too large.');
-      try { if(!setup.ready()&&!['status','connect','setupStatus','setupDatabase','setupMemory','setupModel','setupFinish'].includes(method))throw new Error('Complete first-run setup before opening workspace resources.'); return { ok: true, data: await (handler as (...values:any[])=>Promise<any>)(...args) }; }
+      try { if(!setup.ready()&&!['status','connect','setupStatus','setupDatabase','setupMemory','setupModel','setupFinish','setupChoices','setupFolder','setupNvidia','setupGoogle','setupHelp','setupDependencies','importConnections','disconnectConnection'].includes(method))throw new Error('Complete first-run setup before opening workspace resources.'); if(!permissions.get().agents&&['analyze','compare','startProfileTask','startSourceTask','startWorkflow','retryRead'].includes(method))throw new Error('Enable task agents in Settings before running an agent task.'); return { ok: true, data: await (handler as (...values:any[])=>Promise<any>)(...args) }; }
       catch (error) { return { ok: false, error: error instanceof Error ? error.message : 'Request failed. No completion is asserted.' }; }
     });
     Menu.setApplicationMenu(Menu.buildFromTemplate([
@@ -90,7 +114,7 @@ else {
     void setup.connect();
     // Initialise companion windows after the main window is ready.
     // The companion preload path is resolved relative to the same appDirectory.
-    initCompanion(appDirectory, rendererFile, main);
+    initCompanion(appDirectory, rendererFile, main,setup.ready()?permissions.get():{pet:false,widget:false});
   });
   app.on('window-all-closed', () => app.quit());
   app.on('before-quit', event => {

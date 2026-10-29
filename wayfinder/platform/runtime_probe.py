@@ -9,7 +9,7 @@ from pathlib import Path
 from run_agent import AIAgent
 from tools.registry import registry
 
-root = Path("/opt/hermes")
+root = Path(globals().get("HERMES_ROOT", "/opt/hermes"))
 modules = {
     "delegation": "tools/delegate_tool.py",
     "scheduler": "tools/cronjob_tools.py",

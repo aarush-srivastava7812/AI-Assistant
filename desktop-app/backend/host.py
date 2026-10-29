@@ -198,6 +198,11 @@ def main():
                 from wayfinder.platform.runtime import RuntimeInspector
                 result=RuntimeInspector().inspect()
                 report=dict(ready=bool(result.get('compatible') and result.get('isolation',{}).get('supports_history')),version=result.get('runtime',{}).get('version'),tools=result.get('isolation',{}).get('effective_tools'),memory=result.get('isolation',{}).get('memory'),model_info=result.get('isolation',{}).get('model_info'))
+                if report['ready'] and os.environ.get('WAYFINDER_PRIVATE_MODEL_ROUTE'):
+                    from wayfinder.workers.hermes import HermesBridge
+                    check=HermesBridge().run(dict(role='CHAT',model_pin=report['model_info'],history=[],question='This is a connection test. Reply with OK.'))
+                    report['ready']=bool(check.get('ok') and check.get('text'))
+                    report['key_verified']=report['ready']
         print('WAYFINDER_DIAGNOSTIC='+json.dumps(report));return
     secret = os.environ.pop("WAYFINDER_HOST_SECRET", "")
     if len(secret) < 32:

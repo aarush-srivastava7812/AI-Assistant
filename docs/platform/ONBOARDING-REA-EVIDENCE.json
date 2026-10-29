@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "analyses": [
+    {
+      "reference": "anythingllm-source",
+      "evidence_id": "ev_0cafd2f24e7ddb1802bc9949fde92847f13dd613ac5008b929664bd35dd14653",
+      "root_artifact_sha256": "1e78508440590aaa9c51c8979bcc9fe1981d8d31833e20a769545b3306e5e05c",
+      "source_selection": {
+        "requested_paths": [
+          "frontend/src/pages/OnboardingFlow/index.jsx",
+          "frontend/src/pages/OnboardingFlow/Steps/LLMPreference/index.jsx",
+          "frontend/src/pages/OnboardingFlow/Steps/DataHandling/index.jsx",
+          "frontend/src/pages/OnboardingFlow/Steps/index.jsx"
+        ],
+        "unselected_files": 0
+      },
+      "files": [
+        {
+          "path": "frontend/src/pages/OnboardingFlow/index.jsx",
+          "sha256": "b5f0f619f42a2807eea134471dfef1595f5e46bf69d6c800d1a76fda8ee34046",
+          "bytes": 576
+        },
+        {
+          "path": "frontend/src/pages/OnboardingFlow/Steps/LLMPreference/index.jsx",
+          "sha256": "d6aa3644efaaf2b9d6685b7f4b4f838130391f3b291fd870e7fa11f3c14e29bd",
+          "bytes": 18236
+        },
+        {
+          "path": "frontend/src/pages/OnboardingFlow/Steps/DataHandling/index.jsx",
+          "sha256": "5a9cd4e23c8a1123e154d4f29e898f8b1e6027c07b3cc5a81afec06ec489f5af",
+          "bytes": 1133
+        },
+        {
+          "path": "frontend/src/pages/OnboardingFlow/Steps/index.jsx",
+          "sha256": "3df237a534b5e49cf09231a981f8e211467745de2589ba85fad56a9dbc4f8bf3",
+          "bytes": 5079
+        }
+      ],
+      "statistics": {
+        "relevant_files": 4,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 25024,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 4,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 2570,
+        "findings": 216,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "limitations": [
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+      ],
+      "target_executed": false
+    },
+    {
+      "reference": "open-webui",
+      "evidence_id": "ev_17cb4f6c431e9e96f6dc9a6f0aa2e491ae042d512e9b4f34c156413a0a7f541c",
+      "root_artifact_sha256": "9f2a837e86deae7af6cd7a2ba1287b8c2e0a411c9c68a52bc02973b3286d2cc3",
+      "source_selection": {
+        "requested_paths": [
+          "_app/immutable/nodes/53.1SYwzS3k.js"
+        ],
+        "unselected_files": 836
+      },
+      "files": [
+        {
+          "path": "_app/immutable/nodes/53.1SYwzS3k.js",
+          "sha256": "d2daa4ab8979e61b2b732ae6cb453bb742e876f9c63b5235ebbde0f545f6a979",
+          "bytes": 24548
+        }
+      ],
+      "statistics": {
+        "relevant_files": 837,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 24548,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 1,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 5531,
+        "findings": 90,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "limitations": [
+        "Caller-selected source analysis leaves 836 inventoried files outside analysis scope. Inventory identity covers the complete artifact; relationships through unselected sources remain unknown.",
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+      ],
+      "target_executed": false
+    },
+    {
+      "reference": "opencode",
+      "evidence_id": "ev_e66f0ffa7bd7361e146e1703a2d7650306e4721b525a0c983c5670bb81adfaa7",
+      "root_artifact_sha256": "d1524f19a865f56f00f997fe0f683a2c72f4cb0ab5d5939a2ad99501f29a02d2",
+      "source_selection": {
+        "requested_paths": [
+          "packages/opencode/src/auth/index.ts",
+          "packages/core/src/global.ts",
+          "packages/opencode/src/permission/evaluate.ts",
+          "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+          "packages/opencode/src/cli/cmd/import.ts"
+        ],
+        "unselected_files": 14
+      },
+      "files": [
+        {
+          "path": "packages/opencode/src/auth/index.ts",
+          "sha256": "dc897ff4b04dba1ed81f3fe24cdce7289ae32acc6bac60bc430a884bb60ad5b0",
+          "bytes": 3451
+        },
+        {
+          "path": "packages/core/src/global.ts",
+          "sha256": "37c9aae045e01cd246cd4d8c489e84ea4849b6297d3a6f9ff9b1bca57f85c013",
+          "bytes": 2162
+        },
+        {
+          "path": "packages/opencode/src/permission/evaluate.ts",
+          "sha256": "0ee7b7fea6766c57ce0583bd6f23a303c5af314c0e5287018fa6bdfdc38e5a6e",
+          "bytes": 29
+        },
+        {
+          "path": "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+          "sha256": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+          "bytes": 20340
+        },
+        {
+          "path": "packages/opencode/src/cli/cmd/import.ts",
+          "sha256": "95b8a623d21fc5cdd17cdb4ce6c6966c952a5ee0db6ed5d7d91b4272258a0de2",
+          "bytes": 4007
+        }
+      ],
+      "statistics": {
+        "relevant_files": 19,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 29989,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 5,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 3922,
+        "findings": 191,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "limitations": [
+        "Caller-selected source analysis leaves 14 inventoried files outside analysis scope. Inventory identity covers the complete artifact; relationships through unselected sources remain unknown.",
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+      ],
+      "target_executed": false
+    }
+  ]
+}

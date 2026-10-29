@@ -7,7 +7,7 @@ import type { DesktopAPI, Row } from '../src/shared/types';
 const ready = { state: 'ready' as const, capabilities: { memory: true, documents: false }, runtime: 'isolated-runtime' };
 function mockAPI() {
   const api: Row = Object.fromEntries(['chats','chat','status','connect','listSpaces','createSpace','inventory','source','recall','context','proposeMemory','reviewMemory','rejectMemory','reconcileMemory','revokeMemory','inspectRuntime','capabilities','selectFiles','fileSelection','searchFiles','revokeFiles','analyze','compare','snapshot','run','cancel','clearRun','audit','evaluate','retryRead','readActivity','selectRepository','repositorySelection','observeRepository','proposeBranch','reviewBranch','rejectBranch','reconcileBranch','revokeRepository','revokeBranch','googleStatus','getSettings','setFontSize'].map(name => [name, vi.fn(async () => ({}))]));
-  api.chats.mockResolvedValue([]); api.chat.mockResolvedValue({turns:[]}); api.status.mockResolvedValue(ready); api.connect.mockResolvedValue(ready);
+  api.setupChoices=vi.fn(async()=>({version:1,pet:false,widget:false,agents:false,folders:[]})); api.chats.mockResolvedValue([]); api.chat.mockResolvedValue({turns:[]}); api.status.mockResolvedValue(ready); api.connect.mockResolvedValue(ready);
   api.listSpaces.mockResolvedValue([{ id: 'a', name: 'Alpha' }, { id: 'b', name: 'Beta' }]);
   api.fileSelection.mockResolvedValue(null); api.repositorySelection.mockResolvedValue(null); api.inventory.mockResolvedValue({ records: [] }); api.getSettings.mockResolvedValue({ font_size: 14, background: false });
   api.snapshot.mockResolvedValue({ actions: [], workflows: [], jobs: [], metrics: {} });

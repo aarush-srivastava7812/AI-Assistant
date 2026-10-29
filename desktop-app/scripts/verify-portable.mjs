@@ -16,6 +16,7 @@ const version=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'
 const exe=path.join(dir,'Wayfinder.exe'),source=path.join(root,'release/Wayfinder-'+version+'-Windows-x64.exe');await fs.copyFile(source,exe);
 async function port(){const server=net.createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const value=server.address().port;await new Promise(resolve=>server.close(resolve));return value;}
 const inspector=await port(),cdp=await port(),env={...process.env,WAYFINDER_VERIFY_HIDDEN:'1',WAYFINDER_VERIFY_PROFILE:profile};
+const testKey=env.WAYFINDER_TEST_NVIDIA_KEY;delete env.WAYFINDER_TEST_NVIDIA_KEY;
 for(const key of ['WAYFINDER_PYTHON','WAYFINDER_PROJECT_ROOT','WAYFINDER_DESKTOP_RUNTIME','WAYFINDER_CHAT_PROVIDER_PIN','FALKORDB_HOST','FALKORDB_PORT','FALKORDB_PASSWORD','ELECTRON_RUN_AS_NODE'])delete env[key];
 const credentialSource=process.argv[2];
 if(credentialSource){assert(path.isAbsolute(credentialSource));await execute(exe,['--import-connections-only',credentialSource],{cwd:dir,env,windowsHide:true,timeout:150000});const sealed=await fs.readFile(path.join(profile,'connections-v1.bin'));assert(sealed.length>100&&!sealed.includes(Buffer.from('refresh_token')),'Portable import must save ciphertext; live decryption is checked below');}
@@ -31,6 +32,8 @@ try{
   while(Date.now()<mainDeadline){page=browser.contexts()[0].pages().find(p=>p.url().startsWith('file:')&&!p.url().includes('companion='));if(page)break;await new Promise(resolve=>setTimeout(resolve,100));}
   assert(page,'Portable main window must load');page.setDefaultTimeout(150000);
   await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();check('delivered_exe_extracts_and_shows_first_run',true);
+  assert(testKey,'A privately supplied authorized NVIDIA test key is required');
+  await page.evaluate(key=>window.wayfinder.setupNvidia(key,'nvidia/nemotron-3.5-lightning-30b-a3b'),testKey);
   const entry=fileURLToPath(page.url()),marker=path.sep+'app.asar'+path.sep,offset=entry.indexOf(marker);assert(offset>0,'Own extracted archive path required');
   const extractedArchive=entry.slice(0,offset)+path.sep+'app.asar',resources=path.dirname(extractedArchive);
   const digest=async file=>{const hash=createHash('sha256'),handle=await fs.open(file);try{for await(const chunk of handle.createReadStream())hash.update(chunk);return hash.digest('hex');}finally{await handle.close();}};
@@ -43,7 +46,7 @@ try{
   await page.getByRole('button',{name:'Verify bundled memory model'}).click();await page.getByRole('button',{name:'Memory model verified'}).waitFor();check('extracted_model_runs_real_cpu_inference',true);
   await page.getByRole('button',{name:'Check / prepare database'}).click();await page.getByRole('button',{name:'Database ready'}).waitFor();check('portable_prepares_owned_database',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
-  await page.getByRole('button',{name:'Check Hermes connection'}).click();await page.getByRole('button',{name:'Recheck model connection'}).waitFor();check('portable_verifies_installed_hermes',true);
+  await page.getByRole('button',{name:'Check AI connection'}).click();await page.getByRole('button',{name:'Recheck AI connection'}).waitFor();check('portable_verifies_installed_hermes',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
   await page.getByLabel('Workspace name',{exact:true}).fill('Portable fresh user');await page.getByLabel(/I agree to send/).check();await page.getByRole('button',{name:/Create workspace and open Wayfinder/}).click();await page.getByText('Backend connected',{exact:true}).waitFor();
   await page.waitForFunction(()=>document.querySelector('[aria-label="Memory space"]').value);
@@ -60,6 +63,7 @@ try{
   if(!exited){try{await quit();}catch{}if(!exited&&Number.isInteger(child.pid))await execute('taskkill',['/PID',String(child.pid),'/T','/F'],{windowsHide:true}).catch(()=>{});}
   if(browser)await browser.close().catch(()=>{});
   await fs.rm(path.join(profile,'connections-v1.bin'),{force:true});
+  await fs.rm(path.join(profile,'model-key-v1.bin'),{force:true});
   const id=createHash('sha256').update(path.resolve(path.join(profile,'workspace-v1')).toLowerCase()).digest('hex').slice(0,16);
   for(const [kind,name,args]of [['container','wayfinder-memory-'+id,['rm','-f','wayfinder-memory-'+id]],['volume','wayfinder-memory-data-'+id,['volume','rm','wayfinder-memory-data-'+id]]]){
     try{const {stdout}=await execute('docker',['--context',context,kind,'inspect',name],{windowsHide:true}),item=JSON.parse(stdout)[0],labels=kind==='container'?item.Config.Labels:item.Labels;if(labels?.['wayfinder.app']==='local.wayfinder.desktop'&&labels?.['wayfinder.workspace']===id)await execute('docker',['--context',context,...args],{windowsHide:true});}catch{}

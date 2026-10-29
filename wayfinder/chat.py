@@ -1,4 +1,4 @@
-"""Canonical app conversation bookkeeping over existing isolated Hermes jobs.
+"""Canonical app conversation bookkeeping over isolated OpenCode chat jobs.
 
 Legacy transcript-only tables are not imported into model history. Iron Web remains
 the explicit memory system; this service neither reads nor publishes memory.

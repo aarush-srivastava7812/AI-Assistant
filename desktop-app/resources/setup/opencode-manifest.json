@@ -1,0 +1,7 @@
+{
+  "version": "1.19.5",
+  "source_commit": "810c0eba1a7348036f8bdf61e6632d0c36c6876c",
+  "archive_sha256": "sha256:e4dac5cd38a182a24e7b3e18853f01d08cdb137e50b3bd1397c1a89e54d28c63",
+  "exe_sha256": "6f15c8f241f3df22375f174753193a71c488f6c0a6bbbae3f9fa34d112673b7b",
+  "url": "https://github.com/anomalyco/opencode/releases/download/v1.19.5/opencode-windows-x64-baseline.zip"
+}

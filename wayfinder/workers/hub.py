@@ -241,9 +241,12 @@ class WorkerHub:
         return self.get(scope, jid)
 
     def _run(self, scope, jid, payload, cancelled, evidence, reference, image,revalidate=None):
+        phase='dispatch'
         try:
             self._finish(jid, "running")
+            phase='model_transport'
             result = self.bridge.run(payload, cancelled)
+            phase='output_validation'
             from wayfinder.platform.worker_bindings import SOURCE_ROLES,validate_output
             if payload["role"] in SOURCE_ROLES:
                 result["structured"]=validate_output(payload["role"],result["text"])
@@ -283,6 +286,7 @@ class WorkerHub:
             if evidence:
                 result["evidence"] = evidence
             with self.lock:
+                phase='source_revalidation'
                 if revalidate:revalidate()
                 if reference:
                     self.files.check_reference(scope, reference)
@@ -291,12 +295,15 @@ class WorkerHub:
                 if cancelled.is_set() or self.closed:
                     self._finish(jid, "stopped")
                 else:
+                    phase='result_storage'
                     self._finish(jid, "completed", result)
         except Exception as error:
             self._finish(
                 jid,
                 "stopped" if cancelled.is_set() else "failed",
                 dict(
+                    failure_type=type(error).__name__,
+                    phase=phase,
                     error=(
                         str(error)
                         if isinstance(error, HermesUnavailable)

@@ -145,7 +145,12 @@ try{
   check('saved_off_choices_survive_restart',await page.evaluate(async()=>{const p=await window.wayfinder.setupChoices();return !p.pet&&!p.widget&&!p.agents;}));
   const persisted=await page.evaluate(({sid,cid})=>window.wayfinder.chat(sid,cid),{sid,cid});check('restart_preserves_real_conversation_without_replay',persisted.turns.length===2&&persisted.turns.every(t=>t.status==='completed'));
   check('app_needs_no_development_checkout_or_python_env',!env.WAYFINDER_PROJECT_ROOT&&!env.WAYFINDER_PYTHON&&await fs.stat(path.join(root,'release/win-unpacked/resources/backend/WayfinderBackend.exe')).then(s=>s.isFile()));
-  await application.close();application=undefined;
+  const exited=new Promise(resolve=>application.process().once('exit',resolve));
+  await application.evaluate(({BrowserWindow})=>{setTimeout(()=>BrowserWindow.getAllWindows().find(w=>!w.webContents.getURL().includes('companion='))?.close(),0);});
+  let quitTimeout;try{await Promise.race([exited,new Promise((_,reject)=>{quitTimeout=setTimeout(()=>reject(new Error('Main close did not finish normal shutdown')),90000);})]);}finally{clearTimeout(quitTimeout);}
+  application=undefined;check('closing_main_without_companions_exits_cleanly',true);
+  const stopped=JSON.parse((await execute('docker',['--context',context,'container','inspect',container,'--format','{{json .State.Running}}'],{windowsHide:true})).stdout);
+  check('owned_database_stopped_before_exit',stopped===false);
   const evidence={tier:'actual hidden packaged Windows app + OpenCode 1.19.5/NVIDIA chat + native Hermes tasks + bundled Python/CPU model + private Docker database',checks,passed:checks.length,native_desktop_automation:false,google_connected:false,prerequisites:['Docker Desktop local Linux engine','Installed private Hermes/Python runtime','User-provided NVIDIA key'],profile,asar_sha256:createHash('sha256').update(await fs.readFile(path.join(root,'release/win-unpacked/resources/app.asar'))).digest('hex')};
   await fs.writeFile(report,JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence));
 }catch(error){if(application){const page=await application.firstWindow().catch(()=>null);if(page)console.log((await page.locator('body').innerText()).slice(-6000));}throw error;}

@@ -32,7 +32,7 @@ const permissions=new PermissionStore(app.getPath('userData'));
 const modelKey=new ModelKeyStore(app.getPath('userData'),{available:()=>safeStorage.isAsyncEncryptionAvailable(),encrypt:value=>safeStorage.encryptStringAsync(value),decrypt:async value=>(await safeStorage.decryptStringAsync(value)).result});
 const dependencies=new DependencyInstaller(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),process.env.LOCALAPPDATA||app.getPath('userData'));
 setup.setModelEnvironment(()=>{if(!modelKey.status().configured)return {};const native=dependencies.environment();if(!native.WAYFINDER_HERMES_PYTHON)throw new Error('Install / repair required software before verifying your NVIDIA connection.');return {...native,...modelKey.environment(),WAYFINDER_OPENCODE_EXE:path.join(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),'setup','opencode.exe')};});
-let main: BrowserWindow | undefined, quitting = false;
+let main: BrowserWindow | undefined, quitting = false, quitReady = false;
 const importIndex=process.argv.indexOf('--import-connections-only');
 if(importIndex>=0){
   app.whenReady().then(async()=>{
@@ -62,7 +62,7 @@ else {
       webPreferences: { preload: path.join(appDirectory, '../preload/index.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, spellcheck: false },
     });
     main.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-    main.on('close',event=>{if(!quitting&&(permissions.get().pet||permissions.get().widget)){event.preventDefault();main?.hide();}else if(!quitting)app.quit();});
+    main.on('close',event=>{if(quitReady)return;event.preventDefault();if(!quitting&&(permissions.get().pet||permissions.get().widget))main?.hide();else app.quit();});
     main.webContents.on('will-navigate', event => event.preventDefault());
     main.webContents.on('will-attach-webview', event => event.preventDefault());
     session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
@@ -118,9 +118,9 @@ else {
   });
   app.on('window-all-closed', () => app.quit());
   app.on('before-quit', event => {
-    if (quitting) return;
-    event.preventDefault(); quitting = true;
+    if (quitReady) return;
+    event.preventDefault();if(quitting)return;quitting = true;
     shutdownCompanion();
-    void setup.close().finally(() => app.quit());
+    void setup.close().finally(() => {quitReady=true;app.quit();});
   });
 }

@@ -1,12 +1,12 @@
 {
   "version": "0.5.0-preview.5",
-  "verified_at_utc": "2026-10-29T18:37:30.319966+00:00",
-  "sha256": "3bd27fdc8fc89ddb8ef0bdf78cc2d7d9f22ea62784f1746f5400570be9e3eda0",
-  "bytes": 504913198,
-  "setup_sha256": "2b5ee1bdb093c7ba31202195ee3f84aa6fbc32d213bb55af438eb22d1ce75cc6",
-  "setup_bytes": 498029083,
-  "asar_sha256": "9393e677d2bc761013cbc5cfa09d63f2c47ec7747af99118278691e85a34ebd2",
-  "backend_sha256": "9a4eaa0ee8a982b3e48d9a5433825ed9dfafd237d35acb75315e502da4e21fe6",
+  "verified_at_utc": "2026-10-29T19:49:22.761219+00:00",
+  "sha256": "891606bb6985cfa977180092fad4f3b981bff27649350201464f2db1d09250fb",
+  "bytes": 504912395,
+  "setup_sha256": "18090bf5d1c4fa96fccfd66cc973f4777000ebc09daff98e8492c505364ce4ea",
+  "setup_bytes": 498029230,
+  "asar_sha256": "2baa5d482fdd3176de2017c1553cca11e5f04737dea34d5d271f810a74bd27ac",
+  "backend_sha256": "8a45e36f1e02947360140a6509e8b229cd83976dc5a3a0e19fa1c774d6af95f6",
   "chat_engine": "OpenCode 1.19.5",
   "task_engine": "Official Hermes v0.22.5 source",
   "user_provided_api_key": true,
@@ -16,6 +16,7 @@
     "passed": 116,
     "typecheck": true
   },
+  "focused_worker_tests_passed": 39,
   "backend": {
     "passed": 648,
     "skipped": 1,
@@ -181,9 +182,17 @@
     {
       "name": "app_needs_no_development_checkout_or_python_env",
       "passed": true
+    },
+    {
+      "name": "closing_main_without_companions_exits_cleanly",
+      "passed": true
+    },
+    {
+      "name": "owned_database_stopped_before_exit",
+      "passed": true
     }
   ],
-  "actual_packaged_passed": 40,
+  "actual_packaged_passed": 42,
   "portable": {
     "tier": "actual delivered portable Windows executable extracted in an unrelated fresh directory",
     "passed": 11,
@@ -233,7 +242,7 @@
         "passed": true
       }
     ],
-    "portable_sha256": "3bd27fdc8fc89ddb8ef0bdf78cc2d7d9f22ea62784f1746f5400570be9e3eda0",
+    "portable_sha256": "891606bb6985cfa977180092fad4f3b981bff27649350201464f2db1d09250fb",
     "extracted_resource_files_verified": 2975,
     "native_desktop_automation": false,
     "live_google": false,
@@ -358,6 +367,10 @@
       "passed": true
     },
     {
+      "name": "source_identity_wayfinder/workers/hub.py",
+      "passed": true
+    },
+    {
       "name": "source_identity_wayfinder/workers/opencode.py",
       "passed": true
     },
@@ -371,6 +384,10 @@
     },
     {
       "name": "source_identity_memory/engine.py",
+      "passed": true
+    },
+    {
+      "name": "executed_worker_script_identity",
       "passed": true
     },
     {
@@ -438,7 +455,7 @@
       "passed": true
     }
   ],
-  "static_package_passed": 49,
+  "static_package_passed": 51,
   "installed": {
     "setup_exit": 0,
     "installed_files_verified": 2983,

@@ -1,0 +1,376 @@
+{
+  "source": "Official OpenCode 1.19.5 Windows executable: models --verbose; fetch disabled; isolated synthetic auth, no model calls",
+  "binary_sha256": "6f15c8f241f3df22375f174753193a71c488f6c0a6bbbae3f9fa34d112673b7b",
+  "raw_output_sha256": "1836540fff54ee86ddda29a93d0ce9bc1b867ea450b668fdf01a52ced1235f8e",
+  "models": [
+    {
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "status": "active",
+      "api": {
+        "id": "gpt-4.1-mini",
+        "url": "",
+        "npm": "@ai-sdk/openai"
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4.1",
+      "status": "active",
+      "api": {
+        "id": "gpt-4.1",
+        "url": "",
+        "npm": "@ai-sdk/openai"
+      }
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5",
+      "status": "active",
+      "api": {
+        "id": "gpt-5",
+        "url": "",
+        "npm": "@ai-sdk/openai"
+      }
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-5",
+      "status": "active",
+      "api": {
+        "id": "claude-sonnet-4-5",
+        "url": "",
+        "npm": "@ai-sdk/anthropic"
+      }
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5",
+      "status": "active",
+      "api": {
+        "id": "claude-haiku-4-5",
+        "url": "",
+        "npm": "@ai-sdk/anthropic"
+      }
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-5-5",
+      "status": "active",
+      "api": {
+        "id": "claude-opus-5-5",
+        "url": "",
+        "npm": "@ai-sdk/anthropic"
+      }
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-flash",
+      "status": "active",
+      "api": {
+        "id": "gemini-2.5-flash",
+        "url": "",
+        "npm": "@ai-sdk/google"
+      }
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-pro",
+      "status": "active",
+      "api": {
+        "id": "gemini-2.5-pro",
+        "url": "",
+        "npm": "@ai-sdk/google"
+      }
+    },
+    {
+      "provider": "openrouter",
+      "model": "openai/gpt-4.1-mini",
+      "status": "active",
+      "api": {
+        "id": "openai/gpt-4.1-mini",
+        "url": "https://openrouter.ai/api/v1",
+        "npm": "@openrouter/ai-sdk-provider"
+      }
+    },
+    {
+      "provider": "openrouter",
+      "model": "anthropic/claude-sonnet-4.5",
+      "status": "active",
+      "api": {
+        "id": "anthropic/claude-sonnet-4.5",
+        "url": "https://openrouter.ai/api/v1",
+        "npm": "@openrouter/ai-sdk-provider"
+      }
+    },
+    {
+      "provider": "nvidia",
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "status": "active",
+      "api": {
+        "id": "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "url": "https://integrate.api.nvidia.com/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "nvidia",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b",
+      "status": "active",
+      "api": {
+        "id": "nvidia/nemotron-3-ultra-550b-a55b",
+        "url": "https://integrate.api.nvidia.com/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "status": "active",
+      "api": {
+        "id": "deepseek-flash",
+        "url": "https://api.deepseek.com",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-pro",
+      "status": "active",
+      "api": {
+        "id": "deepseek-v4-pro",
+        "url": "https://api.deepseek.com",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "groq",
+      "model": "openai/gpt-oss-20b",
+      "status": "active",
+      "api": {
+        "id": "openai/gpt-oss-20b",
+        "url": "",
+        "npm": "@ai-sdk/groq"
+      }
+    },
+    {
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "status": "active",
+      "api": {
+        "id": "openai/gpt-oss-120b",
+        "url": "",
+        "npm": "@ai-sdk/groq"
+      }
+    },
+    {
+      "provider": "xai",
+      "model": "grok-4.6",
+      "status": "active",
+      "api": {
+        "id": "grok-4.6",
+        "url": "",
+        "npm": "@ai-sdk/xai"
+      }
+    },
+    {
+      "provider": "xai",
+      "model": "grok-4.7",
+      "status": "active",
+      "api": {
+        "id": "grok-4.7",
+        "url": "",
+        "npm": "@ai-sdk/xai"
+      }
+    },
+    {
+      "provider": "mistral",
+      "model": "mistral-small-latest",
+      "status": "active",
+      "api": {
+        "id": "mistral-small-latest",
+        "url": "",
+        "npm": "@ai-sdk/mistral"
+      }
+    },
+    {
+      "provider": "mistral",
+      "model": "mistral-large-latest",
+      "status": "active",
+      "api": {
+        "id": "mistral-large-latest",
+        "url": "",
+        "npm": "@ai-sdk/mistral"
+      }
+    },
+    {
+      "provider": "together",
+      "model": "openai/gpt-oss-120b",
+      "status": "active",
+      "api": {
+        "id": "openai/gpt-oss-120b",
+        "url": "",
+        "npm": "@ai-sdk/togetherai"
+      }
+    },
+    {
+      "provider": "together",
+      "model": "Qwen/Qwen3.6-Plus",
+      "status": "active",
+      "api": {
+        "id": "Qwen/Qwen3.6-Plus",
+        "url": "",
+        "npm": "@ai-sdk/togetherai"
+      }
+    },
+    {
+      "provider": "fireworks",
+      "model": "accounts/fireworks/routers/kimi-latest",
+      "status": "active",
+      "api": {
+        "id": "accounts/fireworks/routers/kimi-latest",
+        "url": "https://api.fireworks.ai/inference/v1/",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "fireworks",
+      "model": "accounts/fireworks/routers/minimax-latest",
+      "status": "active",
+      "api": {
+        "id": "accounts/fireworks/routers/minimax-latest",
+        "url": "https://api.fireworks.ai/inference/v1/",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "cerebras",
+      "model": "gpt-oss-120b",
+      "status": "active",
+      "api": {
+        "id": "gpt-oss-120b",
+        "url": "",
+        "npm": "@ai-sdk/cerebras"
+      }
+    },
+    {
+      "provider": "perplexity",
+      "model": "sonar",
+      "status": "not exposed by pinned CLI catalog; provider documentation example",
+      "api": {
+        "url": "https://api.perplexity.ai",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "perplexity",
+      "model": "sonar-pro",
+      "status": "not exposed by pinned CLI catalog; provider documentation example",
+      "api": {
+        "url": "https://api.perplexity.ai",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "moonshot",
+      "model": "kimi-k2.6",
+      "status": "active",
+      "api": {
+        "id": "kimi-k2.6",
+        "url": "https://api.moonshot.ai/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "moonshot",
+      "model": "kimi-k3.1-pro",
+      "status": "active",
+      "api": {
+        "id": "kimi-k3.1-pro",
+        "url": "https://api.moonshot.ai/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "zai",
+      "model": "glm-4.5",
+      "status": "active",
+      "api": {
+        "id": "glm-4.5",
+        "url": "https://api.z.ai/api/paas/v4",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "zai",
+      "model": "glm-4.5-air",
+      "status": "active",
+      "api": {
+        "id": "glm-4.5-air",
+        "url": "https://api.z.ai/api/paas/v4",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "deepinfra",
+      "model": "Qwen/Qwen3.8-Flash",
+      "status": "active",
+      "api": {
+        "id": "Qwen/Qwen3.8-Flash",
+        "url": "",
+        "npm": "@ai-sdk/deepinfra"
+      }
+    },
+    {
+      "provider": "deepinfra",
+      "model": "zai-org/GLM-5.3-Flash",
+      "status": "active",
+      "api": {
+        "id": "zai-org/GLM-5.3-Flash",
+        "url": "",
+        "npm": "@ai-sdk/deepinfra"
+      }
+    },
+    {
+      "provider": "alibaba",
+      "model": "qwen-plus",
+      "status": "active",
+      "api": {
+        "id": "qwen-plus",
+        "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "alibaba",
+      "model": "qwen3.8-flash",
+      "status": "active",
+      "api": {
+        "id": "qwen3.8-flash",
+        "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      }
+    },
+    {
+      "provider": "minimax",
+      "model": "MiniMax-M3.1-Flash",
+      "status": "active",
+      "api": {
+        "id": "MiniMax-M3.1-Flash",
+        "url": "https://api.minimax.io/anthropic/v1",
+        "npm": "@ai-sdk/anthropic"
+      }
+    },
+    {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "status": "active",
+      "api": {
+        "id": "MiniMax-M3",
+        "url": "https://api.minimax.io/anthropic/v1",
+        "npm": "@ai-sdk/anthropic"
+      }
+    }
+  ],
+  "live_account_availability_verified": false
+}

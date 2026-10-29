@@ -25,9 +25,11 @@ export interface BackendState {
   instance_generation?: string;
 }
 export interface DesktopAPI {
+  quitApp():Promise<void>;
   setupChoices(input?:Row):Promise<Row>;
   setupFolder():Promise<Row>;
-  setupNvidia(key:string,model:string):Promise<Row>;
+  setupProvider(input:Row):Promise<Row>;
+  setupEditModel():Promise<BackendState>;
   setupGoogle(services:string[]):Promise<Row>;
   setupHelp(kind:string):Promise<void>;
   setupDependencies(install:boolean):Promise<Row>;

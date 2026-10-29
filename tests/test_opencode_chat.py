@@ -14,7 +14,7 @@ def test_route_is_fixed_and_requires_the_users_key(change):
     with pytest.raises(ValueError):validate_route(value)
 
 def test_chat_config_disables_other_providers_tools_helpers_and_sharing():
-    value=configuration(route()['model'])
+    value=configuration(route())
     assert value['enabled_providers']==[PROVIDER]
     assert value['permission']=={'*':'deny'} and value['tools']=={'*':False}
     assert value['share']=='disabled' and value['plugin']==[] and value['mcp']=={}

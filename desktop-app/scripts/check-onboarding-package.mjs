@@ -20,6 +20,8 @@ if(release.preload_methods.includes('sendChat')){
 check('version_and_variant',metadata.version===JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8')).version&&metadata.version===release.version&&release.variant==='workspace-parity');
 check('build_label_matches_version',release.build==='wayfinder-desktop/'+metadata.version);
 const main=get('dist/main/index.js').toString(),html=get('dist/renderer/index.html').toString();
+check('no_application_menu_strip',main.includes('Menu.setApplicationMenu(null)'));
+check('light_native_caption',main.includes('titleBarStyle: "hidden"')&&main.includes('titleBarOverlay:'));
 check('isolated_renderer',main.includes('contextIsolation: true')&&main.includes('nodeIntegration: false')&&main.includes('sandbox: true'));
 check('no_renderer_network_or_inline_script',html.includes("connect-src 'none'")&&html.includes("script-src 'self'"));
 const renderer=files.filter(p=>p.startsWith('/dist/renderer/')&&p.endsWith('.js')).map(p=>get(p.slice(1)).toString()).join('\n');
@@ -35,7 +37,7 @@ check('bundled_python_executable_matches_stage',await hash(backend)===staged.fil
 check('python_interpreter_bundled',(await fs.stat(path.join(resources,'backend/_internal/python312.dll'))).isFile());
 const trustPolicy=staged.files['backend/_internal/codex-rejected-cas.pem'];
 check('build_python_trust_policy_preserved',!trustPolicy||await hash(path.join(resources,'backend/_internal/codex-rejected-cas.pem'))===trustPolicy);
-for(const file of ['wayfinder/chat.py','wayfinder/platform/contracts.py','wayfinder/platform/task_profiles.py','wayfinder/platform/workflows.py','wayfinder/platform/worker_bindings.py','wayfinder/platform/worker_activation_ledger.py','wayfinder/platform/runtime_probe.py','wayfinder/platform/runtime.py','wayfinder/platform/catalog.py','wayfinder/service.py','wayfinder/api.py','wayfinder/workers/hermes.py','wayfinder/workers/hub.py','wayfinder/workers/opencode.py','wayfinder/platform/connections.py','wayfinder/workers/hermes_runner.py','memory/engine.py'])check('source_identity_'+file,await hash(path.join(root,'..',file))===await hash(path.join(resources,'backend-project',file)));
+for(const file of ['wayfinder/chat.py','wayfinder/platform/contracts.py','wayfinder/platform/task_profiles.py','wayfinder/platform/workflows.py','wayfinder/platform/worker_bindings.py','wayfinder/platform/worker_activation_ledger.py','wayfinder/platform/runtime_probe.py','wayfinder/platform/runtime.py','wayfinder/platform/catalog.py','wayfinder/service.py','wayfinder/api.py','wayfinder/workers/hermes.py','wayfinder/workers/hub.py','wayfinder/workers/opencode.py','wayfinder/workers/model_routes.py','wayfinder/model-providers.json','wayfinder/platform/connections.py','wayfinder/workers/hermes_runner.py','memory/engine.py'])check('source_identity_'+file,await hash(path.join(root,'..',file))===await hash(path.join(resources,'backend-project',file)));
 check('executed_worker_script_identity',await hash(path.join(root,'../wayfinder/workers/hermes_runner.py'))===await hash(path.join(resources,'backend/_internal/wayfinder/workers/hermes_runner.py')));
 const model=path.join(resources,'models/models--qdrant--bge-small-en-v1.5-onnx-q/blobs/51f1bd');
 // Compare every staged model file, including the dereferenced snapshot contents.

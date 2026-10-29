@@ -1,0 +1,228 @@
+[
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "base_url": "https://api.openai.com/v1",
+    "api_mode": "responses",
+    "npm": "@ai-sdk/openai",
+    "models": [
+      "gpt-4.1-mini",
+      "gpt-4.1",
+      "gpt-5"
+    ],
+    "key_url": "https://platform.openai.com/api-keys"
+  },
+  {
+    "id": "anthropic",
+    "name": "Anthropic",
+    "base_url": "https://api.anthropic.com/v1",
+    "api_mode": "anthropic_messages",
+    "npm": "@ai-sdk/anthropic",
+    "models": [
+      "claude-sonnet-4-5",
+      "claude-haiku-4-5",
+      "claude-opus-5-5"
+    ],
+    "key_url": "https://console.anthropic.com/settings/keys"
+  },
+  {
+    "id": "google",
+    "name": "Google Gemini",
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "api_mode": "google_native",
+    "npm": "@ai-sdk/google",
+    "models": [
+      "gemini-2.5-flash",
+      "gemini-2.5-pro"
+    ],
+    "key_url": "https://aistudio.google.com/apikey"
+  },
+  {
+    "id": "openrouter",
+    "name": "OpenRouter",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "openai/gpt-4.1-mini",
+      "anthropic/claude-sonnet-4.5"
+    ],
+    "key_url": "https://openrouter.ai/settings/keys"
+  },
+  {
+    "id": "nvidia",
+    "name": "NVIDIA",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    "key_url": "https://build.nvidia.com/"
+  },
+  {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "base_url": "https://api.deepseek.com",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "deepseek-flash",
+      "deepseek-v4-pro"
+    ],
+    "key_url": "https://platform.deepseek.com/api_keys"
+  },
+  {
+    "id": "groq",
+    "name": "Groq",
+    "base_url": "https://api.groq.com/openai/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-120b"
+    ],
+    "key_url": "https://console.groq.com/keys"
+  },
+  {
+    "id": "xai",
+    "name": "xAI",
+    "base_url": "https://api.x.ai/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "grok-4.6",
+      "grok-4.7"
+    ],
+    "key_url": "https://console.x.ai/"
+  },
+  {
+    "id": "mistral",
+    "name": "Mistral",
+    "base_url": "https://api.mistral.ai/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "mistral-small-latest",
+      "mistral-large-latest"
+    ],
+    "key_url": "https://console.mistral.ai/api-keys"
+  },
+  {
+    "id": "together",
+    "name": "Together AI",
+    "base_url": "https://api.together.xyz/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "openai/gpt-oss-120b",
+      "Qwen/Qwen3.6-Plus"
+    ],
+    "key_url": "https://api.together.ai/settings/api-keys"
+  },
+  {
+    "id": "fireworks",
+    "name": "Fireworks AI",
+    "base_url": "https://api.fireworks.ai/inference/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "accounts/fireworks/routers/kimi-latest",
+      "accounts/fireworks/routers/minimax-latest"
+    ],
+    "key_url": "https://fireworks.ai/account/api-keys"
+  },
+  {
+    "id": "cerebras",
+    "name": "Cerebras",
+    "base_url": "https://api.cerebras.ai/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "gpt-oss-120b"
+    ],
+    "key_url": "https://cloud.cerebras.ai/platform/"
+  },
+  {
+    "id": "perplexity",
+    "name": "Perplexity",
+    "base_url": "https://api.perplexity.ai",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "sonar",
+      "sonar-pro"
+    ],
+    "key_url": "https://www.perplexity.ai/account/api/keys"
+  },
+  {
+    "id": "moonshot",
+    "name": "Moonshot / Kimi",
+    "base_url": "https://api.moonshot.ai/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "kimi-k2.6",
+      "kimi-k3.1-pro"
+    ],
+    "key_url": "https://platform.moonshot.ai/console/api-keys"
+  },
+  {
+    "id": "zai",
+    "name": "Z.AI",
+    "base_url": "https://api.z.ai/api/paas/v4",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "glm-4.5",
+      "glm-4.5-air"
+    ],
+    "key_url": "https://z.ai/manage-apikey/apikey-list"
+  },
+  {
+    "id": "deepinfra",
+    "name": "DeepInfra",
+    "base_url": "https://api.deepinfra.com/v1/openai",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "Qwen/Qwen3.8-Flash",
+      "zai-org/GLM-5.3-Flash"
+    ],
+    "key_url": "https://deepinfra.com/dash/api_keys"
+  },
+  {
+    "id": "alibaba",
+    "name": "Alibaba / Qwen",
+    "base_url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [
+      "qwen-plus",
+      "qwen3.8-flash"
+    ],
+    "key_url": "https://modelstudio.console.alibabacloud.com/"
+  },
+  {
+    "id": "minimax",
+    "name": "MiniMax",
+    "base_url": "https://api.minimax.io/anthropic/v1",
+    "api_mode": "anthropic_messages",
+    "npm": "@ai-sdk/anthropic",
+    "models": [
+      "MiniMax-M3.1-Flash",
+      "MiniMax-M3"
+    ],
+    "key_url": "https://platform.minimax.io/user-center/basic-information/interface-key"
+  },
+  {
+    "id": "openai-compatible",
+    "name": "Custom OpenAI-compatible",
+    "base_url": "",
+    "api_mode": "chat_completions",
+    "npm": "@ai-sdk/openai-compatible",
+    "models": [],
+    "key_url": "https://opencode.ai/docs/providers/#custom-provider"
+  }
+]

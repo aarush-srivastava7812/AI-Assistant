@@ -61,6 +61,12 @@ class HermesBridge:
         script = (
             Path(__file__).with_name("hermes_runner.py").read_text(encoding="utf-8")
         )
+        # Inject the same validator/catalog into the private SDK interpreter,
+        # which intentionally has no import path to the application packages.
+        from .model_routes import CATALOG
+        validation = Path(__file__).with_name('model_routes.py').read_text(encoding='utf-8')
+        validation = validation.replace("CATALOG = json.loads((Path(__file__).parents[1] / 'model-providers.json').read_text(encoding='utf-8'))", 'CATALOG = '+repr(CATALOG))
+        script = script.replace('# WAYFINDER_ROUTE_VALIDATION', validation+'\n_validate_model_route = validate_route')
         # The request is data, never shell code or command-line interpolation.
         encoded = base64.b64encode(
             json.dumps(dict(payload, **({"_trusted_route":self._route} if self._route else {})), allow_nan=False).encode()

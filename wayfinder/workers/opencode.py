@@ -16,19 +16,16 @@ import time
 from urllib.request import Request, build_opener, ProxyHandler
 import uuid
 
-MODELS=('nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3-ultra-550b-a55b')
-PROVIDER='wayfinder-nvidia'
+from .model_routes import validate_route, provider_spec
+PROVIDER='wayfinder-model'
 AGENT='wayfinder-chat'
 SYSTEM='You are Wayfinder, a helpful conversational assistant. Answer clearly and honestly. You have no tools, account access or automatic persistent memory. Never claim to have performed an external action or permanently saved a fact. For persistent facts, direct the user to the explicit Memory review. State uncertainty.'
 
-def validate_route(route):
-    if not isinstance(route,dict) or set(route)!={'model','api_key','provider','api_mode','base_url'} or route.get('model') not in MODELS or route.get('provider')!='custom' or route.get('api_mode')!='chat_completions' or route.get('base_url')!='https://integrate.api.nvidia.com/v1' or not isinstance(route.get('api_key'),str) or not route['api_key'].startswith('nvapi-') or not 20<=len(route['api_key'])<=2048 or any(c.isspace() for c in route['api_key']):
-        raise ValueError('Save your own NVIDIA key and verify the OpenCode connection in onboarding.')
-    return dict(model=route['model'],provider='custom',endpoint='integrate.api.nvidia.com')
-
-def configuration(model):
+def configuration(route):
+    spec=provider_spec(route)
+    model=route['model']
     return {'$schema':'https://opencode.ai/config.json','model':PROVIDER+'/'+model,'small_model':PROVIDER+'/'+model,'enabled_providers':[PROVIDER],
-        'provider':{PROVIDER:{'npm':'@ai-sdk/openai-compatible','name':'NVIDIA (your key)','options':{'baseURL':'https://integrate.api.nvidia.com/v1','apiKey':'{env:WAYFINDER_NVIDIA_API_KEY}'},'models':{m:{'name':m,'limit':{'context':32000,'output':2200}} for m in MODELS}}},
+        'provider':{PROVIDER:{'npm':spec['npm'],'name':spec['name'],'options':{'baseURL':route['base_url'],'apiKey':'{env:WAYFINDER_MODEL_API_KEY}'},'models':{model:{'name':model,'limit':{'context':32000,'output':2200}}}}},
         'default_agent':AGENT,'permission':{'*':'deny'},'tools':{'*':False},'plugin':[],'mcp':{},'instructions':[],'share':'disabled','autoupdate':False,
         'agent':{**{name:{'disable':True} for name in ('build','plan','general','explore','title','summary','compaction')},AGENT:{'description':'Wayfinder tools-closed conversation','mode':'primary','prompt':SYSTEM,'permission':{'*':'deny'},'steps':2}}}
 
@@ -36,7 +33,7 @@ def isolated_environment(root,route,password):
     env={k:v for k,v in os.environ.items() if k.upper() in {'SYSTEMROOT','WINDIR','PATH','PATHEXT','COMSPEC','NUMBER_OF_PROCESSORS','PROCESSOR_ARCHITECTURE','SSL_CERT_FILE','SSL_CERT_DIR'}}
     for name,sub in {'HOME':'home','USERPROFILE':'home','APPDATA':'config','LOCALAPPDATA':'data','XDG_DATA_HOME':'data','XDG_CACHE_HOME':'cache','XDG_CONFIG_HOME':'config','XDG_STATE_HOME':'state','TMP':'tmp','TEMP':'tmp','ProgramData':'managed','OPENCODE_TEST_HOME':'home','OPENCODE_TEST_MANAGED_CONFIG_DIR':'managed'}.items():
         value=root/sub;value.mkdir(exist_ok=True);env[name]=str(value)
-    env.update(OPENCODE_SERVER_PASSWORD=password,OPENCODE_SERVER_USERNAME='wayfinder',OPENCODE_AUTH_CONTENT='{}',OPENCODE_CONFIG_CONTENT=json.dumps(configuration(route['model'])),WAYFINDER_NVIDIA_API_KEY=route['api_key'],
+    env.update(OPENCODE_SERVER_PASSWORD=password,OPENCODE_SERVER_USERNAME='wayfinder',OPENCODE_AUTH_CONTENT='{}',OPENCODE_CONFIG_CONTENT=json.dumps(configuration(route)),WAYFINDER_MODEL_API_KEY=route['api_key'],
         OPENCODE_DISABLE_PROJECT_CONFIG='1',OPENCODE_DISABLE_DEFAULT_PLUGINS='1',OPENCODE_DISABLE_EXTERNAL_SKILLS='1',OPENCODE_DISABLE_CLAUDE_CODE='1',OPENCODE_DISABLE_MODELS_FETCH='1',OPENCODE_DISABLE_AUTOUPDATE='1',OPENCODE_DISABLE_AUTOCOMPACT='1',OPENCODE_PERMISSION='{"*":"deny"}')
     return env
 
@@ -122,7 +119,7 @@ class OpenCodeBridge:
                 if not answer.strip():raise ValueError('OpenCode returned no completed reply.')
                 return {'ok':True,'runtime':'OpenCode','model':pin['model'],'effective_tools':[],'memory':False,'text':answer[:26000]}
             except Exception:
-                raise ValueError('OpenCode chat did not complete during '+stage+'. Check your NVIDIA key and connection; no automatic retry was made.') from None
+                raise ValueError('OpenCode chat did not complete during '+stage+'. Check your provider key, model access and connection; no automatic retry was made.') from None
             finally:
                 finished.set()
                 stop();watcher.join(timeout=1)

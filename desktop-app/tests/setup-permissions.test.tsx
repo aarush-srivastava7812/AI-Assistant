@@ -19,12 +19,12 @@ it('keeps the NVIDIA key encrypted and out of public status, with an exact endpo
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'wayfinder-model-key-'));
  const crypto={available:async()=>true,encrypt:async(v:string)=>Buffer.from(v.split('').reverse().join('')),decrypt:async(v:Buffer)=>v.toString().split('').reverse().join('')};
  const store=new ModelKeyStore(root,crypto),key='nvapi-SYNTHETIC_test_secret_1234';
- const status=await store.save(key,'nvidia/nemotron-3.5-lightning-30b-a3b');
+ const status=await store.save({apiKey:key,provider:'nvidia',model:'nvidia/nemotron-3.5-lightning-30b-a3b'});
  expect(JSON.stringify(status)).not.toContain(key);expect((await fs.readFile(store.file)).toString()).not.toContain(key);
  const restored=new ModelKeyStore(root,crypto);await restored.load();
  expect(JSON.parse(restored.environment().WAYFINDER_PRIVATE_MODEL_ROUTE!)).toMatchObject({api_key:key,base_url:'https://integrate.api.nvidia.com/v1'});
- await expect(store.save(key,'unapproved-model')).rejects.toThrow();
- await expect(new ModelKeyStore(root,{...crypto,available:async()=>false}).save(key,'nvidia/nemotron-3.5-lightning-30b-a3b')).rejects.toThrow(/encryption/);
+ await expect(store.save({apiKey:key,provider:'unknown',model:'unapproved-model'})).rejects.toThrow();
+ await expect(new ModelKeyStore(root,{...crypto,available:async()=>false}).save({apiKey:key,provider:'nvidia',model:'nvidia/nemotron-3.5-lightning-30b-a3b'})).rejects.toThrow(/encryption/);
 });
 it('presents optional choices off and saves explicit opt-in and opt-out independently',async()=>{
  let saved=defaults();const api={setupChoices:vi.fn(async(value?:any)=>{if(value)saved=value;return saved;})} as any;

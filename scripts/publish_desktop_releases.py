@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 FOLDER=ROOT/'desktop-app/release'
 REPO='aarush-srivastava7812/AI-Assistant'
 BASE='https://api.github.com/repos/'+REPO
-TARGETS={'0.5.0-preview.5':'863e20a','0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
+TARGETS={'0.5.0-preview.6':'HEAD','0.5.0-preview.5':'863e20a','0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
 
 def digest(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
@@ -28,7 +28,7 @@ def inputs(version):
     assert exe.stat().st_size==record.get('bytes',record.get('portable_bytes')),f'EXE size mismatch: {version}'
     target=subprocess.check_output(['git','rev-parse',TARGETS[version]+'^{commit}'],cwd=ROOT,text=True).strip()
     files=[exe,checksum,evidence,usage]
-    if version=='0.5.0-preview.5':
+    if 'setup_sha256' in record:
         setup=FOLDER/f'Wayfinder-Setup-{version}-Windows-x64.exe'
         setup_checksum=FOLDER/(setup.name+'.sha256')
         assert digest(setup)==record['setup_sha256']==setup_checksum.read_text().split()[0]
@@ -77,7 +77,7 @@ def main():
         if not args.publish:
             print(json.dumps({'tag':tag,'target':target,'exists':bool(release),'files':[dict(name=p.name,bytes=p.stat().st_size,sha256=digest(p)) for p in files]}),flush=True);continue
         if release is None:
-            title='Wayfinder '+version+(' - setup installer and permission-based onboarding' if version.endswith('preview.5') else ' - desktop pet and chat widget' if version.endswith('preview.4') else ' - Windows desktop preview')
+            title='Wayfinder '+version+(' - OpenCode providers and streamlined onboarding' if version.endswith('preview.6') else ' - setup installer and permission-based onboarding' if version.endswith('preview.5') else ' - desktop pet and chat widget' if version.endswith('preview.4') else ' - Windows desktop preview')
             body=files[3].read_text(encoding='utf-8-sig')+'\n\nDownload the Windows x64 EXE and verify its attached SHA-256 checksum. The original build verification JSON is attached. Publication does not add new qualification or test coverage.'
             release=call('POST',BASE+'/releases',json={'tag_name':tag,'target_commitish':target,'name':title,'draft':True,'prerelease':'preview' in version,'make_latest':'false','body':body})
             print('Created draft '+tag,flush=True)

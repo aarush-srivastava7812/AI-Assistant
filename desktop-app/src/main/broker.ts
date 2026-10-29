@@ -51,7 +51,7 @@ export function createHandlers(transport: Transport, ui: NativeUI, lifecycle: { 
       return request(`${prefix}_decide`, sid, { id: aid, digest: proposal.digest, approve: approved });
     } finally { activeReviews.delete(key); }
   }
-  const handlers: { [K in Exclude<keyof DesktopAPI, `setup${string}` | 'importConnections' | 'disconnectConnection'>]: (...args: any[]) => Promise<any> } = {
+  const handlers: { [K in Exclude<keyof DesktopAPI, `setup${string}` | 'importConnections' | 'disconnectConnection' | 'quitApp'>]: (...args: any[]) => Promise<any> } = {
     connectionsStatus:space=>request('platform_connections_status',space),
     checkConnection:(space,provider)=>request('platform_connections_check',space,{provider:kind(provider,['google','tavily','notion'])}),
     googleGrant:(space,input)=>request('platform_google_grant',space,object(input,['service','resource','limit','time_min','time_max','range'])),

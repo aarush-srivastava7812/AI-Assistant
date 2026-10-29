@@ -1,0 +1,580 @@
+{
+  "version": "0.5.0-preview.6",
+  "verified_at_utc": "2026-10-29T21:39:09.528309+00:00",
+  "sha256": "e28d7953c6eb3c47caf9936f65d1ded5991e4f4a94bd97d411618a47b0b5d618",
+  "bytes": 504921265,
+  "setup_sha256": "da4a118e08a621e35e2eca0ce0b0c11235ee4b2e817dcba376437b5ceb4c3d1b",
+  "setup_bytes": 498038974,
+  "asar_sha256": "32d71beaa0cf7408f026c1286697db313fb253b3f3d82bfe827136dbc2b92464",
+  "backend_sha256": "fbeb1c9782218edbe0b984608374ad763c4ecc0aeff25683c5959bd8112aa1ec",
+  "chat_engine": "OpenCode 1.19.5",
+  "task_engine": "Hermes v0.22.5",
+  "named_api_key_providers": 18,
+  "custom_https_compatible_provider": true,
+  "user_provided_api_key": true,
+  "credentials_bundled": false,
+  "frontend": {
+    "passed": 137,
+    "typecheck": true
+  },
+  "backend": {
+    "passed": 668,
+    "skipped": 1,
+    "deselected": 4
+  },
+  "focused_provider_and_wire_tests_passed": 39,
+  "worker_unicode_regression_tests_passed": 2,
+  "actual_packaged_passed": 53,
+  "actual_packaged_checks": [
+    {
+      "name": "fresh_profile_shows_onboarding",
+      "passed": true
+    },
+    {
+      "name": "no_application_menu_strip",
+      "passed": true
+    },
+    {
+      "name": "light_integrated_caption",
+      "passed": true
+    },
+    {
+      "name": "all_major_provider_choices",
+      "passed": true
+    },
+    {
+      "name": "optional_companions_off_before_consent",
+      "passed": true
+    },
+    {
+      "name": "optional_permissions_off_by_default",
+      "passed": true
+    },
+    {
+      "name": "window_stays_hidden",
+      "passed": true
+    },
+    {
+      "name": "workspace_access_denied_before_setup",
+      "passed": true
+    },
+    {
+      "name": "finish_requires_checks_and_consent",
+      "passed": true
+    },
+    {
+      "name": "frozen_cpu_memory_inference",
+      "passed": true
+    },
+    {
+      "name": "isolated_private_database_prepared",
+      "passed": true
+    },
+    {
+      "name": "provider_picker_has_18_named_and_custom_choices",
+      "passed": true
+    },
+    {
+      "name": "key_saved_through_onboarding_and_encrypted",
+      "passed": true
+    },
+    {
+      "name": "installed_hermes_isolation_verified",
+      "passed": true
+    },
+    {
+      "name": "agents_need_explicit_opt_in",
+      "passed": true
+    },
+    {
+      "name": "real_owned_backend_chat_ready",
+      "passed": true
+    },
+    {
+      "name": "first_space_created",
+      "passed": true
+    },
+    {
+      "name": "setup_stores_no_provider_secrets",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_18",
+      "passed": true
+    },
+    {
+      "name": "actual_model_reply_contains_new_nonce",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_20",
+      "passed": true
+    },
+    {
+      "name": "actual_model_uses_canonical_history",
+      "passed": true
+    },
+    {
+      "name": "chat_does_not_publish_automatic_memory",
+      "passed": true
+    },
+    {
+      "name": "widget_cannot_open_while_off",
+      "passed": true
+    },
+    {
+      "name": "overlay_exposes_chat_only",
+      "passed": true
+    },
+    {
+      "name": "pet_has_no_backend_bridge",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_26",
+      "passed": true
+    },
+    {
+      "name": "overlay_real_chat_visible_to_main_service",
+      "passed": true
+    },
+    {
+      "name": "pet_menu_expands_to_fit_controls",
+      "passed": true
+    },
+    {
+      "name": "companion_testing_never_shows_any_window",
+      "passed": true
+    },
+    {
+      "name": "overlay_reuses_single_window",
+      "passed": true
+    },
+    {
+      "name": "pet_settings_navigates_main",
+      "passed": true
+    },
+    {
+      "name": "pet_can_be_restored_from_main",
+      "passed": true
+    },
+    {
+      "name": "closing_main_preserves_companion_session",
+      "passed": true
+    },
+    {
+      "name": "agent_run_denied_while_off",
+      "passed": true
+    },
+    {
+      "name": "actual_selected_file_profile_and_attributed_model_result",
+      "passed": true
+    },
+    {
+      "name": "native_worker_preserves_unicode_model_reply",
+      "passed": true
+    },
+    {
+      "name": "actual_dependent_workflow_completes_without_effects",
+      "passed": true
+    },
+    {
+      "name": "task_execution_does_not_publish_memory",
+      "passed": true
+    },
+    {
+      "name": "disabling_companions_destroys_windows",
+      "passed": true
+    },
+    {
+      "name": "restart_creates_fresh_backend",
+      "passed": true
+    },
+    {
+      "name": "companion_off_survives_restart",
+      "passed": true
+    },
+    {
+      "name": "saved_off_choices_survive_restart",
+      "passed": true
+    },
+    {
+      "name": "restart_preserves_real_conversation_without_replay",
+      "passed": true
+    },
+    {
+      "name": "app_needs_no_development_checkout_or_python_env",
+      "passed": true
+    },
+    {
+      "name": "settings_reopens_model_setup_without_deleting_spaces",
+      "passed": true
+    },
+    {
+      "name": "saved_provider_key_reused_without_showing_secret",
+      "passed": true
+    },
+    {
+      "name": "saved_key_can_verify_again_after_restart",
+      "passed": true
+    },
+    {
+      "name": "changing_model_requires_fresh_consent",
+      "passed": true
+    },
+    {
+      "name": "model_reconfiguration_preserves_existing_space",
+      "passed": true
+    },
+    {
+      "name": "model_reconfiguration_preserves_completed_conversation",
+      "passed": true
+    },
+    {
+      "name": "closing_main_without_companions_exits_cleanly",
+      "passed": true
+    },
+    {
+      "name": "owned_database_stopped_before_exit",
+      "passed": true
+    }
+  ],
+  "portable": {
+    "tier": "actual delivered portable Windows executable extracted in an unrelated fresh directory",
+    "passed": 11,
+    "checks": [
+      {
+        "name": "delivered_exe_extracts_and_shows_first_run",
+        "passed": true
+      },
+      {
+        "name": "portable_archive_matches_qualified_app",
+        "passed": true
+      },
+      {
+        "name": "all_extracted_backend_sources_and_model_files_match",
+        "passed": true
+      },
+      {
+        "name": "extracted_backend_is_present",
+        "passed": true
+      },
+      {
+        "name": "no_development_python_or_project_selected",
+        "passed": true
+      },
+      {
+        "name": "extracted_model_runs_real_cpu_inference",
+        "passed": true
+      },
+      {
+        "name": "portable_prepares_owned_database",
+        "passed": true
+      },
+      {
+        "name": "portable_verifies_installed_hermes",
+        "passed": true
+      },
+      {
+        "name": "portable_backend_is_live",
+        "passed": true
+      },
+      {
+        "name": "portable_fresh_memory_is_empty",
+        "passed": true
+      },
+      {
+        "name": "portable_quits_normally_and_preserves_profile",
+        "passed": true
+      }
+    ],
+    "portable_sha256": "e28d7953c6eb3c47caf9936f65d1ded5991e4f4a94bd97d411618a47b0b5d618",
+    "extracted_resource_files_verified": 2979,
+    "native_desktop_automation": false,
+    "live_google": false,
+    "live_tavily": false,
+    "chat_inference": "covered separately by the matching packaged app acceptance test"
+  },
+  "static_package_passed": 55,
+  "static_package_checks": [
+    {
+      "name": "included_main/index.js",
+      "passed": true
+    },
+    {
+      "name": "included_preload/index.cjs",
+      "passed": true
+    },
+    {
+      "name": "included_renderer/index.html",
+      "passed": true
+    },
+    {
+      "name": "companion_preload_included",
+      "passed": true
+    },
+    {
+      "name": "companion_preload_has_no_effect_or_private_operations",
+      "passed": true
+    },
+    {
+      "name": "version_and_variant",
+      "passed": true
+    },
+    {
+      "name": "build_label_matches_version",
+      "passed": true
+    },
+    {
+      "name": "no_application_menu_strip",
+      "passed": true
+    },
+    {
+      "name": "light_native_caption",
+      "passed": true
+    },
+    {
+      "name": "isolated_renderer",
+      "passed": true
+    },
+    {
+      "name": "no_renderer_network_or_inline_script",
+      "passed": true
+    },
+    {
+      "name": "private_bootstrap_not_in_renderer",
+      "passed": true
+    },
+    {
+      "name": "onboarding_and_chat_inclusion",
+      "passed": true
+    },
+    {
+      "name": "no_generic_ipc_or_native_actions",
+      "passed": true
+    },
+    {
+      "name": "manifest_pairing",
+      "passed": true
+    },
+    {
+      "name": "embedded_frozen_manifest_matches_app",
+      "passed": true
+    },
+    {
+      "name": "bundled_python_executable_matches_stage",
+      "passed": true
+    },
+    {
+      "name": "python_interpreter_bundled",
+      "passed": true
+    },
+    {
+      "name": "build_python_trust_policy_preserved",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/chat.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/contracts.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/task_profiles.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/workflows.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/worker_bindings.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/worker_activation_ledger.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/runtime_probe.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/runtime.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/catalog.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/service.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/api.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hermes.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hub.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/opencode.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/model_routes.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/model-providers.json",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/connections.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hermes_runner.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_memory/engine.py",
+      "passed": true
+    },
+    {
+      "name": "executed_worker_script_identity",
+      "passed": true
+    },
+    {
+      "name": "bundled_public_model_checksums",
+      "passed": true
+    },
+    {
+      "name": "no_private_state_credentials_or_debug_copies",
+      "passed": true
+    },
+    {
+      "name": "notice_FlagEmbedding-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_Python-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_Qdrant-BGE-model-card.md",
+      "passed": true
+    },
+    {
+      "name": "notice_python-dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "notice_javascript/react-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_javascript/lucide-react-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "actual_fresh_profile_acceptance",
+      "passed": true
+    },
+    {
+      "name": "acceptance_matches_current_archive",
+      "passed": true
+    },
+    {
+      "name": "portable_is_windows_executable",
+      "passed": true
+    },
+    {
+      "name": "pinned_runtime_archive_identity",
+      "passed": true
+    },
+    {
+      "name": "pinned_runtime_bootstrap_identity",
+      "passed": true
+    },
+    {
+      "name": "pinned_opencode_binary_identity",
+      "passed": true
+    },
+    {
+      "name": "dependency_script_matches_source",
+      "passed": true
+    },
+    {
+      "name": "permissions_and_google_flow_are_main_owned",
+      "passed": true
+    }
+  ],
+  "installed": {
+    "setup_exit": 0,
+    "installed_files_verified": 2987,
+    "installed_app_matches_qualified_payload": true,
+    "normal_profile_absent": false,
+    "clean_vm": false
+  },
+  "protocol_fixtures": {
+    "engine": "OpenCode 1.19.5",
+    "checks": [
+      {
+        "provider": "nvidia",
+        "protocol": "chat_completions",
+        "passed": true,
+        "synthetic_only": true,
+        "requests": 1
+      },
+      {
+        "provider": "openai",
+        "protocol": "responses",
+        "passed": true,
+        "synthetic_only": true,
+        "requests": 1
+      },
+      {
+        "provider": "anthropic",
+        "protocol": "anthropic_messages",
+        "passed": true,
+        "synthetic_only": true,
+        "requests": 1
+      },
+      {
+        "provider": "google",
+        "protocol": "google_native",
+        "passed": true,
+        "synthetic_only": true,
+        "requests": 1
+      },
+      {
+        "provider": "minimax",
+        "protocol": "anthropic_messages",
+        "passed": true,
+        "synthetic_only": true,
+        "requests": 1
+      }
+    ],
+    "passed": 5,
+    "live_vendors": false
+  },
+  "rea_evidence": "ev_f12b9c5717a494f37730e520e99402fffc5eaeed08f765e06894585df27c3e90",
+  "normal_profile_preserved": true,
+  "limitations": [
+    "Unsigned prerelease; clean-PC Docker/virtualization/UAC/restart path not qualified in a fresh VM.",
+    "NVIDIA Lightning was exercised live using an explicitly authorized test key. Other provider protocols used local synthetic fixtures; no live certification of every vendor account.",
+    "Model examples come from the pinned CLI catalog, except Perplexity Sonar documentation examples; account access and ongoing model availability vary.",
+    "Subscription OAuth, AWS IAM, Vertex service accounts and Azure deployment auth are separate methods, not implemented by the API-key picker.",
+    "Google live consent and native global-hotkey interaction were not exercised.",
+    "The broader rebuild, provider writes, recurring schedules and native desktop actions remain unfinished."
+  ]
+}

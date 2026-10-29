@@ -44,6 +44,9 @@ async function completed(page,space,cid,count){
 try{
   let page=await launch();await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();
   check('fresh_profile_shows_onboarding',true);
+  check('no_application_menu_strip',await application.evaluate(({Menu})=>Menu.getApplicationMenu()===null));
+  check('light_integrated_caption',await page.locator('.window-titlebar').evaluate(e=>getComputedStyle(e).backgroundColor==='rgb(255, 255, 255)'));
+  check('all_major_provider_choices',await page.evaluate(async()=>{const s=await window.wayfinder.setupStatus();return !s.modelKey.configured;}));
   check('optional_companions_off_before_consent',application.windows().length===1);
   check('optional_permissions_off_by_default',await page.evaluate(async()=>{const p=await window.wayfinder.setupChoices();return !p.pet&&!p.widget&&!p.agents&&!p.folders.length;}));
   check('window_stays_hidden',await application.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().every(w=>!w.isVisible())));
@@ -54,12 +57,17 @@ try{
   await page.getByRole('button',{name:'Check / prepare database'}).click();await page.getByRole('button',{name:'Database ready'}).waitFor();check('isolated_private_database_prepared',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
   assert(testKey,'An authorized privately supplied NVIDIA test key is required');
+  check('provider_picker_has_18_named_and_custom_choices',await page.locator('.provider-option').count()===19);
+  await captureOwnWindow(page,'actual-provider-picker.png');
+  await page.getByRole('button',{name:'Connect NVIDIA',exact:true}).click();
+  await captureOwnWindow(page,'actual-provider-key-form.png');
   await page.getByLabel('NVIDIA API key',{exact:true}).evaluate((input,key)=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,key);input.dispatchEvent(new Event('input',{bubbles:true}));},testKey);
-  await page.getByRole('button',{name:'Save NVIDIA key securely',exact:true}).click();
+  await page.getByRole('button',{name:'Connect and verify',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('input[type=password]')?.value==='');
+  await page.waitForFunction(async()=>!!(await window.wayfinder.setupStatus()).modelKey.configured);
   const sealed=await fs.readFile(path.join(profile,'model-key-v1.bin'));
   check('key_saved_through_onboarding_and_encrypted',sealed.length>100&&!sealed.includes(Buffer.from(testKey)));
-  await page.getByRole('button',{name:'Check AI connection'}).click();await page.getByRole('button',{name:'Recheck AI connection'}).waitFor();check('installed_hermes_isolation_verified',true);
+  await page.getByRole('button',{name:'Verify connection again'}).waitFor();check('installed_hermes_isolation_verified',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
   check('agents_need_explicit_opt_in',!(await page.getByLabel('Enable advisory task agents and source workflows').isChecked()));
   await captureOwnWindow(page,'actual-onboarding-permissions.png');
@@ -129,9 +137,10 @@ try{
   const reference=files.files[0].id;
   await page.evaluate(s=>window.wayfinder.inspectRuntime(s),sid);
   const waitRun=async(kind,id)=>{const end=Date.now()+150000;let result;do{result=await page.evaluate(({sid,kind,id})=>kind==='profile'?window.wayfinder.profileTask(sid,id):window.wayfinder.workflow(sid,id),{sid,kind,id});if(!['reserved','running'].includes(result.status))return result;await new Promise(resolve=>setTimeout(resolve,400));}while(Date.now()<end);throw new Error('Task did not settle');};
-  const task=await page.evaluate(({sid,reference})=>window.wayfinder.startProfileTask(sid,'A05',reference,'What is the retention period? Cite the selected note.','selected_file'),{sid,reference});
+  const task=await page.evaluate(({sid,reference})=>window.wayfinder.startProfileTask(sid,'A05',reference,'Begin your answer with Résumé — 中文 😊. What is the retention period? Cite the selected note.','selected_file'),{sid,reference});
   const taskResult=await waitRun('profile',task.id);
   check('actual_selected_file_profile_and_attributed_model_result',taskResult.status==='completed'&&taskResult.result.text.includes('42')&&!!taskResult.result.sources[0].sha256&&!taskResult.effects_executed);
+  check('native_worker_preserves_unicode_model_reply',taskResult.result.text.includes('Résumé'));
   const workflow=await page.evaluate(({sid,reference})=>window.wayfinder.startWorkflow(sid,{contract:'wayfinder.workflow/1',version:1,title:'Synthetic read and verify',concurrency:1,deadline_seconds:110,nodes:[{id:'read',role:'W35',reference,question:'State the retention period from the note.',dependencies:[]},{id:'verify',role:'W35',reference,question:'Verify the upstream retention answer against the selected note.',dependencies:['read']}]}),{sid,reference});
   const workflowResult=await waitRun('workflow',workflow.id);
   check('actual_dependent_workflow_completes_without_effects',workflowResult.status==='completed'&&workflowResult.nodes.every(n=>n.output?.text.includes('42'))&&workflowResult.metrics.worker_invocations===2&&!workflowResult.effects_executed);
@@ -145,6 +154,24 @@ try{
   check('saved_off_choices_survive_restart',await page.evaluate(async()=>{const p=await window.wayfinder.setupChoices();return !p.pet&&!p.widget&&!p.agents;}));
   const persisted=await page.evaluate(({sid,cid})=>window.wayfinder.chat(sid,cid),{sid,cid});check('restart_preserves_real_conversation_without_replay',persisted.turns.length===2&&persisted.turns.every(t=>t.status==='completed'));
   check('app_needs_no_development_checkout_or_python_env',!env.WAYFINDER_PROJECT_ROOT&&!env.WAYFINDER_PYTHON&&await fs.stat(path.join(root,'release/win-unpacked/resources/backend/WayfinderBackend.exe')).then(s=>s.isFile()));
+  await page.getByRole('button',{name:'Open settings',exact:true}).click();
+  await page.getByRole('button',{name:'Change provider or model',exact:true}).click();
+  await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();
+  check('settings_reopens_model_setup_without_deleting_spaces',true);
+  await page.getByRole('button',{name:'Verify bundled memory model',exact:true}).click();
+  await page.getByRole('button',{name:'Memory model verified',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Continue',exact:true}).click();
+  check('saved_provider_key_reused_without_showing_secret',await page.getByLabel('NVIDIA API key',{exact:true}).inputValue()==='');
+  await page.getByRole('button',{name:'Connect and verify',exact:true}).click();
+  await page.getByRole('button',{name:'Verify connection again',exact:true}).waitFor();
+  check('saved_key_can_verify_again_after_restart',true);
+  await page.getByRole('button',{name:'Continue',exact:true}).click();
+  check('changing_model_requires_fresh_consent',!await page.getByLabel(/I agree to send/).isChecked());
+  await page.getByLabel(/I agree to send/).check();
+  await page.getByRole('button',{name:/Create workspace and open Wayfinder/}).click();
+  await page.getByText('Backend connected',{exact:true}).waitFor();
+  check('model_reconfiguration_preserves_existing_space',(await page.evaluate(()=>window.wayfinder.listSpaces())).some(s=>s.id===sid));
+  check('model_reconfiguration_preserves_completed_conversation',(await page.evaluate(({sid,cid})=>window.wayfinder.chat(sid,cid),{sid,cid})).turns.length===2);
   const exited=new Promise(resolve=>application.process().once('exit',resolve));
   await application.evaluate(({BrowserWindow})=>{setTimeout(()=>BrowserWindow.getAllWindows().find(w=>!w.webContents.getURL().includes('companion='))?.close(),0);});
   let quitTimeout;try{await Promise.race([exited,new Promise((_,reject)=>{quitTimeout=setTimeout(()=>reject(new Error('Main close did not finish normal shutdown')),90000);})]);}finally{clearTimeout(quitTimeout);}

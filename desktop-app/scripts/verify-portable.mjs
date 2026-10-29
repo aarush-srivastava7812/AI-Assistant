@@ -33,7 +33,7 @@ try{
   assert(page,'Portable main window must load');page.setDefaultTimeout(150000);
   await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();check('delivered_exe_extracts_and_shows_first_run',true);
   assert(testKey,'A privately supplied authorized NVIDIA test key is required');
-  await page.evaluate(key=>window.wayfinder.setupNvidia(key,'nvidia/nemotron-3.5-lightning-30b-a3b'),testKey);
+  await page.evaluate(key=>window.wayfinder.setupProvider({provider:'nvidia',model:'nvidia/nemotron-3.5-lightning-30b-a3b',apiKey:key}),testKey);
   const entry=fileURLToPath(page.url()),marker=path.sep+'app.asar'+path.sep,offset=entry.indexOf(marker);assert(offset>0,'Own extracted archive path required');
   const extractedArchive=entry.slice(0,offset)+path.sep+'app.asar',resources=path.dirname(extractedArchive);
   const digest=async file=>{const hash=createHash('sha256'),handle=await fs.open(file);try{for await(const chunk of handle.createReadStream())hash.update(chunk);return hash.digest('hex');}finally{await handle.close();}};
@@ -46,7 +46,7 @@ try{
   await page.getByRole('button',{name:'Verify bundled memory model'}).click();await page.getByRole('button',{name:'Memory model verified'}).waitFor();check('extracted_model_runs_real_cpu_inference',true);
   await page.getByRole('button',{name:'Check / prepare database'}).click();await page.getByRole('button',{name:'Database ready'}).waitFor();check('portable_prepares_owned_database',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
-  await page.getByRole('button',{name:'Check AI connection'}).click();await page.getByRole('button',{name:'Recheck AI connection'}).waitFor();check('portable_verifies_installed_hermes',true);
+  await page.getByRole('button',{name:'Connect and verify'}).click();await page.getByRole('button',{name:'Verify connection again'}).waitFor();check('portable_verifies_installed_hermes',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
   await page.getByLabel('Workspace name',{exact:true}).fill('Portable fresh user');await page.getByLabel(/I agree to send/).check();await page.getByRole('button',{name:/Create workspace and open Wayfinder/}).click();await page.getByText('Backend connected',{exact:true}).waitFor();
   await page.waitForFunction(()=>document.querySelector('[aria-label="Memory space"]').value);

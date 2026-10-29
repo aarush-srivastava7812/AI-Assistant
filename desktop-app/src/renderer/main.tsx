@@ -22,7 +22,7 @@ if (isPet) {
   // Normal main window — unchanged
   import('./App').then(({ App }) => {
     createRoot(document.getElementById('root')!).render(
-      <React.StrictMode><App /></React.StrictMode>
+      <React.StrictMode><header className="window-titlebar"><span>Wayfinder</span></header><div className="desktop-content"><App /></div></React.StrictMode>
     );
   });
 }

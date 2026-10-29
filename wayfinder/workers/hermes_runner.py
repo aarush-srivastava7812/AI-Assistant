@@ -13,7 +13,10 @@ from urllib.parse import urlsplit
 
 STAGE = "request"
 HERMES_ROOT = globals().get('HERMES_ROOT', '/opt/hermes')
-ALLOWED_MODELS=('nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3-ultra-550b-a55b')
+# WAYFINDER_ROUTE_VALIDATION
+if '_validate_model_route' not in globals():
+    from wayfinder.workers.model_routes import validate_route as _validate_model_route
+
 
 def tavily_search(request):
     key,query,limit=request.get('api_key'),request.get('question'),request.get('limit')
@@ -56,8 +59,7 @@ print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_ke
 """
     if request.get("_trusted_route") is not None:
         route = request["_trusted_route"]
-        if not isinstance(route,dict) or set(route)!={"model","api_key","provider","api_mode","base_url"} or route.get("provider")!="custom" or route.get("api_mode")!="chat_completions" or route.get("base_url")!="https://integrate.api.nvidia.com/v1" or not isinstance(route.get("api_key"),str) or not route["api_key"].startswith("nvapi-"):
-            raise ValueError("Invalid private NVIDIA model configuration.")
+        model_pin = _validate_model_route(route)
     else:
         resolved = subprocess.run(
             [sys.executable, "-c", bootstrap],
@@ -74,18 +76,20 @@ print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_ke
         if resolved.returncode or len(route_lines) != 1:
             raise ValueError("Managed provider unavailable.")
         route = json.loads(route_lines[0])
-    if urlsplit(route.get("base_url") or "").hostname not in {
-        "inference.local",
-        "integrate.api.nvidia.com",
-    }:
-        raise ValueError("This managed provider endpoint has not been qualified.")
-    model_pin=dict(model=route['model'],provider=route.get('provider') or 'custom',endpoint=urlsplit(route.get('base_url') or '').hostname)
+    if request.get('_trusted_route') is None:
+        # Legacy managed credentials remain pinned to the previous NVIDIA policy.
+        if route.get('provider')!='custom':raise ValueError('Only NVIDIA legacy managed routes are permitted.')
+        route.setdefault('api_mode','chat_completions')
+        try:model_pin = _validate_model_route(route)
+        except ValueError:raise ValueError('Only NVIDIA legacy managed routes are permitted.') from None
     if request['role']=='CHAT' and request.get('model_pin')!=model_pin:
-        raise ValueError('The managed provider/model changed after consent. Review setup again.')
-    if route['model'] not in ALLOWED_MODELS or model_pin['endpoint']!='integrate.api.nvidia.com':
-        raise ValueError('Only NVIDIA Nemotron Lightning and Ultra are permitted. No provider fallback was made.')
+        raise ValueError('The provider/model changed after consent. Review setup again.')
     if request['role']=='W33':
-        raise ValueError('Image analysis is unavailable under the Lightning/Ultra-only model policy.')
+        raise ValueError('Image analysis is unavailable in this desktop build.')
+    task_route=dict(route)
+    if route['api_mode']=='google_native':
+        task_route.update(base_url=route['base_url']+'/openai',api_mode='chat_completions')
+    elif route['api_mode']=='responses':task_route['api_mode']='codex_responses'
     with tempfile.TemporaryDirectory(prefix="wayfinder-worker-") as temporary:
         # No main profile, credentials, memories, project rules, plugins or session DB.
         os.chdir(temporary)
@@ -119,9 +123,9 @@ print("WAYFINDER_ROUTE="+json.dumps({k:route.get(k) for k in ("base_url","api_ke
         STAGE = "initialization"
         agent = AIAgent(
             model=route["model"],
-            provider=route["provider"] or "custom",
-            api_mode=route["api_mode"] or "chat_completions",
-            base_url=route["base_url"],
+            provider="anthropic" if task_route["api_mode"]=="anthropic_messages" else "custom",
+            api_mode=task_route["api_mode"],
+            base_url=task_route["base_url"],
             api_key=route["api_key"],
             enabled_toolsets=[],
             disabled_toolsets=["memory", "terminal", "file", "delegation"],
@@ -271,4 +275,7 @@ if __name__ == "__main__":
             error="Hermes analysis unavailable or isolation check failed.",
             diagnostic=dict(stage=STAGE, error_type=type(error).__name__),
         )
-    print("WAYFINDER_WORKER_RESULT=" + json.dumps(result, ensure_ascii=False))
+    # Native Windows stdout may use a legacy code page. Keep the wire frame
+    # ASCII so UTF-8 consumers preserve every Unicode reply without depending
+    # on the machine's console encoding.
+    print("WAYFINDER_WORKER_RESULT=" + json.dumps(result, ensure_ascii=True))

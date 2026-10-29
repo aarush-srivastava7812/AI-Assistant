@@ -1,5 +1,5 @@
 {
-  "build": "wayfinder-desktop/0.5.0-preview.5",
+  "build": "wayfinder-desktop/0.5.0-preview.6",
   "scope": "read_only_connections_candidate",
   "connected": [
     {
@@ -211,7 +211,7 @@
   "native_testing_enabled": false,
   "schema": "wayfinder.desktop-inclusion/v1",
   "variant": "workspace-parity",
-  "version": "0.5.0-preview.5",
+  "version": "0.5.0-preview.6",
   "navigation": [
     {
       "id": "home",
@@ -346,10 +346,12 @@
     "startSourceTask",
     "setupChoices",
     "setupFolder",
-    "setupNvidia",
     "setupGoogle",
     "setupHelp",
-    "setupDependencies"
+    "setupDependencies",
+    "setupProvider",
+    "setupEditModel",
+    "quitApp"
   ],
   "backend_operations": [
     "status",
@@ -432,8 +434,5 @@
     "shutdown",
     "connections_configure"
   ],
-  "allowed_llm_models": [
-    "nvidia/nemotron-3.5-lightning-30b-a3b",
-    "nvidia/nemotron-3-ultra-550b-a55b"
-  ]
+  "model_policy": "User-selected provider and model from wayfinder/model-providers.json; custom HTTPS OpenAI-compatible endpoints require explicit setup verification and consent."
 }

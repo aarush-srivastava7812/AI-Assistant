@@ -77,5 +77,5 @@ it('does not fall back to a managed credential when a user key is missing after 
  await fs.writeFile(path.join(root,'onboarding.json'),JSON.stringify({version:1,complete:true,context:'desktop-linux',model:{model:'nvidia/nemotron-3.5-lightning-30b-a3b',provider:'custom',endpoint:'integrate.api.nvidia.com'},workspace:'owned',workspaceName:'Personal',modelSource:'user-key'}));
  const run=vi.fn(),bridge={state:{state:'offline'}} as any;
  const setup=new SetupManager(root,path.join(root,'runtime'),'project','exe','models',bridge,run);await setup.load();
- expect(setup.ready()).toBe(true);expect(await setup.connect()).toMatchObject({state:'setup',error:expect.stringContaining('NVIDIA key is unavailable')});expect(run).not.toHaveBeenCalled();expect(setup.ready()).toBe(false);
+ expect(setup.ready()).toBe(true);expect(await setup.connect()).toMatchObject({state:'setup',error:expect.stringContaining('provider key is unavailable')});expect(run).not.toHaveBeenCalled();expect(setup.ready()).toBe(false);
 });

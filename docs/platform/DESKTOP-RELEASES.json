@@ -1,10 +1,53 @@
 {
   "schema": "wayfinder.release-publication/1",
   "repository": "aarush-srivastava7812/AI-Assistant",
-  "published_executables_verified": 6,
-  "assets_verified": 24,
+  "published_executables_verified": 8,
+  "assets_verified": 30,
   "verification": "Every local EXE matched its retained checksum and original build report. GitHub asset size, uploaded state and SHA-256 matched local bytes. Existing assets were preserved. All releases are published.",
   "releases": [
+    {
+      "version": "0.5.0-preview.5",
+      "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/tag/v0.5.0-preview.5",
+      "prerelease": true,
+      "assets": [
+        {
+          "name": "START-HERE-0.5.0-preview.5.md",
+          "bytes": 3008,
+          "digest": "sha256:a6a878f3afbdc8c183340ae06c00cd06708c85b93b5e1dc7065ecabc8d09f9bf",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/START-HERE-0.5.0-preview.5.md"
+        },
+        {
+          "name": "Wayfinder-0.5.0-preview.5-verification.json",
+          "bytes": 12354,
+          "digest": "sha256:af6c16a1842a0e460c11b4b1212d5a82d3762027f610677979497ae1aad6ad50",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-0.5.0-preview.5-verification.json"
+        },
+        {
+          "name": "Wayfinder-0.5.0-preview.5-Windows-x64.exe",
+          "bytes": 504912395,
+          "digest": "sha256:891606bb6985cfa977180092fad4f3b981bff27649350201464f2db1d09250fb",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-0.5.0-preview.5-Windows-x64.exe"
+        },
+        {
+          "name": "Wayfinder-0.5.0-preview.5-Windows-x64.exe.sha256",
+          "bytes": 109,
+          "digest": "sha256:54e45035c097d1978c29a566e58c0058eb4d518e49384602763082f17161b35c",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-0.5.0-preview.5-Windows-x64.exe.sha256"
+        },
+        {
+          "name": "Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe",
+          "bytes": 498029230,
+          "digest": "sha256:18090bf5d1c4fa96fccfd66cc973f4777000ebc09daff98e8492c505364ce4ea",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe"
+        },
+        {
+          "name": "Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe.sha256",
+          "bytes": 115,
+          "digest": "sha256:f3ef426cba3a2c82abaaf6777f121ae9fccffb50effbda730b16bcc2339cf208",
+          "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.5/Wayfinder-Setup-0.5.0-preview.5-Windows-x64.exe.sha256"
+        }
+      ]
+    },
     {
       "version": "0.5.0-preview.4",
       "url": "https://github.com/aarush-srivastava7812/AI-Assistant/releases/tag/v0.5.0-preview.4",
@@ -191,5 +234,6 @@
         }
       ]
     }
-  ]
+  ],
+  "verified_at_utc": "2026-10-29T19:55:16.693605+00:00"
 }

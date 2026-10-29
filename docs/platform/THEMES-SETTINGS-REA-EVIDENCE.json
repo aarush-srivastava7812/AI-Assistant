@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "vscode": {
+    "version": "1.144.0",
+    "commit": "2c33b50b16c472efe58357d1d2a8a5414bc23fbf",
+    "color_themes": 19,
+    "source": "Official microsoft/vscode stable source. VS Code is not installed in the accessible filesystem; no VS Code process was launched."
+  },
+  "codex": {
+    "source": "Retained shipped assets from prior installed MSIX snapshot, selected hashes reverified; user explicitly selected this fallback.",
+    "package_version": "26.1021.3705.0",
+    "application_version": "26.1021.31345",
+    "original_asar_sha256": "04862a659c6a90fc50514d8c0b8016709d97dece58839726c57495ed72f1d9f0",
+    "current_package_available": false,
+    "current_ui_observed": false,
+    "private_profile_read": false,
+    "proprietary_assets_in_product": false
+  },
+  "analyses": [
+    {
+      "target": "vscode",
+      "exit_code": 0,
+      "seconds": 7.61,
+      "evidence_id": "ev_b58ba208e33b0fcf96fd5508e0d2e05de1c0b04ec78301c0f4f925ff5e02e7d3",
+      "target_executed": false,
+      "files": {
+        "src/vs/workbench/contrib/welcomeGettingStarted/common/media/theme_picker.ts": "f2eb5c7fb2dfdd45a2bb16fe6413c5b76813122c0044c9380ded0c366335efa2",
+        "src/vs/workbench/contrib/welcomeGettingStarted/common/media/theme_picker_small.ts": "e65616224e396b31fb12079e5fcf22a3ced6097c3b141ede15fee13db1afd834",
+        "src/vs/workbench/contrib/themes/browser/themes.contribution.ts": "97e2d86a15c444b9d6e090d2a8a426c608899263ac9d43d3b6cde734f2f17f58",
+        "src/vs/workbench/services/themes/common/colorThemeData.ts": "ae8726a97807a2ce8df7975a05e8bcff9729900480f943335e17d8b33f72617c"
+      },
+      "root_artifact_sha256": "ac4934c0b228625b18f1d5c78514fe5d7b130e88662ca4f2aca3268ecb10a811",
+      "source_selection": {
+        "requested_paths": [
+          "src/vs/workbench/contrib/welcomeGettingStarted/common/media/theme_picker.ts",
+          "src/vs/workbench/contrib/welcomeGettingStarted/common/media/theme_picker_small.ts",
+          "src/vs/workbench/contrib/themes/browser/themes.contribution.ts",
+          "src/vs/workbench/services/themes/common/colorThemeData.ts"
+        ],
+        "unselected_files": 48
+      },
+      "statistics": {
+        "relevant_files": 52,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 83220,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 4,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 10845,
+        "findings": 205,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "limitations": [
+        "Caller-selected source analysis leaves 48 inventoried files outside analysis scope. Inventory identity covers the complete artifact; relationships through unselected sources remain unknown.",
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+      ]
+    },
+    {
+      "target": "codex",
+      "exit_code": 0,
+      "seconds": 8.55,
+      "evidence_id": "ev_887bff55bdec7f0457832fc6ef7b86623095d85c418a2e817dddb67ecff56b1d",
+      "target_executed": false,
+      "files": {
+        "webview/assets/app-theme-settings-77e2fe59e621.js": "fe4261a53b6f1e62e04f936ae2db988366598dd01d52b9753b6b9e714d6b51ce",
+        "webview/assets/app-theme-c4609c25be6b.js": "99486956ff4c74b5e818af8f61de8310a7d8a10c41a9095c7f29c96077e42be1",
+        "webview/assets/app-theme-c850e3c1c24c.js": "cbc719a3fbbc0952efc34502dbbea844bd5deca9461ca89687374555c504c46f",
+        "webview/assets/style-vars-200c1bccafff.js": "0c827259711af0b1c10bff418978f9e61945183a878baa1b9f8e467f6878c121"
+      },
+      "root_artifact_sha256": "2c6e4ce9259149db28e39a6e585d9332b15bbcb5c3bfe4e094add598ce769366",
+      "source_selection": {
+        "requested_paths": [
+          "webview/assets/app-theme-settings-77e2fe59e621.js",
+          "webview/assets/app-theme-c4609c25be6b.js",
+          "webview/assets/app-theme-c850e3c1c24c.js",
+          "webview/assets/style-vars-200c1bccafff.js"
+        ],
+        "unselected_files": 0
+      },
+      "statistics": {
+        "relevant_files": 4,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 26962,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 4,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 7447,
+        "findings": 119,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "limitations": [
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+      ]
+    }
+  ]
+}

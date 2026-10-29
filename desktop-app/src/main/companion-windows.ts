@@ -13,16 +13,17 @@ function validate(event:IpcMainInvokeEvent,window:BrowserWindow|undefined,kind?:
  const url=pathToFileURL(rendererFile);if(kind)url.searchParams.set('companion',kind);
  requireMainSender(event,window.webContents,url.href);
 }
-function sender(event:IpcMainInvokeEvent){
+export function requireCompanionSender(event:IpcMainInvokeEvent){
  if(event.sender===mainWindow?.webContents){validate(event,mainWindow);return 'main';}
  if(event.sender===pet?.webContents){validate(event,pet,'pet');return 'pet';}
  validate(event,overlay,'overlay');return 'overlay';
 }
 export function requireOverlayRequest(event:IpcMainInvokeEvent,method:string,args:unknown[]){
- validate(event,overlay,'overlay');
+ requireOverlaySender(event);
  if(!OVERLAY_METHODS.includes(method))throw new Error('Operation unavailable in companion chat.');
  if(!['status','connect','listSpaces'].includes(method)&&(!space||args[0]!==space))throw new Error('Select this space in the main window first.');
 }
+export function requireOverlaySender(event:IpcMainInvokeEvent){validate(event,overlay,'overlay');}
 function present(window:BrowserWindow,focus=false){if(hidden)return;if(focus){window.show();window.focus();}else window.showInactive();}
 function create(kind:'pet'|'overlay'){
  const current=kind==='pet'?pet:overlay;if(current&&!current.isDestroyed()){present(current,kind==='overlay');return current;}
@@ -47,14 +48,14 @@ function displayChange(){if(overlay&&!overlay.isDestroyed())overlay.setBounds(sc
 export function initCompanion(appDir:string,htmlFile:string,main:BrowserWindow,preferences={pet:false,widget:false}){
  rendererFile=htmlFile;preloadFile=path.join(appDir,'../preload/companion.cjs');mainWindow=main;hidden=process.env.WAYFINDER_VERIFY_HIDDEN==='1';
  const handlers:Record<string,(event:IpcMainInvokeEvent,...args:any[])=>any>={
- showOverlay:event=>{sender(event);showOverlay();},hideOverlay:event=>{sender(event);hideOverlay();},
- focusMain:event=>{sender(event);if(main.isMinimized())main.restore();present(main,true);},
- showSettings:event=>{sender(event);main.webContents.send('companion:navigate','settings');present(main,true);},
- hidePet:event=>{sender(event);pet?.hide();},showPet:event=>{sender(event);if(!enabled.pet)throw new Error('Enable the desktop pet in Settings first.');create('pet');},
- getShortcut:event=>{sender(event);return DEFAULT_ACCELERATOR;},shortcutRegistered:event=>{sender(event);return shortcutRegistered;},
+ showOverlay:event=>{requireCompanionSender(event);showOverlay();},hideOverlay:event=>{requireCompanionSender(event);hideOverlay();},
+ focusMain:event=>{requireCompanionSender(event);if(main.isMinimized())main.restore();present(main,true);},
+ showSettings:event=>{requireCompanionSender(event);main.webContents.send('companion:navigate','settings');present(main,true);},
+ hidePet:event=>{requireCompanionSender(event);pet?.hide();},showPet:event=>{requireCompanionSender(event);if(!enabled.pet)throw new Error('Enable the desktop pet in Settings first.');create('pet');},
+ getShortcut:event=>{requireCompanionSender(event);return DEFAULT_ACCELERATOR;},shortcutRegistered:event=>{requireCompanionSender(event);return shortcutRegistered;},
  setSpace:(event,value)=>{validate(event,main);if(typeof value!=='string'||value.length>200)throw new Error('Invalid space.');space=value;},
  resizePet:(event,expanded)=>{validate(event,pet,'pet');if(typeof expanded!=='boolean')throw new Error('Invalid menu state.');const a=screen.getPrimaryDisplay().workArea;const width=expanded?360:180,height=expanded?Math.min(680,a.height):180;pet?.setBounds({x:a.x+Math.max(0,a.width-width-24),y:a.y+Math.max(0,a.height-height-24),width,height});},
- getContext:event=>{sender(event);return {space};}
+ getContext:event=>{requireCompanionSender(event);return {space};}
  };
  for(const [method,handler]of Object.entries(handlers)){const channel='companion:'+method;ipcMain.handle(channel,handler);channels.push(channel);}
  applyCompanionPreferences(preferences);screen.on('display-added',displayChange);screen.on('display-removed',displayChange);screen.on('display-metrics-changed',displayChange);

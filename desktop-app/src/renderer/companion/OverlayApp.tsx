@@ -4,6 +4,7 @@ import {AnimatedChatOverlay} from './AnimatedChatOverlay';
 import {ChatPanel} from '../Chat';
 import type {BackendState} from '../../shared/types';
 import './pet-api';
+import {AppearanceProvider} from '../Appearance';
 import '../app.css';
 import './companion.css';
 function OverlayApp(){
@@ -12,4 +13,4 @@ function OverlayApp(){
  const close=()=>void window.companionAPI.hideOverlay();
  return <AnimatedChatOverlay onClose={close} chatContent={backend.state==='ready'&&space?<ChatPanel key={`${backend.owner}:${backend.instance_generation}:${space}`} api={window.wayfinder} space={space} qualified={!!backend.capabilities?.general_chat}/>:<div className="wf-no-space"><strong>{backend.state==='ready'?'Select a space in Wayfinder':backend.state==='setup'?'Complete setup in Wayfinder':'Waiting for Wayfinder'}</strong><p>The companion uses the main window’s selected space and existing conversation service.</p><button onClick={()=>void window.companionAPI.focusMain()}>Open Wayfinder</button></div>}/>;
 }
-createRoot(document.getElementById('root')!).render(<React.StrictMode><OverlayApp/></React.StrictMode>);
+createRoot(document.getElementById('root')!).render(<React.StrictMode><AppearanceProvider><OverlayApp/></AppearanceProvider></React.StrictMode>);

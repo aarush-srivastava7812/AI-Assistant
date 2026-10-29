@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, session, safeStorage, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, session, safeStorage, shell, nativeTheme } from 'electron';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { BackendBridge } from './bridge';
@@ -11,6 +11,9 @@ import { runtimeChoice } from './runtime-path';
 import release from '../../FEATURES.json';
 import {PermissionStore} from './permissions';
 import {ModelKeyStore} from './model-key-store';
+import {AppearanceStore} from './appearance-store';
+import {registerAppearance} from './appearance-ipc';
+import {themeById} from '../shared/appearance';
 import {providerFor} from '../shared/model-providers';
 import {connectGoogle} from './google-oauth';
 import {DependencyInstaller} from './dependency-installer';
@@ -30,6 +33,7 @@ const setup = new SetupManager(app.getPath('userData'),runtime,project,path.join
 const vault=new ConnectionVault(app.getPath('userData'),{available:()=>safeStorage.isAsyncEncryptionAvailable(),encrypt:value=>safeStorage.encryptStringAsync(value),decrypt:async value=>(await safeStorage.decryptStringAsync(value)).result});
 setup.setConnectionSource(async()=>vault.snapshot());
 const permissions=new PermissionStore(app.getPath('userData'));
+const appearance=new AppearanceStore(app.getPath('userData'));
 const modelKey=new ModelKeyStore(app.getPath('userData'),{available:()=>safeStorage.isAsyncEncryptionAvailable(),encrypt:value=>safeStorage.encryptStringAsync(value),decrypt:async value=>(await safeStorage.decryptStringAsync(value)).result});
 const dependencies=new DependencyInstaller(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),process.env.LOCALAPPDATA||app.getPath('userData'));
 setup.setModelEnvironment(()=>{if(!modelKey.status().configured)return {};const native=dependencies.environment();if(!native.WAYFINDER_HERMES_PYTHON)throw new Error('Install / repair required software before verifying your AI connection.');return {...native,...modelKey.environment(),WAYFINDER_OPENCODE_EXE:path.join(app.isPackaged?process.resourcesPath:path.join(project,'desktop-app','resources'),'setup','opencode.exe')};});
@@ -55,13 +59,16 @@ else {
     await setup.load();
     await permissions.load();
     await modelKey.load();
+    await appearance.load();
     app.setAppUserModelId('local.wayfinder.desktop');
     const rendererFile = path.resolve(appDirectory, '../renderer/index.html');
     const rendererURL = pathToFileURL(rendererFile).href;
+    const startingTheme=themeById(appearance.current(nativeTheme.shouldUseDarkColors).resolvedTheme)!;
     main = new BrowserWindow({
-      width: 1440, height: 940, minWidth: 600, minHeight: 600, show: !hiddenVerification, title: 'Wayfinder', backgroundColor: '#ffffff', titleBarStyle:'hidden', titleBarOverlay:{color:'#ffffff',symbolColor:'#242424',height:36}, autoHideMenuBar:true, icon: app.isPackaged ? path.join(process.resourcesPath, 'wayfinder.png') : path.join(project, 'desktop-app/resources/wayfinder.png'),
+      width: 1440, height: 940, minWidth: 600, minHeight: 600, show: !hiddenVerification, title: 'Wayfinder', backgroundColor:startingTheme.native.background, titleBarStyle:'hidden', titleBarOverlay:{color:startingTheme.native.captionBackground,symbolColor:startingTheme.native.captionForeground,height:36}, autoHideMenuBar:true, icon: app.isPackaged ? path.join(process.resourcesPath, 'wayfinder.png') : path.join(project, 'desktop-app/resources/wayfinder.png'),
       webPreferences: { preload: path.join(appDirectory, '../preload/index.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, allowRunningInsecureContent: false, spellcheck: false },
     });
+    registerAppearance(appearance,main,rendererURL);
     main.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     main.on('close',event=>{if(quitReady)return;event.preventDefault();if(!quitting&&(permissions.get().pet||permissions.get().widget))main?.hide();else app.quit();});
     main.webContents.on('will-navigate', event => event.preventDefault());

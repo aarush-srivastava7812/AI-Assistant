@@ -1,6 +1,6 @@
-# Wayfinder desktop 0.5.0-preview.6
+# Wayfinder desktop 0.5.0-preview.7
 
-[Download and setup](release/START-HERE-0.5.0-preview.6.md). The app bundles OpenCode for chat and supports 18 named API-key providers plus custom HTTPS OpenAI-compatible endpoints. Keys are encrypted for the Windows account. The extra menu strip is removed; native caption controls and Settings > Quit Wayfinder remain.
+[Download and setup](release/START-HERE-0.5.0-preview.7.md). The app bundles OpenCode for chat and supports 18 named API-key providers plus custom HTTPS OpenAI-compatible endpoints. Keys are encrypted for the Windows account. Includes 19 built-in VS Code palettes, onboarding previews, System/Light/Dark preferences, native caption/companion synchronization and searchable settings. See [theme research](../docs/platform/THEMES-SETTINGS-REA.md) and [validation](../docs/platform/THEMES-SETTINGS-VALIDATION.md). The extra menu strip is removed; native caption controls and Settings > Quit Wayfinder remain.
 
 Provider/model changes are available in Settings and preserve spaces and conversations while requiring new verification and consent. Pet, widget, agents, folder access and account connections are optional. Setup installs a private Hermes/Python task runtime and offers Docker Desktop installation.
 

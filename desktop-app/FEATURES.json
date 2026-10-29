@@ -1,5 +1,5 @@
 {
-  "build": "wayfinder-desktop/0.5.0-preview.6",
+  "build": "wayfinder-desktop/0.5.0-preview.7",
   "scope": "read_only_connections_candidate",
   "connected": [
     {
@@ -211,7 +211,7 @@
   "native_testing_enabled": false,
   "schema": "wayfinder.desktop-inclusion/v1",
   "variant": "workspace-parity",
-  "version": "0.5.0-preview.6",
+  "version": "0.5.0-preview.7",
   "navigation": [
     {
       "id": "home",
@@ -434,5 +434,12 @@
     "shutdown",
     "connections_configure"
   ],
-  "model_policy": "User-selected provider and model from wayfinder/model-providers.json; custom HTTPS OpenAI-compatible endpoints require explicit setup verification and consent."
+  "model_policy": "User-selected provider and model from wayfinder/model-providers.json; custom HTTPS OpenAI-compatible endpoints require explicit setup verification and consent.",
+  "appearance": {
+    "themes": "Microsoft VS Code 1.144.0 built-in color themes",
+    "theme_count": 19,
+    "settings": "categorized",
+    "storage": "main-owned appearance-v1.json",
+    "companion_reader": "read-only"
+  }
 }

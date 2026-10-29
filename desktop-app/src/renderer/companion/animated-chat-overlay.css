@@ -1,12 +1,12 @@
 :root {
-  --wfa-bg: #0B1020;
-  --wfa-panel: #141F33;
-  --wfa-raised: #1B2940;
-  --wfa-cyan: #29D3E8;
-  --wfa-blue: #5278FF;
-  --wfa-text: #F2F6FC;
-  --wfa-muted: #A0AEC2;
-  --wfa-line: #2B3A52;
+  --wfa-bg: var(--surface, #0B1020);
+  --wfa-panel: var(--panel, #141F33);
+  --wfa-raised: var(--panel-low, #1B2940);
+  --wfa-cyan: var(--accent, #29D3E8);
+  --wfa-blue: var(--accent, #5278FF);
+  --wfa-text: var(--text, #F2F6FC);
+  --wfa-muted: var(--muted, #A0AEC2);
+  --wfa-line: var(--line, #2B3A52);
 }
 
 .wfa-root { position: fixed; inset: 0; overflow: hidden; isolation: isolate; color: var(--wfa-text); background: transparent; font: 13px/1.45 Inter, "Segoe UI", system-ui, sans-serif; }
@@ -24,21 +24,21 @@
 .wfa-eyebrow { font-size: 9px; letter-spacing: .15em; color: var(--wfa-cyan); }
 
 .wfa-chat-dock { position: absolute; inset-block: 0; right: 0; width: min(48vw, 720px); min-width: 410px; display: flex; flex-direction: column; background: var(--wfa-bg); border-left: 1px solid var(--wfa-line); box-shadow: -24px 0 70px #0006; z-index: 10; animation: wfa-dock-in 360ms cubic-bezier(.2,.8,.2,1) both; }
-.wfa-chat-header { min-height: 66px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #0E1628; border-bottom: 1px solid var(--wfa-line); }
+.wfa-chat-header { min-height: 66px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--wfa-panel); border-bottom: 1px solid var(--wfa-line); }
 .wfa-brand, .wfa-header-actions, .wfa-brand-mark, .wfa-chat-meta, .wfa-chat-meta span { display: flex; align-items: center; }
 .wfa-brand { gap: 10px; min-width: 0; }
-.wfa-brand-mark { width: 34px; height: 34px; justify-content: center; color: var(--wfa-cyan); border: 1px solid #28506a; background: #12263a; }
+.wfa-brand-mark { width: 34px; height: 34px; justify-content: center; color: var(--wfa-cyan); border: 1px solid var(--wfa-line); background: var(--wfa-raised); }
 .wfa-brand-copy { display: grid; gap: 1px; }
 .wfa-brand-copy strong { font-size: 12px; letter-spacing: .12em; }
 .wfa-brand-copy small { font-size: 9px; color: var(--wfa-muted); letter-spacing: .1em; }
 .wfa-header-actions { gap: 12px; }
-.wfa-local-label { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #8de5c4; white-space: nowrap; }
+.wfa-local-label { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--success, #8de5c4); white-space: nowrap; }
 .wfa-close { display: grid; place-items: center; width: 34px; height: 34px; color: var(--wfa-muted); border: 1px solid var(--wfa-line); background: transparent; cursor: pointer; }
 .wfa-close:hover { color: var(--wfa-text); background: var(--wfa-raised); }
-.wfa-chat-meta { justify-content: space-between; padding: 9px 18px; color: var(--wfa-muted); border-bottom: 1px solid #202e43; font-size: 10px; }
+.wfa-chat-meta { justify-content: space-between; padding: 9px 18px; color: var(--wfa-muted); border-bottom: 1px solid var(--wfa-line); font-size: 10px; }
 .wfa-chat-meta span { gap: 6px; }
 .wfa-chat-content { flex: 1; min-height: 0; overflow: auto; }
-.wfa-chat-footer { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 18px; color: var(--wfa-muted); background: #0E1628; border-top: 1px solid var(--wfa-line); font-size: 10px; }
+.wfa-chat-footer { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 18px; color: var(--wfa-muted); background: var(--wfa-panel); border-top: 1px solid var(--wfa-line); font-size: 10px; }
 .wfa-chat-footer button { color: var(--wfa-text); background: transparent; border: 1px solid var(--wfa-line); padding: 6px 9px; cursor: pointer; white-space: nowrap; }
 
 @keyframes wfa-backdrop-in { from { opacity: 0; } to { opacity: 1; } }

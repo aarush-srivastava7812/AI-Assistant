@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X, Command, Sparkles, ShieldCheck } from 'lucide-react';
+import { useAppearance } from '../Appearance';
 import './animated-chat-overlay.css';
 
 export type AnimatedChatOverlayProps = {
@@ -37,6 +38,7 @@ function EntranceCompanion() {
  * register global shortcuts or call backend APIs.
  */
 export function AnimatedChatOverlay({ onClose, chatContent, greeting = 'Ready when you are.' }: AnimatedChatOverlayProps) {
+  const {theme} = useAppearance();
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -48,7 +50,7 @@ export function AnimatedChatOverlay({ onClose, chatContent, greeting = 'Ready wh
   return (
     <div
       className="wfa-root"
-      data-theme="dark"
+      data-theme={theme.kind}
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();

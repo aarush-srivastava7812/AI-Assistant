@@ -1,0 +1,105 @@
+{
+  "project": "microsoft/vscode",
+  "version": "1.144.0",
+  "commit": "2c33b50b16c472efe58357d1d2a8a5414bc23fbf",
+  "license": "MIT",
+  "themeCount": 19,
+  "files": [
+    {
+      "path": "extensions/theme-abyss/themes/abyss-color-theme.json",
+      "bytes": 11449,
+      "sha256": "5ccb5fa5c6f66b43295f68852b7cc88b1ba35eb44a3a17c813e9094aaca755c4"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/2026-light.json",
+      "bytes": 19322,
+      "sha256": "0f02b94451b1cf7d98d262f328e750a0ce043c9bb5f30e63a0be359335f87816"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/light_modern.json",
+      "bytes": 6508,
+      "sha256": "831b47d624e9acd6f09da58a699889415be7e45fccffb01177bc718b20e7e25c"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/light_plus.json",
+      "bytes": 4783,
+      "sha256": "26fbb053bec8ce2b65706d5fcb993da8c19174cfdbf35a49b465236b5ed26203"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/light_vs.json",
+      "bytes": 9636,
+      "sha256": "ce562a2ebec8c9a91021afb9ba7c9e8bcf4176df634fec8b77c748b42e3ce748"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/2026-dark.json",
+      "bytes": 19321,
+      "sha256": "5cd138a1b8d33ec6befd2c779a3cb0b8eae0846bd8371f1301938ade34cb189d"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/dark_modern.json",
+      "bytes": 5448,
+      "sha256": "58d4ea55a2a36f65c0d5caf033dfddc4ec7d4b3a5d8b731a84bc36001d26a339"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/dark_plus.json",
+      "bytes": 4700,
+      "sha256": "409f33088a5cfd6589384900ef80627787c568d367c25b12f31bc7940936e573"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/dark_vs.json",
+      "bytes": 8580,
+      "sha256": "9fc2c16761400632eac6166ff7bb0435c5190a94bffa51ec1ef19b2ce78576b2"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/hc_black.json",
+      "bytes": 9272,
+      "sha256": "07f6250833d40ca9ed7399f328816d4e0c59ddc21c64c8af754a6b260725b0ad"
+    },
+    {
+      "path": "extensions/theme-defaults/themes/hc_light.json",
+      "bytes": 11475,
+      "sha256": "1cc2ccb7d2fb7990d22baa1dd2bb7174817ac45ddc8b46c4d29c3ddb864b4ce2"
+    },
+    {
+      "path": "extensions/theme-kimbie-dark/themes/kimbie-dark-color-theme.json",
+      "bytes": 8631,
+      "sha256": "a0b17410a795d8e03c86b24ce8d59570079a5fc4df5a2f7fd2daf9f9d81ab14d"
+    },
+    {
+      "path": "extensions/theme-monokai/themes/monokai-color-theme.json",
+      "bytes": 12027,
+      "sha256": "5681bcdc2e8f2994a41233bfdd1b02c2cfd90da5c6a4f5ebd4c8f42ef90d1b5f"
+    },
+    {
+      "path": "extensions/theme-monokai-dimmed/themes/dimmed-monokai-color-theme.json",
+      "bytes": 14529,
+      "sha256": "13a6f5b82057a3427b55368ab45f57073cb4a291a722e1f33f83a66fc2d1513c"
+    },
+    {
+      "path": "extensions/theme-quietlight/themes/quietlight-color-theme.json",
+      "bytes": 11772,
+      "sha256": "1f54cc040234b040bcc701dfa7543880821415c05d13780300914ae814aad3df"
+    },
+    {
+      "path": "extensions/theme-red/themes/Red-color-theme.json",
+      "bytes": 9412,
+      "sha256": "e5df2cd55fcab494ee241e7d7ca1525958312c59359665c474b0afa2ff91f559"
+    },
+    {
+      "path": "extensions/theme-solarized-dark/themes/solarized-dark-color-theme.json",
+      "bytes": 12616,
+      "sha256": "920e68b8a62e3e6581cee8d7900af1772865e5fe2b9efe5904baa4a8a89bc445"
+    },
+    {
+      "path": "extensions/theme-solarized-light/themes/solarized-light-color-theme.json",
+      "bytes": 12814,
+      "sha256": "7c10e85f312c79dfccfa97fe97bb74c3d716a35f55e9701b30bc57e725ce1b44"
+    },
+    {
+      "path": "extensions/theme-tomorrow-night-blue/themes/tomorrow-night-blue-color-theme.json",
+      "bytes": 7823,
+      "sha256": "96d5889d05382b3b5b2d9300879ccbd00d29c42b05249f924b468d8f671ed218"
+    }
+  ],
+  "mapping": "Wayfinder semantic surfaces map to resolved VS Code workbench colors. Missing values use VS Code light/dark defaults. Muted text uses the theme foreground when its description color has insufficient contrast on the app surface."
+}

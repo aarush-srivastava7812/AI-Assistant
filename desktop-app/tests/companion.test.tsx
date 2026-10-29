@@ -263,7 +263,8 @@ describe('Companion shortcut registration failure', () => {
     const settingsBtns = await screen.findAllByRole('button', { name: /settings/i });
     await userEvent.click(settingsBtns[0]);
 
-    // Wait for companion section to appear
+    await userEvent.click(screen.getByRole('button', { name: 'Desktop companions' }));
+    // Wait for the selected companion category to appear
     expect(await screen.findByText('Desktop companion widget')).toBeTruthy();
     expect(await screen.findByText('Off / unavailable')).toBeTruthy();
 

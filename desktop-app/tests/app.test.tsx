@@ -70,6 +70,7 @@ describe('Actual React app with contract fixtures', () => {
   it('records no fake Google connection and exposes only setup status', async () => {
     const api = await mount(); api.googleStatus.mockResolvedValue({ credential_file_present: false, live_qualified: false, setup: 'Complete local account consent.' });
     await userEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0]);
+    await userEvent.click(within(screen.getByRole('navigation', {name:'Settings categories'})).getByRole('button', {name:'Connections'}));
     await userEvent.click(screen.getByRole('button', { name: 'Check setup status' })); await screen.findByText('Connection import required'); expect(api.googleStatus).toHaveBeenCalledWith('a');
   });
 });

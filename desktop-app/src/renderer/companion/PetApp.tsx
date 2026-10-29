@@ -7,6 +7,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { CompanionPet } from './CompanionPet';
+import {AppearanceProvider} from '../Appearance';
 import type { CompanionShortcutSlots } from './contracts';
 import './pet-api'; // registers global type only
 
@@ -32,5 +33,5 @@ function PetApp() {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode><PetApp /></React.StrictMode>
+  <React.StrictMode><AppearanceProvider><PetApp /></AppearanceProvider></React.StrictMode>
 );

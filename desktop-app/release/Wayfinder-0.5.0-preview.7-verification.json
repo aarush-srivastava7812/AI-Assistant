@@ -1,0 +1,906 @@
+{
+  "version": "0.5.0-preview.7",
+  "verified_at_utc": "2026-10-29T22:40:37.000058+00:00",
+  "sha256": "4f233b82458feaa8039f1b46fdaeafa491d01f7065d0d573d9c57d66fd03e1bc",
+  "bytes": 504952502,
+  "setup_sha256": "5d940c1cfd4fb2a3a2699c7f034c22c2456488bf1459502df651d6836f2bca5a",
+  "setup_bytes": 498094320,
+  "asar_sha256": "5af8de6a6b45b6468b36f4cbcc8c045b79f187530f4a14bec8b345006ff3ca97",
+  "backend_sha256": "75dc71541e935a397579e32292aea78e64871f9bc30bbb8cea60eadf2281b7f2",
+  "chat_engine": "OpenCode 1.19.5",
+  "task_engine": "Hermes v0.22.5",
+  "named_api_key_providers": 18,
+  "user_provided_api_key": true,
+  "credentials_bundled": false,
+  "frontend": {
+    "passed": 151,
+    "typecheck": true
+  },
+  "rendered_appearance": {
+    "tier": "rendered Chromium fixtures, real application UI; synthetic backend and preference transport",
+    "checks": [
+      {
+        "name": "categorized_settings_navigation",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-abyss",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-light-2026",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-dark-2026",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-dark-plus",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-dark-modern",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-light-plus",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-light-modern",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-visual-studio-dark",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-visual-studio-light",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-default-high-contrast",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-default-high-contrast-light",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-kimbie-dark",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-monokai",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-monokai-dimmed",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-quiet-light",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-red",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-solarized-dark",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-solarized-light",
+        "passed": true
+      },
+      {
+        "name": "rendered_palette_vscode-tomorrow-night-blue",
+        "passed": true
+      },
+      {
+        "name": "gallery_preview_does_not_save",
+        "passed": true
+      },
+      {
+        "name": "cancel_restores_saved_theme",
+        "passed": true
+      },
+      {
+        "name": "gallery_keyboard_preview_moves_selection",
+        "passed": true
+      },
+      {
+        "name": "escape_restores_saved_theme",
+        "passed": true
+      },
+      {
+        "name": "gallery_search_filters_themes",
+        "passed": true
+      },
+      {
+        "name": "theme_survives_ui_reload",
+        "passed": true
+      },
+      {
+        "name": "system_scheme_tracks_os_change",
+        "passed": true
+      },
+      {
+        "name": "appearance_does_not_grant_permissions",
+        "passed": true
+      },
+      {
+        "name": "settings_search_navigates_to_control",
+        "passed": true
+      },
+      {
+        "name": "desktop_category_excludes_agent_and_account_controls",
+        "passed": true
+      },
+      {
+        "name": "permissions_category_keeps_source_controls",
+        "passed": true
+      },
+      {
+        "name": "settings_fits_900x700",
+        "passed": true
+      },
+      {
+        "name": "reading_control_reachable_900x700",
+        "passed": true
+      },
+      {
+        "name": "theme_picker_fits_900x700",
+        "passed": true
+      },
+      {
+        "name": "settings_fits_600x600",
+        "passed": true
+      },
+      {
+        "name": "reading_control_reachable_600x600",
+        "passed": true
+      },
+      {
+        "name": "theme_picker_fits_600x600",
+        "passed": true
+      },
+      {
+        "name": "no_renderer_faults",
+        "passed": true
+      },
+      {
+        "name": "no_external_runtime_requests",
+        "passed": true
+      }
+    ],
+    "passed": 39,
+    "live_provider_calls": 0,
+    "native_caption_verified": false
+  },
+  "backend_regression_inherited": {
+    "source_unchanged_from": "341b6557e9b06e0f759f720879282445d77f309b",
+    "previous_release": "0.5.0-preview.6",
+    "previous_results": {
+      "passed": 668,
+      "skipped": 1,
+      "deselected": 4
+    },
+    "rerun_in_this_release": false,
+    "live_packaged_flows_rerun": true
+  },
+  "actual_packaged_passed": 80,
+  "actual_packaged_checks": [
+    {
+      "name": "fresh_profile_shows_onboarding",
+      "passed": true
+    },
+    {
+      "name": "no_application_menu_strip",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-abyss",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-light-2026",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-dark-2026",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-dark-plus",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-dark-modern",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-light-plus",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-light-modern",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-visual-studio-dark",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-visual-studio-light",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-default-high-contrast",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-default-high-contrast-light",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-kimbie-dark",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-monokai",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-monokai-dimmed",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-quiet-light",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-red",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-solarized-dark",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-solarized-light",
+      "passed": true
+    },
+    {
+      "name": "native_caption_and_palette_vscode-tomorrow-night-blue",
+      "passed": true
+    },
+    {
+      "name": "native_theme_preview_does_not_commit",
+      "passed": true
+    },
+    {
+      "name": "native_caption_preview_cancel_restores",
+      "passed": true
+    },
+    {
+      "name": "all_major_provider_choices",
+      "passed": true
+    },
+    {
+      "name": "optional_companions_off_before_consent",
+      "passed": true
+    },
+    {
+      "name": "optional_permissions_off_by_default",
+      "passed": true
+    },
+    {
+      "name": "window_stays_hidden",
+      "passed": true
+    },
+    {
+      "name": "workspace_access_denied_before_setup",
+      "passed": true
+    },
+    {
+      "name": "finish_requires_checks_and_consent",
+      "passed": true
+    },
+    {
+      "name": "frozen_cpu_memory_inference",
+      "passed": true
+    },
+    {
+      "name": "isolated_private_database_prepared",
+      "passed": true
+    },
+    {
+      "name": "provider_picker_has_18_named_and_custom_choices",
+      "passed": true
+    },
+    {
+      "name": "key_saved_through_onboarding_and_encrypted",
+      "passed": true
+    },
+    {
+      "name": "installed_hermes_isolation_verified",
+      "passed": true
+    },
+    {
+      "name": "onboarding_has_theme_previews",
+      "passed": true
+    },
+    {
+      "name": "agents_need_explicit_opt_in",
+      "passed": true
+    },
+    {
+      "name": "real_owned_backend_chat_ready",
+      "passed": true
+    },
+    {
+      "name": "first_space_created",
+      "passed": true
+    },
+    {
+      "name": "setup_stores_no_provider_secrets",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_39",
+      "passed": true
+    },
+    {
+      "name": "actual_model_reply_contains_new_nonce",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_41",
+      "passed": true
+    },
+    {
+      "name": "actual_model_uses_canonical_history",
+      "passed": true
+    },
+    {
+      "name": "chat_does_not_publish_automatic_memory",
+      "passed": true
+    },
+    {
+      "name": "widget_cannot_open_while_off",
+      "passed": true
+    },
+    {
+      "name": "widget_appearance_bridge_is_read_only",
+      "passed": true
+    },
+    {
+      "name": "saved_theme_shared_with_widget",
+      "passed": true
+    },
+    {
+      "name": "widget_dark_panel_uses_saved_palette",
+      "passed": true
+    },
+    {
+      "name": "widget_light_panel_uses_saved_palette",
+      "passed": true
+    },
+    {
+      "name": "overlay_exposes_chat_only",
+      "passed": true
+    },
+    {
+      "name": "pet_appearance_bridge_is_read_only",
+      "passed": true
+    },
+    {
+      "name": "pet_has_no_backend_bridge",
+      "passed": true
+    },
+    {
+      "name": "model_turn_completed_52",
+      "passed": true
+    },
+    {
+      "name": "overlay_real_chat_visible_to_main_service",
+      "passed": true
+    },
+    {
+      "name": "pet_menu_expands_to_fit_controls",
+      "passed": true
+    },
+    {
+      "name": "companion_testing_never_shows_any_window",
+      "passed": true
+    },
+    {
+      "name": "overlay_reuses_single_window",
+      "passed": true
+    },
+    {
+      "name": "pet_settings_navigates_main",
+      "passed": true
+    },
+    {
+      "name": "pet_can_be_restored_from_main",
+      "passed": true
+    },
+    {
+      "name": "closing_main_preserves_companion_session",
+      "passed": true
+    },
+    {
+      "name": "agent_run_denied_while_off",
+      "passed": true
+    },
+    {
+      "name": "actual_selected_file_profile_and_attributed_model_result",
+      "passed": true
+    },
+    {
+      "name": "native_worker_preserves_unicode_model_reply",
+      "passed": true
+    },
+    {
+      "name": "actual_dependent_workflow_completes_without_effects",
+      "passed": true
+    },
+    {
+      "name": "task_execution_does_not_publish_memory",
+      "passed": true
+    },
+    {
+      "name": "disabling_companions_destroys_windows",
+      "passed": true
+    },
+    {
+      "name": "restart_creates_fresh_backend",
+      "passed": true
+    },
+    {
+      "name": "companion_off_survives_restart",
+      "passed": true
+    },
+    {
+      "name": "appearance_preference_survives_native_restart",
+      "passed": true
+    },
+    {
+      "name": "saved_off_choices_survive_restart",
+      "passed": true
+    },
+    {
+      "name": "restart_preserves_real_conversation_without_replay",
+      "passed": true
+    },
+    {
+      "name": "app_needs_no_development_checkout_or_python_env",
+      "passed": true
+    },
+    {
+      "name": "settings_reopens_model_setup_without_deleting_spaces",
+      "passed": true
+    },
+    {
+      "name": "saved_provider_key_reused_without_showing_secret",
+      "passed": true
+    },
+    {
+      "name": "saved_key_can_verify_again_after_restart",
+      "passed": true
+    },
+    {
+      "name": "changing_model_requires_fresh_consent",
+      "passed": true
+    },
+    {
+      "name": "model_reconfiguration_preserves_existing_space",
+      "passed": true
+    },
+    {
+      "name": "model_reconfiguration_preserves_completed_conversation",
+      "passed": true
+    },
+    {
+      "name": "closing_main_without_companions_exits_cleanly",
+      "passed": true
+    },
+    {
+      "name": "owned_database_stopped_before_exit",
+      "passed": true
+    }
+  ],
+  "portable": {
+    "tier": "actual delivered portable Windows executable extracted in an unrelated fresh directory",
+    "passed": 11,
+    "checks": [
+      {
+        "name": "delivered_exe_extracts_and_shows_first_run",
+        "passed": true
+      },
+      {
+        "name": "portable_archive_matches_qualified_app",
+        "passed": true
+      },
+      {
+        "name": "all_extracted_backend_sources_and_model_files_match",
+        "passed": true
+      },
+      {
+        "name": "extracted_backend_is_present",
+        "passed": true
+      },
+      {
+        "name": "no_development_python_or_project_selected",
+        "passed": true
+      },
+      {
+        "name": "extracted_model_runs_real_cpu_inference",
+        "passed": true
+      },
+      {
+        "name": "portable_prepares_owned_database",
+        "passed": true
+      },
+      {
+        "name": "portable_verifies_installed_hermes",
+        "passed": true
+      },
+      {
+        "name": "portable_backend_is_live",
+        "passed": true
+      },
+      {
+        "name": "portable_fresh_memory_is_empty",
+        "passed": true
+      },
+      {
+        "name": "portable_quits_normally_and_preserves_profile",
+        "passed": true
+      }
+    ],
+    "portable_sha256": "4f233b82458feaa8039f1b46fdaeafa491d01f7065d0d573d9c57d66fd03e1bc",
+    "extracted_resource_files_verified": 2979,
+    "native_desktop_automation": false,
+    "live_google": false,
+    "live_tavily": false,
+    "chat_inference": "covered separately by the matching packaged app acceptance test"
+  },
+  "static_package_passed": 77,
+  "static_package_checks": [
+    {
+      "name": "included_main/index.js",
+      "passed": true
+    },
+    {
+      "name": "included_preload/index.cjs",
+      "passed": true
+    },
+    {
+      "name": "included_renderer/index.html",
+      "passed": true
+    },
+    {
+      "name": "companion_preload_included",
+      "passed": true
+    },
+    {
+      "name": "companion_preload_has_no_effect_or_private_operations",
+      "passed": true
+    },
+    {
+      "name": "version_and_variant",
+      "passed": true
+    },
+    {
+      "name": "build_label_matches_version",
+      "passed": true
+    },
+    {
+      "name": "no_application_menu_strip",
+      "passed": true
+    },
+    {
+      "name": "themed_native_caption",
+      "passed": true
+    },
+    {
+      "name": "isolated_renderer",
+      "passed": true
+    },
+    {
+      "name": "no_renderer_network_or_inline_script",
+      "passed": true
+    },
+    {
+      "name": "private_bootstrap_not_in_renderer",
+      "passed": true
+    },
+    {
+      "name": "onboarding_and_chat_inclusion",
+      "passed": true
+    },
+    {
+      "name": "no_generic_ipc_or_native_actions",
+      "passed": true
+    },
+    {
+      "name": "manifest_pairing",
+      "passed": true
+    },
+    {
+      "name": "embedded_frozen_manifest_matches_app",
+      "passed": true
+    },
+    {
+      "name": "bundled_python_executable_matches_stage",
+      "passed": true
+    },
+    {
+      "name": "python_interpreter_bundled",
+      "passed": true
+    },
+    {
+      "name": "build_python_trust_policy_preserved",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/chat.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/contracts.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/task_profiles.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/workflows.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/worker_bindings.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/worker_activation_ledger.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/runtime_probe.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/runtime.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/catalog.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/service.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/api.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hermes.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hub.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/opencode.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/model_routes.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/model-providers.json",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/platform/connections.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_wayfinder/workers/hermes_runner.py",
+      "passed": true
+    },
+    {
+      "name": "source_identity_memory/engine.py",
+      "passed": true
+    },
+    {
+      "name": "executed_worker_script_identity",
+      "passed": true
+    },
+    {
+      "name": "bundled_public_model_checksums",
+      "passed": true
+    },
+    {
+      "name": "no_private_state_credentials_or_debug_copies",
+      "passed": true
+    },
+    {
+      "name": "notice_FlagEmbedding-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_Python-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_Qdrant-BGE-model-card.md",
+      "passed": true
+    },
+    {
+      "name": "notice_python-dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "notice_javascript/react-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "notice_javascript/lucide-react-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "actual_fresh_profile_acceptance",
+      "passed": true
+    },
+    {
+      "name": "acceptance_matches_current_archive",
+      "passed": true
+    },
+    {
+      "name": "portable_is_windows_executable",
+      "passed": true
+    },
+    {
+      "name": "pinned_runtime_archive_identity",
+      "passed": true
+    },
+    {
+      "name": "pinned_runtime_bootstrap_identity",
+      "passed": true
+    },
+    {
+      "name": "pinned_opencode_binary_identity",
+      "passed": true
+    },
+    {
+      "name": "dependency_script_matches_source",
+      "passed": true
+    },
+    {
+      "name": "permissions_and_google_flow_are_main_owned",
+      "passed": true
+    },
+    {
+      "name": "all_vscode_theme_sources_included",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-abyss/themes/abyss-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/2026-light.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/light_modern.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/light_plus.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/light_vs.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/2026-dark.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/dark_modern.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/dark_plus.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/dark_vs.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/hc_black.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-defaults/themes/hc_light.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-kimbie-dark/themes/kimbie-dark-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-monokai/themes/monokai-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-monokai-dimmed/themes/dimmed-monokai-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-quietlight/themes/quietlight-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-red/themes/Red-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-solarized-dark/themes/solarized-dark-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-solarized-light/themes/solarized-light-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_source_extensions/theme-tomorrow-night-blue/themes/tomorrow-night-blue-color-theme.json",
+      "passed": true
+    },
+    {
+      "name": "vscode_theme_license_included",
+      "passed": true
+    },
+    {
+      "name": "appearance_is_main_owned_and_widget_is_read_only",
+      "passed": true
+    }
+  ],
+  "installed": {
+    "setup_exit": 0,
+    "installed_files_verified": 3008,
+    "installed_app_matches_qualified_payload": true,
+    "normal_profile_absent": false,
+    "clean_vm": false
+  },
+  "rea_evidence": [
+    "ev_b58ba208e33b0fcf96fd5508e0d2e05de1c0b04ec78301c0f4f925ff5e02e7d3",
+    "ev_887bff55bdec7f0457832fc6ef7b86623095d85c418a2e817dddb67ecff56b1d"
+  ],
+  "normal_profile_preserved": true,
+  "limitations": [
+    "Unsigned prerelease; clean-PC Docker/virtualization/UAC/restart path not qualified in a fresh VM.",
+    "NVIDIA Lightning was exercised live using an explicitly authorized test key. Other provider protocols used local synthetic fixtures; no live certification of every vendor account.",
+    "Model examples come from the pinned CLI catalog, except Perplexity Sonar documentation examples; account access and ongoing model availability vary.",
+    "Subscription OAuth, AWS IAM, Vertex service accounts and Azure deployment auth are separate methods, not implemented by the API-key picker.",
+    "Google live consent and native global-hotkey interaction were not exercised.",
+    "The broader rebuild, provider writes, recurring schedules and native desktop actions remain unfinished.",
+    "Current Codex app was unavailable. Settings research used four retained hash-verified appearance assets and official documentation; full current navigation was not observed.",
+    "Theme palettes adapt VS Code workbench tokens to Wayfinder; this is not a pixel-identical editor implementation."
+  ]
+}

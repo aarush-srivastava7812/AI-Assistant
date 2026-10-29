@@ -21,7 +21,7 @@ check('version_and_variant',metadata.version===JSON.parse(await fs.readFile(path
 check('build_label_matches_version',release.build==='wayfinder-desktop/'+metadata.version);
 const main=get('dist/main/index.js').toString(),html=get('dist/renderer/index.html').toString();
 check('no_application_menu_strip',main.includes('Menu.setApplicationMenu(null)'));
-check('light_native_caption',main.includes('titleBarStyle: "hidden"')&&main.includes('titleBarOverlay:'));
+check('themed_native_caption',main.includes('titleBarStyle: "hidden"')&&main.includes('titleBarOverlay:'));
 check('isolated_renderer',main.includes('contextIsolation: true')&&main.includes('nodeIntegration: false')&&main.includes('sandbox: true'));
 check('no_renderer_network_or_inline_script',html.includes("connect-src 'none'")&&html.includes("script-src 'self'"));
 const renderer=files.filter(p=>p.startsWith('/dist/renderer/')&&p.endsWith('.js')).map(p=>get(p.slice(1)).toString()).join('\n');
@@ -59,5 +59,10 @@ const chatManifest=JSON.parse(await fs.readFile(path.join(resources,'setup/openc
 check('pinned_opencode_binary_identity',await hash(path.join(resources,'setup/opencode.exe'))===chatManifest.exe_sha256&&chatManifest.version==='1.19.5');
 check('dependency_script_matches_source',await hash(path.join(resources,'setup/install-dependencies.ps1'))===await hash(path.join(root,'resources/setup/install-dependencies.ps1')));
 check('permissions_and_google_flow_are_main_owned',main.includes('PermissionStore')&&main.includes('ModelKeyStore')&&main.includes('code_challenge_method')&&main.includes('127.0.0.1')&&main.includes('applyCompanionPreferences'));
+const themeProvenance=JSON.parse(await fs.readFile(path.join(resources,'themes/vscode/provenance.json'),'utf8'));
+check('all_vscode_theme_sources_included',themeProvenance.themeCount===19&&themeProvenance.commit==='2c33b50b16c472efe58357d1d2a8a5414bc23fbf');
+for(const file of themeProvenance.files)check('vscode_theme_source_'+file.path,await hash(path.join(resources,'themes/vscode',file.path))===file.sha256);
+check('vscode_theme_license_included',(await fs.stat(path.join(resources,'licenses/VSCode-Themes-LICENSE.txt'))).size>1000);
+check('appearance_is_main_owned_and_widget_is_read_only',main.includes('AppearanceStore')&&main.includes('appearance:save')&&main.includes('appearance:preview'));
 const evidence={build:release.build,checks,passed:checks.length,asar_sha256:await hash(archive),backend_sha256:await hash(backend),portable_sha256:await hash(portable),setup_sha256:await hash(setup),native_desktop_automation:false,google_live:false,actual_packaged_checks:actual.passed};
 await fs.writeFile(path.join(root,'test-results/onboarding-build-evidence.json'),JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence));

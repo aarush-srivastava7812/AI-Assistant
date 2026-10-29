@@ -45,7 +45,20 @@ try{
   let page=await launch();await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();
   check('fresh_profile_shows_onboarding',true);
   check('no_application_menu_strip',await application.evaluate(({Menu})=>Menu.getApplicationMenu()===null));
-  check('light_integrated_caption',await page.locator('.window-titlebar').evaluate(e=>getComputedStyle(e).backgroundColor==='rgb(255, 255, 255)'));
+  await page.waitForFunction(()=>!!window.appearanceAPI);
+  const colorThemes=JSON.parse(await fs.readFile(path.join(root,'src/shared/vscode-themes.json'),'utf8'));
+  for(const theme of colorThemes){
+    await page.evaluate(theme=>window.appearanceAPI.save({mode:theme.kind,[theme.kind==='light'?'lightTheme':'darkTheme']:theme.id}),theme);
+    await page.waitForFunction(id=>document.documentElement.dataset.colorTheme===id,theme.id);
+    check('native_caption_and_palette_'+theme.id,await application.evaluate(({BrowserWindow},theme)=>{const main=BrowserWindow.getAllWindows().find(w=>!w.webContents.getURL().includes('companion='));return main.getBackgroundColor().slice(0,7).toLowerCase()===theme.native.background.toLowerCase();},theme));
+  }
+  await page.evaluate(()=>window.appearanceAPI.save({mode:'light',lightTheme:'vscode-light-modern'}));
+  await page.waitForFunction(()=>document.documentElement.dataset.colorTheme==='vscode-light-modern');
+  await page.evaluate(()=>window.appearanceAPI.preview('vscode-monokai'));
+  check('native_theme_preview_does_not_commit',await page.evaluate(async()=>{const value=await window.appearanceAPI.get();return value.resolvedTheme==='vscode-light-modern';}));
+  await page.evaluate(()=>window.appearanceAPI.preview(null));
+  check('native_caption_preview_cancel_restores',await application.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(w=>!w.webContents.getURL().includes('companion='))?.getBackgroundColor().toLowerCase()==='#ffffff'));
+
   check('all_major_provider_choices',await page.evaluate(async()=>{const s=await window.wayfinder.setupStatus();return !s.modelKey.configured;}));
   check('optional_companions_off_before_consent',application.windows().length===1);
   check('optional_permissions_off_by_default',await page.evaluate(async()=>{const p=await window.wayfinder.setupChoices();return !p.pet&&!p.widget&&!p.agents&&!p.folders.length;}));
@@ -69,6 +82,7 @@ try{
   check('key_saved_through_onboarding_and_encrypted',sealed.length>100&&!sealed.includes(Buffer.from(testKey)));
   await page.getByRole('button',{name:'Verify connection again'}).waitFor();check('installed_hermes_isolation_verified',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
+  check('onboarding_has_theme_previews',await page.getByRole('group',{name:'Color scheme'}).count()===1&&await page.getByLabel('Suggested themes').locator('button').count()===4);
   check('agents_need_explicit_opt_in',!(await page.getByLabel('Enable advisory task agents and source workflows').isChecked()));
   await captureOwnWindow(page,'actual-onboarding-permissions.png');
   await page.getByLabel('Workspace name',{exact:true}).fill('New user acceptance');await page.getByLabel(/I agree to send/).check();await page.getByRole('button',{name:/Create workspace and open Wayfinder/}).click();
@@ -97,8 +111,17 @@ try{
   while(Date.now()<overlayDeadline){overlay=application.windows().find(p=>p.url().includes('companion=overlay'));if(overlay)break;await new Promise(resolve=>setTimeout(resolve,100));}
   assert(overlay,'Overlay window must load');overlay.setDefaultTimeout(30000);await overlay.emulateMedia({reducedMotion:'reduce'});
   await overlay.getByRole('button',{name:'New conversation',exact:true}).waitFor();
+  check('widget_appearance_bridge_is_read_only',await overlay.evaluate(()=>!!window.appearanceAPI&&!('save' in window.appearanceAPI)&&!('preview' in window.appearanceAPI)));
+  await page.evaluate(()=>window.appearanceAPI.save({mode:'dark',darkTheme:'vscode-monokai'}));
+  await overlay.waitForFunction(()=>document.documentElement.dataset.colorTheme==='vscode-monokai');
+  check('saved_theme_shared_with_widget',true);
+  check('widget_dark_panel_uses_saved_palette',await overlay.evaluate(()=>{const dock=document.querySelector('.wfa-chat-dock'),sample=document.createElement('span');sample.style.backgroundColor='var(--surface)';document.body.append(sample);const matches=getComputedStyle(dock).backgroundColor===getComputedStyle(sample).backgroundColor&&document.querySelector('.wfa-root').dataset.theme==='dark';sample.remove();return matches;}));
+  await page.evaluate(()=>window.appearanceAPI.save({mode:'light'}));
+  await overlay.waitForFunction(()=>document.documentElement.dataset.colorTheme==='vscode-light-modern');
+  check('widget_light_panel_uses_saved_palette',await overlay.evaluate(()=>{const dock=document.querySelector('.wfa-chat-dock'),header=document.querySelector('.wfa-chat-header'),sample=document.createElement('span');document.body.append(sample);sample.style.backgroundColor='var(--surface)';const background=getComputedStyle(dock).backgroundColor===getComputedStyle(sample).backgroundColor;sample.style.backgroundColor='var(--panel)';const matches=background&&getComputedStyle(header).backgroundColor===getComputedStyle(sample).backgroundColor&&document.querySelector('.wfa-root').dataset.theme==='light';sample.remove();return matches;}));
   check('overlay_exposes_chat_only',await overlay.evaluate(()=>typeof window.wayfinder.sendChat==='function'&&!('inventory' in window.wayfinder)&&!('reviewMemory' in window.wayfinder)));
   const pet=application.windows().find(p=>p.url().includes('companion=pet'));assert(pet);
+  check('pet_appearance_bridge_is_read_only',await pet.evaluate(()=>!!window.appearanceAPI&&!('save' in window.appearanceAPI)&&!('preview' in window.appearanceAPI)));
   check('pet_has_no_backend_bridge',await pet.evaluate(()=>typeof window.wayfinder==='undefined'));
   const previousOverlayCid=await overlay.locator('.conversation-workspace').getAttribute('data-conversation-id');
   await overlay.getByRole('button',{name:'New conversation',exact:true}).evaluate(button=>button.click());
@@ -151,10 +174,12 @@ try{
   page=await launch();await page.getByText('Backend connected',{exact:true}).waitFor();state=await page.evaluate(()=>window.wayfinder.status());
   check('restart_creates_fresh_backend',state.instance_generation!==generation&&state.capabilities.general_chat);
   check('companion_off_survives_restart',await application.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().length===1));
+  check('appearance_preference_survives_native_restart',await page.evaluate(async()=>(await window.appearanceAPI.get()).lightTheme==='vscode-light-modern'&&(await window.appearanceAPI.get()).darkTheme==='vscode-monokai'));
   check('saved_off_choices_survive_restart',await page.evaluate(async()=>{const p=await window.wayfinder.setupChoices();return !p.pet&&!p.widget&&!p.agents;}));
   const persisted=await page.evaluate(({sid,cid})=>window.wayfinder.chat(sid,cid),{sid,cid});check('restart_preserves_real_conversation_without_replay',persisted.turns.length===2&&persisted.turns.every(t=>t.status==='completed'));
   check('app_needs_no_development_checkout_or_python_env',!env.WAYFINDER_PROJECT_ROOT&&!env.WAYFINDER_PYTHON&&await fs.stat(path.join(root,'release/win-unpacked/resources/backend/WayfinderBackend.exe')).then(s=>s.isFile()));
   await page.getByRole('button',{name:'Open settings',exact:true}).click();
+  await page.getByRole('navigation',{name:'Settings categories'}).getByRole('button',{name:'AI provider',exact:true}).click();
   await page.getByRole('button',{name:'Change provider or model',exact:true}).click();
   await page.getByRole('heading',{name:'Start with a private foundation.'}).waitFor();
   check('settings_reopens_model_setup_without_deleting_spaces',true);

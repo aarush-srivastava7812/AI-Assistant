@@ -15,3 +15,5 @@ Verification uses hidden app windows and synthetic data. It does not press the O
 Verified final build: 110 frontend tests, 10 rendered scenarios, 31 actual packaged checks, 11 outer portable checks and 39 static package checks passed. All 2,973 staged backend/source/model resources matched after extraction. Actual managed-model overlay chat, shared service history, menu expansion, Settings navigation, repeated opening, main-close persistence and restart passed. The hidden harness selects windows by route, waits for conversation readiness, dispatches synthetic DOM input events and captures only app windows with Electron. These checks do not certify a physical global-hotkey press or human visual acceptance.
 
 SHA-256: `8449c2eb5962a73e2bf3c444f527912c093c67090121fbceb3716a1bd956e339`. [Exact verification report](../../desktop-app/release/Wayfinder-0.5.0-preview.4-verification.json).
+
+The executable is now published: [Download preview 4](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.4/Wayfinder-0.5.0-preview.4-Windows-x64.exe). [All published executables and their digests](DESKTOP-RELEASES.json).

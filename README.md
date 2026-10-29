@@ -1,6 +1,6 @@
 # AI assistant
 
-Current local candidate: **0.5.0-preview.4**, with the GitHub pet and widget connected to desktop chat. See [companion usage and verification](docs/platform/COMPANION-DESKTOP.md) and [remaining rebuild work](docs/platform/REBUILD-CHECKPOINT-03.md). The full rebuild is not complete.
+Current preview: [Download Wayfinder 0.5.0-preview.4 for Windows](https://github.com/aarush-srivastava7812/AI-Assistant/releases/download/v0.5.0-preview.4/Wayfinder-0.5.0-preview.4-Windows-x64.exe), with the GitHub pet and widget connected to desktop chat. See [companion usage and verification](docs/platform/COMPANION-DESKTOP.md) and [remaining rebuild work](docs/platform/REBUILD-CHECKPOINT-03.md). The full rebuild is not complete.
 
 **Windows desktop:** [Download Wayfinder 0.4.1](https://github.com/aarush-srivastava7812/AI-Assistant/releases/tag/v0.4.1). The [release folder](desktop-app/release/README.md) contains download links, SHA-256 checksums and build verification reports.
 

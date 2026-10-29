@@ -1,0 +1,52 @@
+:root {
+  --wfa-bg: #0B1020;
+  --wfa-panel: #141F33;
+  --wfa-raised: #1B2940;
+  --wfa-cyan: #29D3E8;
+  --wfa-blue: #5278FF;
+  --wfa-text: #F2F6FC;
+  --wfa-muted: #A0AEC2;
+  --wfa-line: #2B3A52;
+}
+
+.wfa-root { position: fixed; inset: 0; overflow: hidden; isolation: isolate; color: var(--wfa-text); background: transparent; font: 13px/1.45 Inter, "Segoe UI", system-ui, sans-serif; }
+.wfa-backdrop { position: absolute; inset: 0; background: rgba(3, 8, 18, .66); animation: wfa-backdrop-in 220ms ease-out both; }
+
+/* Starts at the actual bottom-right edge, independent of the persistent pet's saved position. */
+.wfa-entrance-stage { position: absolute; right: 26px; bottom: 22px; width: 190px; display: grid; justify-items: center; gap: 6px; pointer-events: none; z-index: 5; animation: wfa-companion-enter 560ms cubic-bezier(.18,.86,.24,1) both; }
+.wfa-entrance-companion { width: 108px; height: 108px; position: relative; display: grid; place-items: center; filter: drop-shadow(0 8px 28px #0009); }
+.wfa-companion-glyph { width: 100px; height: 100px; animation: wfa-greeting-bob 760ms 500ms ease-in-out 2; }
+.wfa-sparkle { position: absolute; right: 0; top: 4px; color: var(--wfa-cyan); animation: wfa-spark-pop 420ms 300ms both; }
+.wfa-greeting-bubble { position: absolute; right: 92px; top: 2px; padding: 8px 11px; white-space: nowrap; background: var(--wfa-panel); border: 1px solid var(--wfa-line); color: var(--wfa-text); animation: wfa-bubble-in 240ms 380ms both; }
+.wfa-entrance-caption { display: grid; justify-items: center; gap: 3px; text-align: center; text-shadow: 0 2px 10px #000; }
+.wfa-entrance-caption strong { font-size: 13px; font-weight: 650; }
+.wfa-entrance-caption small { font-size: 10px; color: #bdc9d9; }
+.wfa-eyebrow { font-size: 9px; letter-spacing: .15em; color: var(--wfa-cyan); }
+
+.wfa-chat-dock { position: absolute; inset-block: 0; right: 0; width: min(48vw, 720px); min-width: 410px; display: flex; flex-direction: column; background: var(--wfa-bg); border-left: 1px solid var(--wfa-line); box-shadow: -24px 0 70px #0006; z-index: 10; animation: wfa-dock-in 360ms cubic-bezier(.2,.8,.2,1) both; }
+.wfa-chat-header { min-height: 66px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #0E1628; border-bottom: 1px solid var(--wfa-line); }
+.wfa-brand, .wfa-header-actions, .wfa-brand-mark, .wfa-chat-meta, .wfa-chat-meta span { display: flex; align-items: center; }
+.wfa-brand { gap: 10px; min-width: 0; }
+.wfa-brand-mark { width: 34px; height: 34px; justify-content: center; color: var(--wfa-cyan); border: 1px solid #28506a; background: #12263a; }
+.wfa-brand-copy { display: grid; gap: 1px; }
+.wfa-brand-copy strong { font-size: 12px; letter-spacing: .12em; }
+.wfa-brand-copy small { font-size: 9px; color: var(--wfa-muted); letter-spacing: .1em; }
+.wfa-header-actions { gap: 12px; }
+.wfa-local-label { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #8de5c4; white-space: nowrap; }
+.wfa-close { display: grid; place-items: center; width: 34px; height: 34px; color: var(--wfa-muted); border: 1px solid var(--wfa-line); background: transparent; cursor: pointer; }
+.wfa-close:hover { color: var(--wfa-text); background: var(--wfa-raised); }
+.wfa-chat-meta { justify-content: space-between; padding: 9px 18px; color: var(--wfa-muted); border-bottom: 1px solid #202e43; font-size: 10px; }
+.wfa-chat-meta span { gap: 6px; }
+.wfa-chat-content { flex: 1; min-height: 0; overflow: auto; }
+.wfa-chat-footer { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 18px; color: var(--wfa-muted); background: #0E1628; border-top: 1px solid var(--wfa-line); font-size: 10px; }
+.wfa-chat-footer button { color: var(--wfa-text); background: transparent; border: 1px solid var(--wfa-line); padding: 6px 9px; cursor: pointer; white-space: nowrap; }
+
+@keyframes wfa-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wfa-companion-enter { from { opacity: 0; transform: translate(100px, 120px) scale(.52); } 72% { opacity: 1; transform: translate(-5px, -4px) scale(1.035); } to { opacity: 1; transform: translate(0, 0) scale(1); } }
+@keyframes wfa-dock-in { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes wfa-greeting-bob { 0%, 100% { transform: translateY(0) rotate(0); } 35% { transform: translateY(-7px) rotate(-4deg); } 70% { transform: translateY(-2px) rotate(4deg); } }
+@keyframes wfa-spark-pop { from { opacity: 0; transform: scale(.2) rotate(-40deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes wfa-bubble-in { from { opacity: 0; transform: translateY(6px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+@media (max-width: 900px) { .wfa-chat-dock { width: 100%; min-width: 0; } .wfa-entrance-stage { right: auto; left: 14px; bottom: 12px; transform-origin: bottom left; scale: .78; } .wfa-entrance-caption { display: none; } .wfa-chat-footer { font-size: 9px; } }
+@media (prefers-reduced-motion: reduce) { .wfa-backdrop, .wfa-entrance-stage, .wfa-companion-glyph, .wfa-sparkle, .wfa-greeting-bubble, .wfa-chat-dock { animation: none !important; transition: none !important; } }

@@ -9,6 +9,7 @@ import { requireMainSender } from './sender';
 import { existsSync } from 'node:fs';
 import { runtimeChoice } from './runtime-path';
 import release from '../../FEATURES.json';
+import { initCompanion, shutdownCompanion } from './companion-windows';
 
 declare const WAYFINDER_SOURCE_ROOT: string;
 const appDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -85,11 +86,15 @@ else {
     ]));
     main.loadFile(rendererFile);
     void setup.connect();
+    // Initialise companion windows after the main window is ready.
+    // The companion preload path is resolved relative to the same appDirectory.
+    initCompanion(appDirectory, rendererFile, main);
   });
   app.on('window-all-closed', () => app.quit());
   app.on('before-quit', event => {
     if (quitting) return;
     event.preventDefault(); quitting = true;
+    shutdownCompanion();
     void setup.close().finally(() => app.quit());
   });
 }

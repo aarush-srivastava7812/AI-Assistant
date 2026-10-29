@@ -10,6 +10,11 @@ assert os.name=='nt' and sys.version_info[:2]==(3,12)
 tools=app/'.cache/packaging-tools';sys.path.insert(0,str(tools));sys.path.insert(0,str(root))
 from PyInstaller.__main__ import run
 source=bundle/'backend-project'
+def clear_owned_stage(path):
+    resolved=path.resolve()
+    assert resolved.is_relative_to(bundle.resolve()) and resolved!=bundle.resolve()
+    if resolved.exists():shutil.rmtree(resolved)
+clear_owned_stage(source)
 for package in ['memory','wayfinder']:
     for p in (root/package).rglob('*'):
         if p.is_file() and p.suffix in {'.py','.json','.yaml','.yml','.toml'} and not any(part in {'__pycache__','_index'} for part in p.parts):
@@ -24,7 +29,7 @@ assert len(model_files)>=5 and any(p.suffix=='.onnx' for p in model_files), 'Com
 for p in model_files:
     resolved=p.resolve();assert resolved.is_relative_to(cached.resolve())
     dest=bundle/'models'/cached.name/p.relative_to(cached);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(resolved,dest)
-args=[str(app/'backend/host.py'),'--name','WayfinderBackend','--onedir','--console','--noconfirm','--distpath',str(bundle/'frozen'),'--workpath',str(app/'.cache/freeze-work'),'--specpath',str(app/'.cache'),'--paths',str(root),'--add-data',str(app/'FEATURES.json')+';.', '--add-data',str(source/'memory')+';memory','--add-data',str(source/'wayfinder')+';wayfinder']
+args=[str(app/'backend/host.py'),'--name','WayfinderBackend','--onedir','--console','--noconfirm','--clean','--distpath',str(bundle/'frozen'),'--workpath',str(app/'.cache/freeze-work'),'--specpath',str(app/'.cache'),'--paths',str(root),'--add-data',str(app/'FEATURES.json')+';.', '--add-data',str(source/'memory')+';memory','--add-data',str(source/'wayfinder')+';wayfinder']
 # This installed Python's ssl.py explicitly loads this public trust-policy file.
 # Retain the installed verification policy instead of disabling TLS verification.
 trust_file=Path(ssl.__file__).with_name('codex-rejected-cas.pem')
@@ -37,7 +42,7 @@ if '--stage-only' in sys.argv:
     embedded=bundle/'frozen/WayfinderBackend/_internal/FEATURES.json'
     assert embedded.is_file() and embedded.read_bytes()==(app/'FEATURES.json').read_bytes(), 'Frozen backend manifest differs; run a full freeze before staging'
 else:run(args)
-target=bundle/'backend';target.mkdir(exist_ok=True)
+target=bundle/'backend';clear_owned_stage(target);target.mkdir(exist_ok=True)
 shutil.copytree(bundle/'frozen/WayfinderBackend',target,dirs_exist_ok=True,ignore=shutil.ignore_patterns('__pycache__','*.pyc','*.debug-original'))
 if trust_file.exists():shutil.copyfile(trust_file,target/'_internal'/trust_file.name)
 # The host uses an adjacent manifest. Frozen imports also have the internal copy.

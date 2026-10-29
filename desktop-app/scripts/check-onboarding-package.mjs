@@ -12,7 +12,7 @@ const files=listPackage(archive).map(p=>p.replaceAll('\\','/')),get=p=>extractFi
 const checks=[],check=(name,ok)=>{assert(ok,name);checks.push({name,passed:true});};
 const metadata=JSON.parse(get('package.json').toString()),release=JSON.parse(await fs.readFile(path.join(root,'FEATURES.json'),'utf8'));
 for(const name of ['main/index.js','preload/index.cjs','renderer/index.html'])check('included_'+name,files.includes('/dist/'+name));
-check('version_and_variant',metadata.version==='0.5.0-preview.2'&&metadata.version===release.version&&release.variant==='workspace-parity');
+check('version_and_variant',metadata.version===JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8')).version&&metadata.version===release.version&&release.variant==='workspace-parity');
 const main=get('dist/main/index.js').toString(),html=get('dist/renderer/index.html').toString();
 check('isolated_renderer',main.includes('contextIsolation: true')&&main.includes('nodeIntegration: false')&&main.includes('sandbox: true'));
 check('no_renderer_network_or_inline_script',html.includes("connect-src 'none'")&&html.includes("script-src 'self'"));
@@ -27,8 +27,9 @@ staged.files=Object.fromEntries(Object.entries(staged.files).map(([name,digest])
 const backend=path.join(resources,'backend/WayfinderBackend.exe');
 check('bundled_python_executable_matches_stage',await hash(backend)===staged.files['backend/WayfinderBackend.exe']);
 check('python_interpreter_bundled',(await fs.stat(path.join(resources,'backend/_internal/python312.dll'))).isFile());
-check('installed_python_trust_policy_bundled',(await fs.stat(path.join(resources,'backend/_internal/codex-rejected-cas.pem'))).size===906);
-for(const file of ['wayfinder/chat.py','wayfinder/platform/contracts.py','wayfinder/platform/task_profiles.py','wayfinder/platform/runtime_probe.py','wayfinder/platform/catalog.py','wayfinder/service.py','wayfinder/api.py','wayfinder/workers/hermes_runner.py','memory/engine.py'])check('source_identity_'+file,await hash(path.join(root,'..',file))===await hash(path.join(resources,'backend-project',file)));
+const trustPolicy=staged.files['backend/_internal/codex-rejected-cas.pem'];
+check('build_python_trust_policy_preserved',!trustPolicy||await hash(path.join(resources,'backend/_internal/codex-rejected-cas.pem'))===trustPolicy);
+for(const file of ['wayfinder/chat.py','wayfinder/platform/contracts.py','wayfinder/platform/task_profiles.py','wayfinder/platform/workflows.py','wayfinder/platform/worker_bindings.py','wayfinder/platform/worker_activation_ledger.py','wayfinder/platform/runtime_probe.py','wayfinder/platform/catalog.py','wayfinder/service.py','wayfinder/api.py','wayfinder/workers/hermes_runner.py','memory/engine.py'])check('source_identity_'+file,await hash(path.join(root,'..',file))===await hash(path.join(resources,'backend-project',file)));
 const model=path.join(resources,'models/models--qdrant--bge-small-en-v1.5-onnx-q/blobs/51f1bd');
 // Compare every staged model file, including the dereferenced snapshot contents.
 let modelCount=0;for(const [name,digest] of Object.entries(staged.files))if(name.startsWith('models/')){assert(await hash(path.join(resources,name))===digest,'Model checksum '+name);modelCount++;}

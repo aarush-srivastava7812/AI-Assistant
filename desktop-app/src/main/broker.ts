@@ -8,7 +8,7 @@ export interface NativeUI {
 }
 const TASK = 'general';
 function text(value: unknown, max = 200): string {
-  if (typeof value !== 'string' || !value.trim() || value.length > max || value.includes('\0')) throw new Error(`Enter text of 1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚¢ÃƒÆ’Ã‚¢Ãƒ¢Ã¢â€š¬Ã…¡Ãƒâ€šÃ‚¬ÃƒÆ’Ã‚¢Ãƒ¢Ã¢â‚¬Å¡Ã‚¬Ãƒâ€¦Ã¢â‚¬Å“${max} characters.`);
+  if (typeof value !== 'string' || !value.trim() || value.length > max || value.includes('\0')) throw new Error(`Enter text of 1 to ${max} characters.`);
   return value.trim();
 }
 function object(value: unknown, allowed: string[]): Row {
@@ -45,7 +45,7 @@ export function createHandlers(transport: Transport, ui: NativeUI, lifecycle: { 
       if (proposal.status !== 'pending') return proposal;
       if (proposal.expires * 1000 <= Date.now()) throw new Error('Review expired. Create and inspect a fresh proposal.');
       const detail = visible({ space: sid, task: TASK, operation: type === 'memory' ? 'memory.apply_event' : 'git.create_branch', id: proposal.id, digest: proposal.digest, expires: new Date(proposal.expires * 1000).toISOString(), exact_plan: proposal.plan });
-      if (detail.length > 10000) throw new Error('Full proposal exceeds this buildÃƒÆ’Ã†â€™Ãƒâ€šÃ‚¢ÃƒÆ’Ã‚¢Ãƒ¢Ã¢â€š¬Ã…¡Ãƒâ€šÃ‚¬ÃƒÆ’Ã‚¢Ãƒ¢Ã¢â€š¬Ã…¾Ãƒâ€šÃ‚¢s trusted review limit; no approval was issued.');
+      if (detail.length > 10000) throw new Error('Full proposal exceeds the trusted review limit for this build; no approval was issued.');
       const approved = await ui.confirm(type === 'memory' ? 'Review exact memory change' : 'Review new local branch', detail);
       if (proposal.expires * 1000 <= Date.now()) throw new Error('Review expired while open. No approval was sent.');
       return request(`${prefix}_decide`, sid, { id: aid, digest: proposal.digest, approve: approved });
@@ -67,14 +67,15 @@ export function createHandlers(transport: Transport, ui: NativeUI, lifecycle: { 
     cancelChat: (space,conversation,turn) => transport.call('chat_cancel',{space:text(space),conversation:text(conversation),turn:text(turn)}),
     lookupChat: (space,conversation,request) => transport.call('chat_lookup',{space:text(space),conversation:text(conversation),request_id:text(request,100)}),
     deleteChat: (space,conversation) => transport.call('chat_delete',{space:text(space),conversation:text(conversation)}),
-    startSourceTask:async(space,profile,sourceKind,source,goal)=>{
+    startSourceTask:async(space,profile,sourceKind,source,goal,preset)=>{
       const pid=kind(profile,['A01','A02','A03','A04','A05','A06']),sourceType=kind(sourceKind,['google','external']);
       const input=object(structuredClone(source),sourceType==='google'?['service','resource','limit','time_min','time_max','range']:['provider','intent','query','item']);
-      const question=text(goal,1000),review=visible({space:text(space),profile:pid,source_kind:sourceType,exact_source:input,goal:question,disclosure:'This explicit bounded read projection is sent to the managed Hermes model. Metadata, snippets and partial content remain partial. No tools, sends, external writes or automatic memory updates.'});
+      const presetId=preset===undefined?undefined:kind(preset,['P01','P02','P03','P04','P06']);
+      const question=text(goal,1000),review=visible({space:text(space),profile:pid,preset:presetId,source_kind:sourceType,exact_source:input,goal:question,disclosure:'This explicit bounded read projection is sent to the managed Hermes model. Metadata, snippets and partial content remain partial. No tools, sends, external writes or automatic memory updates.'});
       if(review.length>8000)throw new Error('Source review exceeds its display budget.');
       if(!await ui.confirm('Review selected source and model disclosure',review))throw new Error('Source task cancelled. Nothing was read or dispatched.');
       const grant=await request(sourceType==='google'?'platform_google_grant':'platform_external_grant',space,input);
-      try{return await request('platform_profile_start',space,{request:{request_id:randomUUID(),profile_id:pid,profile_version:'1',variant:'source_contract',source_kind:sourceType,reference:grant.id,goal:question}});}
+      try{return await request('platform_profile_start',space,{request:{request_id:randomUUID(),profile_id:pid,profile_version:'1',variant:'source_contract',source_kind:sourceType,reference:grant.id,goal:question,...(presetId?{preset_id:presetId}:{})}});}
       catch(error){await request(sourceType==='google'?'platform_google_revoke':'platform_external_revoke',space,{grant:grant.id}).catch(()=>{});throw error;}
     },
     startWorkflow:async(space,input)=>{

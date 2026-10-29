@@ -1,5 +1,5 @@
 {
-  "build": "wayfinder-desktop/0.5.0-preview.2",
+  "build": "wayfinder-desktop/0.5.0-preview.3",
   "scope": "read_only_connections_candidate",
   "connected": [
     {
@@ -211,7 +211,7 @@
   "native_testing_enabled": false,
   "schema": "wayfinder.desktop-inclusion/v1",
   "variant": "workspace-parity",
-  "version": "0.5.0-preview.2",
+  "version": "0.5.0-preview.3",
   "navigation": [
     {
       "id": "home",

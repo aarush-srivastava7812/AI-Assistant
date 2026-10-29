@@ -92,3 +92,20 @@ it('freezes the reviewed workflow before awaiting the trusted confirmation',asyn
  const pending=handlers.startWorkflow('space',definition);await vi.waitFor(()=>expect(ui.confirm).toHaveBeenCalled());definition.nodes[0].question='CHANGED_AFTER_REVIEW';finish(true);await pending;
  expect(call).toHaveBeenLastCalledWith('platform_workflow_start',expect.objectContaining({request:expect.objectContaining({definition:expect.objectContaining({nodes:[expect.objectContaining({question:'Original question'})]})})}));
 });
+
+it('provider task cancellation reads nothing and dispatches nothing',async()=>{
+ const {handlers,call}=setup(false);
+ await expect(handlers.startSourceTask('space','A05','external',{provider:'notion',intent:'read',item:'page'},'Summarize','P04')).rejects.toThrow(/cancelled/);
+ expect(call).not.toHaveBeenCalled();
+});
+
+it('provider task freezes the selected read and passes its preset binding without fallback',async()=>{
+ const {handlers,call,ui}=setup(true);let finish!:(value:boolean)=>void;
+ ui.confirm.mockImplementation(()=>new Promise(resolve=>{finish=resolve;}));
+ call.mockImplementation(async op=>op==='platform_external_grant'?{id:'trusted-grant'}:{});
+ const source={provider:'notion',intent:'read',item:'original-page'};
+ const pending=handlers.startSourceTask('space','A05','external',source,'Summarize','P04');
+ await vi.waitFor(()=>expect(ui.confirm).toHaveBeenCalled());source.item='changed-page';finish(true);await pending;
+ expect(call).toHaveBeenCalledWith('platform_external_grant',expect.objectContaining({item:'original-page'}));
+ expect(call).toHaveBeenLastCalledWith('platform_profile_start',expect.objectContaining({request:expect.objectContaining({preset_id:'P04',reference:'trusted-grant',source_kind:'external',variant:'source_contract'})}));
+});

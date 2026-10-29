@@ -1,9 +1,9 @@
-# Wayfinder desktop · 0.3.0
+﻿# Wayfinder desktop 0.5.0-preview.3
 
-The GitHub UI, existing scoped backend and consolidated task-profile layer share one application runtime. [How to test](../docs/platform/TESTING-APP.md) · [current implementation/results](../docs/platform/CONSOLIDATED-IMPLEMENTATION.md).
+Current verification and remaining work: [Checkpoint 3](../docs/platform/REBUILD-CHECKPOINT-03.md).
 
-From the current checkout root, `Start-Wayfinder.ps1 -Demo` launches the new UI with synthetic input, an isolated app profile/runtime and disposable database. Keep the terminal open until you quit. This does not reset normal Iron Web data. `Test-Wayfinder.ps1` runs terminal/headless regression by default; additional modes are documented in the guide.
+The portable executable bundles Python, the backend and the CPU memory model. Docker Desktop with a local Linux engine and the existing managed Hermes/OpenShell installation remain prerequisites.
 
-M00 routes tasks; eight profiles and six app presets are versioned metadata. A01/A05/A06 have the selected UTF-8 file variant via one existing W35/Hermes job. A07 opens the existing Memory view. No new agent loop, scheduler or memory engine was added. Account-backed presets, broad development execution, full forgetting and ordinary general chat remain unqualified. W37 and Fitness stay disabled.
+Chat uses the approved model with bounded history. A01-A06 expose selected-source advisory tasks. P01/P02/P03/P04/P06 bind individual Google or Notion read operations to the appropriate profile; access and exact source disclosure are checked at use. P05 GitHub, provider writes, scheduling, native desktop actions and Fitness remain unavailable. A07 opens the existing scoped Memory view. The full 95-task rebuild is not complete.
 
-The unsigned Windows development folder is `release/win-unpacked`; keep it intact. It requires this source checkout, compatible existing Python, FalkorDB/cached embeddings and the managed Hermes setup for tasks. No runtime data or credentials are copied or installed automatically. Google OAuth helper dependencies are prepared locally, while Desktop client/consent remain human steps. Codex account connections are not Wayfinder product authorization.
+From the checkout, Test-Wayfinder.ps1 runs the focused application regression. desktop-app/scripts/Test-Backend.ps1 -All runs the complete default Python and worker suite in disposable Docker storage. The current workspace Python build environment is pinned in requirements/desktop-build.txt. Native dialogs and live account qualification are separate from headless test evidence.

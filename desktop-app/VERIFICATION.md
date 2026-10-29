@@ -1,3 +1,3 @@
-# Current verification
+﻿# Current verification
 
-The current **0.3.0** evidence is [CONSOLIDATED-IMPLEMENTATION.md](../docs/platform/CONSOLIDATED-IMPLEMENTATION.md) and [CONSOLIDATED-RESULTS.json](../docs/platform/CONSOLIDATED-RESULTS.json). Earlier v5/0.2 reports are historical. Full cross-app/R1–R7 acceptance, held-out neural quality and native approval-dialog passes are not claimed.
+See [Checkpoint 3](../docs/platform/REBUILD-CHECKPOINT-03.md) for the current 0.5.0-preview.3 implementation, exact test outcomes and remaining limitations. Earlier reports describe their original binaries and do not establish acceptance of the current candidate.

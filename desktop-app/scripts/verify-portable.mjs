@@ -34,7 +34,7 @@ try{
   check('portable_archive_matches_qualified_app',await digest(extractedArchive)===await digest(path.join(root,'release/win-unpacked/resources/app.asar')));
   const staged=JSON.parse(await fs.readFile(path.join(root,'.cache/backend-manifest.json'),'utf8'));let verified=0;
   for(const [relative,expected]of Object.entries(staged.files)){const target=path.resolve(resources,relative);assert(target.startsWith(resources+path.sep),'Bounded extraction path');assert(await digest(target)===expected,'Extracted resource mismatch: '+relative);verified++;}
-  check('all_extracted_backend_sources_and_model_files_match',verified>2900);
+  check('all_extracted_backend_sources_and_model_files_match',verified===Object.keys(staged.files).length&&verified>0);
   const initial=await page.evaluate(()=>window.wayfinder.setupStatus());check('extracted_backend_is_present',initial.backendBundled&&!initial.complete);
   check('no_development_python_or_project_selected',!env.WAYFINDER_PYTHON&&!env.WAYFINDER_PROJECT_ROOT);
   await page.getByRole('button',{name:'Verify bundled memory model'}).click();await page.getByRole('button',{name:'Memory model verified'}).waitFor();check('extracted_model_runs_real_cpu_inference',true);

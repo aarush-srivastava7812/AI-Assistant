@@ -1,5 +1,7 @@
 # Windows desktop downloads
 
+Local development candidate: [0.5.0-preview.3 usage](START-HERE-0.5.0-preview.3.md), [verification and unresolved failure](Wayfinder-0.5.0-preview.3-verification.json), [checksum](Wayfinder-0.5.0-preview.3-Windows-x64.exe.sha256). The EXE is adjacent locally; it has not been published. The full rebuild remains open.
+
 Download the portable Windows x64 app from [GitHub Releases](https://github.com/aarush-srivastava7812/AI-Assistant/releases).
 
 | Version | App | Integrity and evidence |

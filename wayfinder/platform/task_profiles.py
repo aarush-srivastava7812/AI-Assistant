@@ -9,21 +9,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from wayfinder.platform.worker_bindings import activation_ledger
 from wayfinder.platform.contracts import ArtifactReference, TaskEnvelope, WorkerOutcome, Scope
-# M00 routing: intent -> plan -> capability selection -> dispatch -> validation -> synthesis
-# This represents the bounded source_task orchestration path for complex queries.
-M00_ROUTING = {
-    "intent": "W01",      # Understand intent from selected source
-    "plan": "W03",        # Task planning
-    "dispatch": "W35",    # Primary analysis worker (qualified via CapabilityCatalog)
-    "validation": "W06",  # Result validation
-    "synthesis": "W07",   # Output synthesis
-    "description": "Bounded M00 path: W01->W03->W35->W06->W07. Tools closed; no helpers. Source context only.",
-}
-
-
-def get_worker_activation() -> list[dict]:
-    from wayfinder.platform.worker_activation_ledger import get_ledger
-    return get_ledger()
+def get_worker_activation(compatible=False) -> list[dict]:
+    return activation_ledger(compatible)
 
 
 SCHEMAS = {
@@ -34,6 +21,13 @@ SCHEMAS = {
 TERMINAL = {'completed','failed','stale','cancelled','interrupted'}
 FILE_BINDINGS = frozenset({'A01','A05','A06'})
 STRUCTURED_BINDINGS={'A01':'W09','A02':'W03','A03':'W16','A04':'W24','A05':'W12','A06':'W10'}
+PRESET_BINDINGS={
+    'P01':('A02','google',frozenset({'calendar','tasks','gmail_headers','gmail_message','drive','docs','docs_text','sheets','sheets_values'})),
+    'P02':('A03','google',frozenset({'gmail_headers','gmail_message'})),
+    'P03':('A02','google',frozenset({'calendar','tasks'})),
+    'P04':('A05','external',frozenset({'notion'})),
+    'P06':('A05','google',frozenset({'drive','docs','docs_text','sheets','sheets_values'})),
+}
 def canonical(value): return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False)
 
 class TaskRequest(BaseModel):
@@ -94,12 +88,22 @@ class TaskProfiles:
                 included=included,
                 variants=[dict(id="selected_file",role="W35")]*(1 if file_binding else 0)+[dict(id="source_contract",role=structured_binding)]*(1 if structured_binding else 0),
                 default_variant="selected_file" if file_binding else "source_contract",
-                mode='selected_file' if included else 'existing_memory_view' if item['id']=='A07' else None,
-                status='ready_for_selected_file' if included and qualified else 'runtime_inspection_required' if included else 'existing_memory_view' if item['id']=='A07' else 'deferred' if item['id']=='A08' else 'connection_or_adapter_unqualified',
+                mode='selected_source' if included else 'existing_memory_view' if item['id']=='A07' else None,
+                status='ready_for_selected_source' if included and qualified else 'runtime_inspection_required' if included else 'existing_memory_view' if item['id']=='A07' else 'deferred' if item['id']=='A08' else 'connection_or_adapter_unqualified',
                 binding='existing.W35' if file_binding else 'hermes.definition/1:'+structured_binding if structured_binding else None,
-                note='Selected UTF-8 file only. No live retrieval, provider access, effects, or helpers.' if included else item['limitation'])))
+                note='Explicit selected text or bounded provider observation only. Advisory output; no tools, writes, sends, helpers or automatic memory publication.' if included else item['limitation'])))
+        configured=self.platform.connections.status()['configured']
+        presets=[]
+        for item in self.manifest['presets']:
+            binding=PRESET_BINDINGS.get(item['id'])
+            provider='notion' if item['id']=='P04' else 'google'
+            ready=bool(binding and qualified and configured.get(provider))
+            presets.append(dict(item,available=ready,included=bool(binding),
+                status='selected_read_adapter_ready' if ready else 'runtime_or_connection_required' if binding else 'provider_operations_unqualified',
+                source_kind=binding[1] if binding else None,operations=sorted(binding[2]) if binding else [],
+                live_qualified=False,reason='Exact read scope and account permissions are checked at use; model disclosure is explicit. Live account qualification is separate.' if binding else 'No Wayfinder GitHub product authorization or qualified repository adapter.'))
         return dict(contract=self.manifest['contract'],version=self.manifest['version'],manifest_sha256=self.manifest_hash,
-                    worker_activation=activation_ledger(qualified),main=self.manifest['main'],profiles=profiles,presets=[dict(p,available=False,status='provider_operations_unqualified') for p in self.manifest['presets']],
+                    worker_activation=activation_ledger(qualified),main=self.manifest['main'],profiles=profiles,presets=presets,
                     limits=dict(max_active_existing_workers=2,max_worker_invocations=1,delegation_depth=0,deadline_seconds=110,cost=None,tokens=None))
 
     def call(self,who,scope,operation,body):
@@ -167,7 +171,17 @@ class TaskProfiles:
         if old:
             if old['digest']!=digest:raise ValueError('Task request ID belongs to different immutable input.')
             return self.result(scope,old['id'])
-        if request.preset_id is not None:raise ValueError('App presets are defined but provider operations are not qualified. No fallback task was dispatched.')
+        if request.preset_id is not None:
+            binding=PRESET_BINDINGS.get(request.preset_id)
+            if not binding or request.profile_id!=binding[0] or request.source_kind!=binding[1] or request.variant!='source_contract':
+                raise ValueError('This preset has no adapter for the selected profile/source variant. No fallback task was dispatched.')
+            adapter=self.platform.google if request.source_kind=='google' else self.platform.connections
+            with adapter.lock:
+                grant=adapter.grants.get(request.reference)
+                if not grant or grant['scope']!=scope or (grant.get('service') or grant.get('provider')) not in binding[2]:
+                    raise ValueError('The exact selected read is outside this preset or task.')
+                if request.preset_id=='P04' and grant.get('intent')!='read':
+                    raise ValueError('Select a shared Notion page; search metadata is not page content.')
         role=STRUCTURED_BINDINGS.get(request.profile_id) if request.variant=='source_contract' else 'W35' if request.profile_id in FILE_BINDINGS else None
         if role is None or request.profile_version!='1':raise ValueError('This profile/version has no qualified execution adapter.')
         if not request.goal.strip() or len(request.goal.encode('utf-8'))>1000:raise ValueError('Enter a nonblank goal within the bounded text limit (1,000 UTF-8 bytes).')

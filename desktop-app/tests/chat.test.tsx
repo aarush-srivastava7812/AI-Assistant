@@ -40,7 +40,7 @@ it('observes an uncertain send before allowing another explicit request',async()
 
 it('stops the known turn and requires a review before deletion',async()=>{
   const api=client();api.chat.mockResolvedValue({turns:[{id:'running',status:'running',user_text:'Question'}]});
-  render(<ChatPanel api={api} space="a" qualified/>);await screen.findByText('Generating a replyâ€¦');
+  render(<ChatPanel api={api} space="a" qualified/>);await screen.findByText('Generating a reply…');
   fireEvent.click(screen.getByRole('button',{name:'Stop generating'}));await waitFor(()=>expect(api.cancelChat).toHaveBeenCalledWith('a','a','running'));
   await waitFor(()=>expect((screen.getByRole('button',{name:'Delete conversation'}) as HTMLButtonElement).disabled).toBe(false));
   fireEvent.click(screen.getByRole('button',{name:'Delete conversation'}));expect(api.deleteChat).not.toHaveBeenCalled();

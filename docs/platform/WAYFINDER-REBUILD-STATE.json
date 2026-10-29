@@ -1,11 +1,11 @@
 {
   "schema": "wayfinder.implementation-plan/v1",
-  "date": "2026-10-27",
+  "date": "2026-10-29",
   "baseline_commit": "47f0dca32befd29ffe52e29fd511894c72341179",
   "baseline_desktop_version": "0.4.1",
   "scope": "Planning ledger only; not a runtime registry or authorization source.",
   "research_status": "completed_with_explicit_evidence_limits",
-  "implementation_status": "checkpoint_2_chat_theme_revision_verified_full_rebuild_in_progress",
+  "implementation_status": "preview_3_implemented_exe_verified_full_rebuild_and_lease_qualification_open",
   "application_code_changed": true,
   "application_tests_run_this_turn": true,
   "new_executable_built_this_turn": true,
@@ -44,7 +44,8 @@
     "role_audit": "../research/wayfinder-rebuild/agent-readiness.json",
     "checkpoint": "REBUILD-CHECKPOINT-01.md",
     "codex_revision": "CODEX-REA-UX-REVISION.md",
-    "checkpoint_2": "REBUILD-CHECKPOINT-02.md"
+    "checkpoint_2": "REBUILD-CHECKPOINT-02.md",
+    "checkpoint_3": "REBUILD-CHECKPOINT-03.md"
   },
   "required_reuse": [
     "Hermes",
@@ -108,5 +109,22 @@
     "whole_rebuild_complete": false,
     "portable_sha256": "fb479c17ee96695e68c0dfc7898a09fab86352e1f52477637e925df050835e94",
     "preview_executable": "../../desktop-app/release/Wayfinder-0.5.0-preview.2-Windows-x64.exe"
+  },
+  "revision_3": {
+    "version": "0.5.0-preview.3",
+    "frontend_tests_passed": 85,
+    "rendered_scenarios_passed": 10,
+    "focused_recovery_passed": 114,
+    "full_backend_passed": 630,
+    "full_backend_failed": 1,
+    "full_backend_skipped": 1,
+    "full_backend_deselected": 4,
+    "whole_rebuild_complete": false,
+    "report": "REBUILD-CHECKPOINT-03.md",
+    "packaged_checks_passed": 21,
+    "portable_checks_passed": 11,
+    "static_checks_passed": 37,
+    "extracted_resources_verified": 2973,
+    "portable_sha256": "0ea3ebf96925192264d12102402601474a5703eab351488270ed7538eb81a473"
   }
 }

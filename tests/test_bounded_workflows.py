@@ -23,6 +23,10 @@ def test_dependency_outputs_are_scoped_attributed_and_digest_bound(platform):
     assert [e['node'] for e in done['events'] if e['status']=='dispatched']==['read','review']
     assert 'output_sha256' in platform['worker'].payloads[1]['question']
     assert all(n['output']['source']['sha256'] for n in done['nodes'])
+    import hashlib
+    expected=hashlib.sha256(platform['worker'].result['text'].encode()).hexdigest()
+    assert done['nodes'][0]['output']['output_sha256']==expected
+    assert expected in platform['worker'].payloads[1]['question']
     assert call(platform,'platform_workflow_runs')[0]['digest']==row['digest']
     with pytest.raises(ValueError):platform['client'].call('platform_workflow_result',space=platform['args']['space'],task='other',id=row['id'])
 
@@ -72,3 +76,21 @@ def test_worker_completion_advances_dependencies_without_ui_polling(platform):
         if state['status']=='completed':break
         time.sleep(.02)
     assert state['status']=='completed' and len(platform['worker'].payloads)==2
+
+
+def test_queued_workflow_wakes_when_unrelated_workers_release_global_capacity(platform):
+    platform['worker'].release.clear()
+    for _ in range(2):
+        call(platform,'worker_start',role='W35',reference=platform['request']['reference'],question='Direct job occupies a slot.')
+    row=start(platform)
+    assert all(node['status']=='queued' for node in row['nodes'])
+    platform['worker'].release.set()
+    deadline=time.monotonic()+5
+    while time.monotonic()<deadline:
+        with platform['app'].db() as db:
+            saved=db.execute('SELECT state FROM bounded_workflows WHERE id=?',(row['id'],)).fetchone()[0]
+        import json
+        state=json.loads(saved)
+        if state['status']=='completed':break
+        time.sleep(.02)
+    assert state['status']=='completed' and len(platform['worker'].payloads)==4

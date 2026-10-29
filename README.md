@@ -1,5 +1,7 @@
 # AI assistant
 
+Current local candidate: **0.5.0-preview.3**. See [Checkpoint 3](docs/platform/REBUILD-CHECKPOINT-03.md) for executable verification and unresolved work. The full rebuild is not complete.
+
 **Windows desktop:** [Download Wayfinder 0.4.1](https://github.com/aarush-srivastava7812/AI-Assistant/releases/tag/v0.4.1). The [release folder](desktop-app/release/README.md) contains download links, SHA-256 checksums and build verification reports.
 
 This folder is self-contained source for the FalkorDB + embedded Qdrant memory system. It contains the memory engine, three-tier context runtime, authenticated headless API, lifecycle rules, receipt queue, backup utility and focused tests. No files from the parent project are needed to install or run it. The base memory package is separate from the included Electron application; private credentials, copied databases and downloaded models remain outside Git. A minimal local Memory Testing Workbench is included for manual validation; see below.

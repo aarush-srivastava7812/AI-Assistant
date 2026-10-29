@@ -2,6 +2,7 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import os from 'node:os';
 import {createHash,randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
@@ -54,6 +55,22 @@ try{
   await page.screenshot({path:path.join(root,'test-results/rendered/actual-packaged-chat.png'),fullPage:true});
   const inventory=await page.evaluate(s=>window.wayfinder.inventory(s),sid);check('chat_does_not_publish_automatic_memory',inventory.records.length===0);
 
+  // Test-only native dialog stubs select this one synthetic file and accept
+  // disclosure. Real IPC, grants, model execution and result checks still run.
+  const selected=path.join(await fs.mkdtemp(path.join(os.tmpdir(),'wayfinder-synthetic-source-')),'selected.md');
+  await fs.writeFile(selected,'Synthetic Aurora project note. The retention period is 42 days. This note requests no external actions or commitments.');
+  await application.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});},selected);
+  const files=await page.evaluate(s=>window.wayfinder.selectFiles(s,'document'),sid);
+  const reference=files.files[0].id;
+  await page.evaluate(s=>window.wayfinder.inspectRuntime(s),sid);
+  const waitRun=async(kind,id)=>{const end=Date.now()+150000;let result;do{result=await page.evaluate(({sid,kind,id})=>kind==='profile'?window.wayfinder.profileTask(sid,id):window.wayfinder.workflow(sid,id),{sid,kind,id});if(!['reserved','running'].includes(result.status))return result;await new Promise(resolve=>setTimeout(resolve,400));}while(Date.now()<end);throw new Error('Task did not settle');};
+  const task=await page.evaluate(({sid,reference})=>window.wayfinder.startProfileTask(sid,'A05',reference,'What is the retention period? Cite the selected note.','selected_file'),{sid,reference});
+  const taskResult=await waitRun('profile',task.id);
+  check('actual_selected_file_profile_and_attributed_model_result',taskResult.status==='completed'&&taskResult.result.text.includes('42')&&!!taskResult.result.sources[0].sha256&&!taskResult.effects_executed);
+  const workflow=await page.evaluate(({sid,reference})=>window.wayfinder.startWorkflow(sid,{contract:'wayfinder.workflow/1',version:1,title:'Synthetic read and verify',concurrency:1,deadline_seconds:110,nodes:[{id:'read',role:'W35',reference,question:'State the retention period from the note.',dependencies:[]},{id:'verify',role:'W35',reference,question:'Verify the upstream retention answer against the selected note.',dependencies:['read']}]}),{sid,reference});
+  const workflowResult=await waitRun('workflow',workflow.id);
+  check('actual_dependent_workflow_completes_without_effects',workflowResult.status==='completed'&&workflowResult.nodes.every(n=>n.output?.text.includes('42'))&&workflowResult.metrics.worker_invocations===2&&!workflowResult.effects_executed);
+  check('task_execution_does_not_publish_memory',(await page.evaluate(s=>window.wayfinder.inventory(s),sid)).records.length===0);
   const generation=state.instance_generation;await application.close();application=undefined;
   page=await launch();await page.getByText('Backend connected',{exact:true}).waitFor();state=await page.evaluate(()=>window.wayfinder.status());
   check('restart_creates_fresh_backend',state.instance_generation!==generation&&state.capabilities.general_chat);

@@ -1,5 +1,7 @@
 # Wayfinder: phased app and agent integration plan
 
+Latest execution: [Checkpoint 3](REBUILD-CHECKPOINT-03.md), 0.5.0-preview.3. Selected-source preset integration and EXE verification progressed; the full rebuild and a graph-lease regression remain open.
+
 Implementation update: [Checkpoint 1 — tested preview and remaining work](REBUILD-CHECKPOINT-01.md). The original plan below remains the full target; this checkpoint does not complete it.
 
 Date: 27 October 2026. Baseline: main `47f0dca`, desktop 0.4.1. Status: **implementation in progress; preview 1 UI rejected, Codex-informed revision under verification**.

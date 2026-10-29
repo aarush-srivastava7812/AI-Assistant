@@ -7,12 +7,13 @@ from wayfinder.platform.worker_activation_ledger import (
 def test_ledger_covers_all_defined_roles():
     ledger = get_ledger()
     ids = {e["id"] for e in ledger}
-    # At minimum the source-context workers and platform services
+    assert ids == {f'W{i:02}' for i in range(1,48)}
     for wid in ["W01","W03","W06","W07","W09","W10","W12","W13","W14","W15","W16","W18","W19","W24"]:
         assert wid in ids, f"{wid} missing from ledger"
 
 def test_source_context_workers_all_available():
-    roles = available_source_context_roles()
+    assert available_source_context_roles() == []  # No runtime evidence by default.
+    roles = available_source_context_roles(compatible=True)
     expected = ["W01","W03","W06","W07","W09","W10","W12","W13","W14","W15","W16","W18","W19","W24"]
     for wid in expected:
         assert wid in roles, f"{wid} should be available source_context"
@@ -22,18 +23,20 @@ def test_tool_requiring_workers_unavailable():
         role = get_role(wid)
         assert role is not None
         assert role["available"] is False
-        assert role["mode"] == "tool_requiring"
+        assert role["mode"] == "unqualified"
 
 def test_w37_stays_disconnected():
     role = get_role("W37")
     assert role is not None
     assert role["available"] is False
-    assert "disconnected" in role["reason"].lower()
+    assert role["binding"] is None and role['live_qualified'] is False
 
-def test_trusted_services_available():
-    services = available_trusted_services()
+def test_trusted_service_mapping_does_not_infer_permission_or_live_qualification():
+    assert available_trusted_services() == []
     for wid in ["W02","W04","W05","W25","W34","W38"]:
-        assert wid in services
+        role=get_role(wid)
+        assert role['mode']=='trusted_service' and role['binding']
+        assert not role['available'] and not role['live_qualified']
 
 def test_unmapped_roles_documented_unavailable():
     for wid in ["W17","W20","W21","W22","W23","W27","W28","W39","W40","W45"]:

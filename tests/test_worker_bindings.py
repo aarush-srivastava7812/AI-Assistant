@@ -15,6 +15,19 @@ def test_exact_inventory_and_no_implicit_effects():
     assert not next(r for r in rows if r['id']=='W08')['available']
     assert not any(r['available'] for r in activation_ledger(False))
 
+
+def test_legacy_accessors_use_the_same_47_role_runtime_projection():
+    from wayfinder.platform.worker_activation_ledger import get_ledger,get_role,available_source_context_roles
+    from wayfinder.platform.task_profiles import get_worker_activation
+    assert get_ledger()==get_worker_activation()==activation_ledger(False)
+    assert get_ledger(True)==activation_ledger(True)
+    assert get_role('W43')['available'] is False
+    assert get_role('W33')['available'] is False
+    assert get_role('W36')['available'] is False
+    assert available_source_context_roles()==[]
+    snapshot=get_ledger(True);snapshot[0]['available']=False
+    assert get_ledger(True)[0]['available'] is True
+
 @pytest.mark.parametrize('role',sorted(SOURCE_ROLES))
 def test_existing_definition_and_schema_are_reused(role):
     prompt=instructions(role)

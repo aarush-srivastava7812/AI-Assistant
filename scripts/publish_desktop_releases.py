@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 FOLDER=ROOT/'desktop-app/release'
 REPO='aarush-srivastava7812/AI-Assistant'
 BASE='https://api.github.com/repos/'+REPO
-TARGETS={'0.5.0-preview.6':'HEAD','0.5.0-preview.5':'863e20a','0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
+TARGETS={'0.5.0-preview.6':'4633262','0.5.0-preview.5':'863e20a','0.5.0-preview.4':'70582f6','0.5.0-preview.3':'4880caa','0.5.0-preview.2':'5fa2dde','0.5.0-preview.1':'41042c3','0.4.1':'v0.4.1','0.4.0':'v0.4.0'}
 
 def digest(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()

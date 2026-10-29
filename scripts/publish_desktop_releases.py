@@ -7,6 +7,7 @@ from pathlib import Path
 import argparse,hashlib,json,subprocess
 from urllib.parse import urlsplit
 import requests
+from requests.adapters import HTTPAdapter
 ROOT=Path(__file__).resolve().parents[1]
 FOLDER=ROOT/'desktop-app/release'
 REPO='aarush-srivastava7812/AI-Assistant'
@@ -43,6 +44,12 @@ class ProgressFile:
             self.last=self.count;print(f'Uploading {self.name}: {self.count*100//self.len}%',flush=True)
         return value
 
+class UploadAdapter(HTTPAdapter):
+    def init_poolmanager(self,*args,**kwargs):
+        # Larger reads reduce Python/TLS overhead for the versioned EXE assets.
+        kwargs['blocksize']=1024*1024
+        return super().init_poolmanager(*args,**kwargs)
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--publish',action='store_true');args=parser.parse_args()
     # Validate every input before making any external mutation.
@@ -52,6 +59,7 @@ def main():
     result=subprocess.run(['git','credential','fill'],input='protocol=https\nhost=github.com\n\n',text=True,capture_output=True,check=True,cwd=ROOT)
     credential=dict(line.split('=',1) for line in result.stdout.splitlines() if '=' in line)
     session=requests.Session();session.headers.update({'Authorization':'Bearer '+credential['password'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
+    session.mount('https://uploads.github.com/',UploadAdapter())
     del credential,result
     def call(method,url,**kwargs):
         assert urlsplit(url).hostname in {'api.github.com','uploads.github.com'},'Unexpected GitHub API host'

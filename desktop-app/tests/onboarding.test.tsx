@@ -35,26 +35,52 @@ it('rejects foreign Docker volume without starting or replacing it',async()=>{
   await expect(setup.database(false)).rejects.toThrow(/not owned/);
   expect(run.mock.calls.some(([,args])=>args.includes('start')||args.includes('create')||args.includes('rm'))).toBe(false);
 });
-it('explains disclosure and leaves finish disabled for a new user',async()=>{
+it('offers a way forward from step 3 without bypassing the required local checks',async()=>{
   const api={setupChoices:vi.fn(async()=>({version:1,pet:false,widget:false,agents:false,folders:[]})),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({storage:'isolated workspace'}))} as any;
   render(<Onboarding api={api} done={vi.fn()}/>);
   await waitFor(()=>expect(api.setupStatus).toHaveBeenCalled());
   expect((screen.getByRole('button',{name:'Continue'}) as HTMLButtonElement).disabled).toBe(true);
   fireEvent.click(screen.getByRole('button',{name:/STEP 3/}));
-  expect((screen.getByRole('button',{name:/Create workspace and open Wayfinder/}) as HTMLButtonElement).disabled).toBe(true);
-
-  expect(screen.getByLabelText(/I agree to send/)).toBeTruthy();
+  const forward=screen.getByRole('button',{name:'Continue setup'}) as HTMLButtonElement;
+  expect(forward.disabled).toBe(false);
+  fireEvent.click(forward);
+  expect(screen.getByRole('heading',{name:'Start with a private foundation.'})).toBeTruthy();
 });
 
 it('expires model consent while setup stays open and does not finish implicitly',async()=>{
   vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-27T00:00:00Z'));
   const api={setupChoices:vi.fn(async()=>({version:1,pet:false,widget:false,agents:false,folders:[]})),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({databaseReady:true,memoryReady:true,modelReady:true,modelExpiresAt:Date.now()+5000,model:{model:'approved',provider:'custom',endpoint:'inference.local'}})),setupFinish:vi.fn()} as any;
   await act(async()=>{render(<Onboarding api={api} done={vi.fn()}/>);});
-  const finish=screen.getByRole('button',{name:/Create workspace and open Wayfinder/}) as HTMLButtonElement;
-  fireEvent.click(screen.getByRole('checkbox',{name:/I agree to send/}));expect(finish.disabled).toBe(false);
-  await act(async()=>{vi.advanceTimersByTime(5001);});expect(finish.disabled).toBe(true);
-  expect((screen.getByRole('checkbox',{name:/I agree to send/}) as HTMLInputElement).checked).toBe(false);
+  fireEvent.click(screen.getByRole('button',{name:'Agree and continue'}));
+  expect((screen.getByRole('button',{name:'Open Wayfinder'}) as HTMLButtonElement).disabled).toBe(false);
+  await act(async()=>{vi.advanceTimersByTime(5001);});
+  fireEvent.click(screen.getByRole('button',{name:'Continue setup'}));
+  expect((screen.getByRole('button',{name:'Agree and continue'}) as HTMLButtonElement).disabled).toBe(true);
   expect(api.setupFinish).not.toHaveBeenCalled();
+});
+
+it('opens with defaults after explicit model agreement without loading optional configuration',async()=>{
+ const done=vi.fn(),api={setupChoices:vi.fn(),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({databaseReady:true,memoryReady:true,modelReady:true,modelExpiresAt:Date.now()+300000,model:{model:'approved',provider:'custom',endpoint:'inference.local'}})),setupFinish:vi.fn(async()=>({state:'ready'}))} as any;
+ render(<Onboarding api={api} done={done}/>);
+ await waitFor(()=>expect((screen.getByRole('button',{name:'Agree and continue'}) as HTMLButtonElement).disabled).toBe(false));
+ expect(screen.getByText(/By choosing/).textContent).toContain('bounded recent conversation history');
+ expect(api.setupFinish).not.toHaveBeenCalled();
+ fireEvent.click(screen.getByRole('button',{name:'Agree and continue'}));
+ expect(screen.queryByRole('checkbox')).toBeNull();expect(api.setupChoices).not.toHaveBeenCalled();
+ expect(screen.getByRole('button',{name:'Customize now (optional)'}).getAttribute('aria-expanded')).toBe('false');
+ fireEvent.click(screen.getByRole('button',{name:'Open Wayfinder'}));
+ await waitFor(()=>expect(done).toHaveBeenCalledOnce());expect(api.setupFinish).toHaveBeenCalledWith('Personal',true);
+});
+
+it('optional configuration still loading does not block opening the workspace',async()=>{
+ const api={setupChoices:vi.fn(()=>new Promise(()=>{})),setupDependencies:vi.fn(async()=>({})),setupStatus:vi.fn(async()=>({databaseReady:true,memoryReady:true,modelReady:true,modelExpiresAt:Date.now()+300000,workspaceName:'Existing workspace',model:{model:'approved',provider:'custom',endpoint:'inference.local'}})),setupFinish:vi.fn(async()=>({state:'ready'}))} as any;
+ render(<Onboarding api={api} done={vi.fn()}/>);
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Agree and continue'})).toBeTruthy());
+ fireEvent.click(screen.getByRole('button',{name:'Agree and continue'}));
+ fireEvent.click(screen.getByRole('button',{name:'Customize now (optional)'}));
+ expect(api.setupChoices).toHaveBeenCalledOnce();expect(screen.getByText('Loading saved choices…')).toBeTruthy();
+ fireEvent.click(screen.getByRole('button',{name:'Open Wayfinder'}));
+ await waitFor(()=>expect(api.setupFinish).toHaveBeenCalledWith('Existing workspace',true));
 });
 
 it('resumes public setup hints but never restores readiness or consent',async()=>{

@@ -2,7 +2,7 @@
 
 Versioned Windows x64 executables are available through [GitHub Releases](https://github.com/aarush-srivastava7812/AI-Assistant/releases).
 
-The newest preview, **0.5.0-preview.7**, adds 19 built-in VS Code themes, onboarding previews, System/Light/Dark preferences, matching native captions and companions, and searchable settings. OpenCode chat retains provider/model selection with user-owned encrypted API keys. Use Setup for a new Windows PC. All 0.5.0 versions are prereleases.
+The updated **0.5.0-preview.7** replaces its earlier downloads in place with a simpler optional step 3. Start with defaults or customize now, and configure optional features later in Settings. It includes 19 built-in VS Code themes, onboarding previews, System/Light/Dark preferences, matching native captions and companions, and searchable settings. OpenCode chat retains provider/model selection with user-owned encrypted API keys. Use Setup for a new Windows PC. All 0.5.0 versions are prereleases.
 
 | Version | Executable | Integrity and evidence |
 | --- | --- | --- |

@@ -1,11 +1,11 @@
 {
   "version": "0.5.0-preview.7",
-  "verified_at_utc": "2026-10-29T22:40:37.000058+00:00",
-  "sha256": "4f233b82458feaa8039f1b46fdaeafa491d01f7065d0d573d9c57d66fd03e1bc",
-  "bytes": 504952502,
-  "setup_sha256": "5d940c1cfd4fb2a3a2699c7f034c22c2456488bf1459502df651d6836f2bca5a",
-  "setup_bytes": 498094320,
-  "asar_sha256": "5af8de6a6b45b6468b36f4cbcc8c045b79f187530f4a14bec8b345006ff3ca97",
+  "verified_at_utc": "2026-10-30T00:14:48.187963+00:00",
+  "sha256": "2963f6546a8d81fd2146f37e862800f7d9329896b64481c32ba47df09b077fa4",
+  "bytes": 504953497,
+  "setup_sha256": "c165d17153a64a7e7a969ef6283a75e88a39cabf5aaf8ce8f3110a50ae2fadcc",
+  "setup_bytes": 498095076,
+  "asar_sha256": "7236dff5be266ae501cdff5a7e8da8f84320de8b80ebaa7f06f96a302d56f630",
   "backend_sha256": "75dc71541e935a397579e32292aea78e64871f9bc30bbb8cea60eadf2281b7f2",
   "chat_engine": "OpenCode 1.19.5",
   "task_engine": "Hermes v0.22.5",
@@ -13,7 +13,7 @@
   "user_provided_api_key": true,
   "credentials_bundled": false,
   "frontend": {
-    "passed": 151,
+    "passed": 153,
     "typecheck": true
   },
   "rendered_appearance": {
@@ -168,6 +168,114 @@
         "passed": true
       },
       {
+        "name": "model_agreement_disclosed_1440",
+        "passed": true
+      },
+      {
+        "name": "optional_setup_not_loaded_1440",
+        "passed": true
+      },
+      {
+        "name": "ready_primary_visible_1440",
+        "passed": true
+      },
+      {
+        "name": "ready_has_no_horizontal_overflow_1440",
+        "passed": true
+      },
+      {
+        "name": "skip_uses_defaults_without_grants_1440",
+        "passed": true
+      },
+      {
+        "name": "deferred_configuration_in_settings_Appearance",
+        "passed": true
+      },
+      {
+        "name": "deferred_configuration_in_settings_Desktop companions",
+        "passed": true
+      },
+      {
+        "name": "deferred_configuration_in_settings_Connections",
+        "passed": true
+      },
+      {
+        "name": "customization_has_themes_and_optional_permissions_1440",
+        "passed": true
+      },
+      {
+        "name": "expanded_customization_keeps_forward_visible_1440",
+        "passed": true
+      },
+      {
+        "name": "browsing_customization_does_not_grant_permissions_1440",
+        "passed": true
+      },
+      {
+        "name": "model_agreement_disclosed_900",
+        "passed": true
+      },
+      {
+        "name": "optional_setup_not_loaded_900",
+        "passed": true
+      },
+      {
+        "name": "ready_primary_visible_900",
+        "passed": true
+      },
+      {
+        "name": "ready_has_no_horizontal_overflow_900",
+        "passed": true
+      },
+      {
+        "name": "skip_uses_defaults_without_grants_900",
+        "passed": true
+      },
+      {
+        "name": "customization_has_themes_and_optional_permissions_900",
+        "passed": true
+      },
+      {
+        "name": "expanded_customization_keeps_forward_visible_900",
+        "passed": true
+      },
+      {
+        "name": "browsing_customization_does_not_grant_permissions_900",
+        "passed": true
+      },
+      {
+        "name": "model_agreement_disclosed_600",
+        "passed": true
+      },
+      {
+        "name": "optional_setup_not_loaded_600",
+        "passed": true
+      },
+      {
+        "name": "ready_primary_visible_600",
+        "passed": true
+      },
+      {
+        "name": "ready_has_no_horizontal_overflow_600",
+        "passed": true
+      },
+      {
+        "name": "skip_uses_defaults_without_grants_600",
+        "passed": true
+      },
+      {
+        "name": "customization_has_themes_and_optional_permissions_600",
+        "passed": true
+      },
+      {
+        "name": "expanded_customization_keeps_forward_visible_600",
+        "passed": true
+      },
+      {
+        "name": "browsing_customization_does_not_grant_permissions_600",
+        "passed": true
+      },
+      {
         "name": "no_renderer_faults",
         "passed": true
       },
@@ -176,7 +284,7 @@
         "passed": true
       }
     ],
-    "passed": 39,
+    "passed": 66,
     "live_provider_calls": 0,
     "native_caption_verified": false
   },
@@ -191,7 +299,7 @@
     "rerun_in_this_release": false,
     "live_packaged_flows_rerun": true
   },
-  "actual_packaged_passed": 80,
+  "actual_packaged_passed": 81,
   "actual_packaged_checks": [
     {
       "name": "fresh_profile_shows_onboarding",
@@ -330,11 +438,11 @@
       "passed": true
     },
     {
-      "name": "onboarding_has_theme_previews",
+      "name": "model_agreement_is_explicit_in_step_2",
       "passed": true
     },
     {
-      "name": "agents_need_explicit_opt_in",
+      "name": "step_3_can_open_without_optional_configuration",
       "passed": true
     },
     {
@@ -346,11 +454,15 @@
       "passed": true
     },
     {
+      "name": "skipping_customization_keeps_defaults_and_no_permissions",
+      "passed": true
+    },
+    {
       "name": "setup_stores_no_provider_secrets",
       "passed": true
     },
     {
-      "name": "model_turn_completed_39",
+      "name": "model_turn_completed_40",
       "passed": true
     },
     {
@@ -358,7 +470,7 @@
       "passed": true
     },
     {
-      "name": "model_turn_completed_41",
+      "name": "model_turn_completed_42",
       "passed": true
     },
     {
@@ -402,7 +514,7 @@
       "passed": true
     },
     {
-      "name": "model_turn_completed_52",
+      "name": "model_turn_completed_53",
       "passed": true
     },
     {
@@ -516,7 +628,7 @@
   ],
   "portable": {
     "tier": "actual delivered portable Windows executable extracted in an unrelated fresh directory",
-    "passed": 11,
+    "passed": 12,
     "checks": [
       {
         "name": "delivered_exe_extracts_and_shows_first_run",
@@ -551,6 +663,10 @@
         "passed": true
       },
       {
+        "name": "portable_can_skip_optional_configuration",
+        "passed": true
+      },
+      {
         "name": "portable_backend_is_live",
         "passed": true
       },
@@ -563,7 +679,7 @@
         "passed": true
       }
     ],
-    "portable_sha256": "4f233b82458feaa8039f1b46fdaeafa491d01f7065d0d573d9c57d66fd03e1bc",
+    "portable_sha256": "2963f6546a8d81fd2146f37e862800f7d9329896b64481c32ba47df09b077fa4",
     "extracted_resource_files_verified": 2979,
     "native_desktop_automation": false,
     "live_google": false,
@@ -902,5 +1018,8 @@
     "The broader rebuild, provider writes, recurring schedules and native desktop actions remain unfinished.",
     "Current Codex app was unavailable. Settings research used four retained hash-verified appearance assets and official documentation; full current navigation was not observed.",
     "Theme palettes adapt VS Code workbench tokens to Wayfinder; this is not a pixel-identical editor implementation."
-  ]
+  ],
+  "revision": "simpler-optional-onboarding-2026-10-30",
+  "replaces_previous_preview7_setup_sha256": "5d940c1cfd4fb2a3a2699c7f034c22c2456488bf1459502df651d6836f2bca5a",
+  "replaces_previous_preview7_sha256": "4f233b82458feaa8039f1b46fdaeafa491d01f7065d0d573d9c57d66fd03e1bc"
 }

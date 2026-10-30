@@ -1,12 +1,14 @@
 # Wayfinder 0.5.0-preview.7
 
+Updated preview.7: simpler optional onboarding. These downloads replace the earlier preview.7 build; re-download Setup to receive this revision.
+
 Download **Wayfinder-Setup-0.5.0-preview.7-Windows-x64.exe** and run it on Windows x64. Setup installs the private task runtime and offers Docker Desktop installation if needed. Complete any Docker license, Windows permission and restart prompts, then reopen Wayfinder. Use **Install / repair required software** if setup was interrupted.
 
 1. Start Docker Desktop with its local Linux engine. Prepare Wayfinder's private database and verify the included memory model.
 2. Choose your AI provider, paste its API key and select a model. Use **Get an API key** to open the selected provider's official console. Use **Enter another model ID** for a model specific to your account.
-3. Click **Connect and verify**. The key is encrypted for your Windows account. A short test prompt goes to the selected provider; documents and history are excluded from that check. Accept the displayed connection before opening your workspace.
-4. Choose your appearance using the four onboarding previews or **Browse all 19 themes**. System follows your Windows light/dark preference. Theme choices include the built-in VS Code Modern, 2026, classic and high-contrast palettes.
-5. Choose the optional pet, widget, agents, folders and account connections. They default off. Google currently requires your own Desktop OAuth client JSON and browser consent.
+3. Click **Connect and verify**. The key is encrypted for your Windows account. A short test prompt goes to the selected provider; documents and history are excluded from that check. Review the connection and choose **Agree and continue** in step 2.
+4. Step 3 is optional personalization. Click **Open Wayfinder** to start immediately with a Personal workspace and the default appearance. You do not need to choose themes, enable companions, add folders or connect accounts here.
+5. To configure things now, expand **Customize now (optional)**. Otherwise use Settings later: **Appearance**, **Desktop companions**, **Permissions**, and **Connections**. Google currently requires your own Desktop OAuth client JSON and browser consent. Optional permissions stay off until you enable them.
 
 Supported API-key connections: OpenAI, Anthropic, Google Gemini, OpenRouter, NVIDIA, DeepSeek, Groq, xAI, Mistral, Together AI, Fireworks AI, Cerebras, Perplexity, Moonshot/Kimi, Z.AI, DeepInfra, Alibaba/Qwen, MiniMax, and custom HTTPS OpenAI-compatible Chat Completions endpoints. You only need one provider. Model suggestions come from the pinned OpenCode catalog; your provider must grant access to the chosen model. Subscription OAuth, AWS IAM, Vertex service accounts and Azure deployment authentication are separate methods and are not implemented by this API-key picker.
 

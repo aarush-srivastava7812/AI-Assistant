@@ -47,8 +47,9 @@ try{
   await page.getByRole('button',{name:'Check / prepare database'}).click();await page.getByRole('button',{name:'Database ready'}).waitFor();check('portable_prepares_owned_database',true);
   await page.getByRole('button',{name:'Continue',exact:true}).click();
   await page.getByRole('button',{name:'Connect and verify'}).click();await page.getByRole('button',{name:'Verify connection again'}).waitFor();check('portable_verifies_installed_hermes',true);
-  await page.getByRole('button',{name:'Continue',exact:true}).click();
-  await page.getByLabel('Workspace name',{exact:true}).fill('Portable fresh user');await page.getByLabel(/I agree to send/).check();await page.getByRole('button',{name:/Create workspace and open Wayfinder/}).click();await page.getByText('Backend connected',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Agree and continue',exact:true}).click();
+  check('portable_can_skip_optional_configuration',await page.getByRole('button',{name:'Open Wayfinder',exact:true}).isEnabled()&&await page.getByRole('checkbox').count()===0);
+  await page.getByRole('button',{name:'Open Wayfinder',exact:true}).click();await page.getByText('Backend connected',{exact:true}).waitFor();
   await page.waitForFunction(()=>document.querySelector('[aria-label="Memory space"]').value);
   const state=await page.evaluate(()=>window.wayfinder.status()),sid=await page.getByLabel('Memory space').inputValue();
   check('portable_backend_is_live',state.state==='ready'&&state.capabilities.general_chat&&state.backend.models.includes('bounded conversation'));
